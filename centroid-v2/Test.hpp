@@ -19,16 +19,15 @@ class Test {
 
 		float xCentre;
 		float yCentre;
-		std::vector<std::vector<int>> noiseAfterBin; // For testing only
-		std::vector<std::vector<float>> gaussianInput; // Should be private, made public for testing only
-
+		
 		void run(bool noise, float time, float area);
 		static std::vector<std::vector<int>> binData(std::vector<std::vector<float>> dataIn, int h, int v);
-		static void print2dVector(std::vector<std::vector<int>> data, bool RMS); // For testing only
-
+		static void print2dVector(std::vector<std::vector<int>> data, bool RMS); 
 	private:
 
 		std::vector<std::vector<int>> pixelData;
+		std::vector<std::vector<int>> noiseAfterBin; 
+		std::vector<std::vector<float>> gaussianInput; 
 
 		float inX, inY, sigmaX, sigmaY;
 		int horizPixels, vertPixels, h;

@@ -26,80 +26,63 @@ int main() {
 	time_t startTime = time(nullptr);
 	cout << endl << "Start time: " << asctime(localtime(&startTime)) << endl;
 
-	float xIn = 5; // Input coordinates of defined centre in terms of pixels. 
-	float yIn = 5;
-	int xPixels = 10;
+	float xIn = 50; // Input coordinates of defined centre in terms of pixels. 
+	float yIn = 50;
+	int xPixels = 100;
 	int yPixels = xPixels;
 	int sampling = 10; // Pixel sampling: Simulated points per pixel
 
 	int points = sampling * xPixels; 
 	
-	Test* t = new Test(xIn * 2 / xPixels, yIn * 2 / yPixels, 1, 1, xPixels, yPixels, points);
-	t->run(true, 1, 1); // Run with noise for time 1 and area 1
-	float x = (t->xCentre * xPixels) + 0.5;
-	float y = (t->yCentre * yPixels) + 0.5;
-	cout << sqrt((x - xIn)*(x - xIn) + (y - yIn)*(y - yIn)) << ',' << x << ',' << y << endl;
+//	// For testing just one run, outputting to the console instead of a file. 
+//	Test* t = new Test(xIn * 2 / xPixels, yIn * 2 / yPixels, 1, 1, xPixels, yPixels, points);
+//	t->run(true, 1, 1); // Run with noise for time 1 and area 1
+//	float x = (t->xCentre * xPixels) + 0.5;
+//	float y = (t->yCentre * yPixels) + 0.5;
+//	cout << sqrt((x - xIn)*(x - xIn) + (y - yIn)*(y - yIn)) << ',' << x << ',' << y << endl;
+//	delete t;
 
-//	ofstream outFile; // Initialise output file
-//	outFile.open("results.csv");
-//	outFile << "Input centre: (" << xIn << ',' << yIn << "); pixels in each dimension: " << xPixels << ',' 
-//			<< yPixels << "; data points simulated in each dimension: " << points << endl;
-//
-//	std::default_random_engine generator; // Initialise uniform distribution
-//	std::uniform_real_distribution<double> distribution(-0.5, 0.5);
-//
-//	for (int i = 0; i < 10; i++) {
-//		xIn += distribution(generator);
-//		yIn += distribution(generator);
-//
-//		Test* t = new Test(xIn * 2 / xPixels, yIn * 2 / yPixels, 1, 1, xPixels, yPixels, points);
-//		t->run(true, 1, 1); // Run with noise
-//		float x = (t->xCentre * xPixels) + 0.5;
-//		float y = (t->yCentre * yPixels) + 0.5;
-//		outFile << i << ',' << sqrt((x - xIn)*(x - xIn) + (y - yIn)*(y - yIn)) << ',' << x << ',' << y << endl;
-//		delete t;
-//	}
-//
-//	outFile << endl << "Varying sigma: " << endl;
-//	outFile << "Sigma in both dimensions, Distance, x-centre, y-centre" << endl;
-//
-//	for (float i = 0.1; i < 3; i+=0.1) { // Run test varying sigma
-//
-//		Test* t = new Test(xIn * 2 / xPixels, yIn * 2 / yPixels, i, i, xPixels, yPixels, points);
-//		t->run(true, 1, 1); // Run with noise
-//		float x = (t->xCentre * xPixels) + 0.5;
-//		float y = (t->yCentre * yPixels) + 0.5;
-//		outFile << i << ',' << sqrt((x - xIn)*(x - xIn) + (y - yIn)*(y - yIn)) << ',' << x << ',' << y << endl;
-//		delete t;
-//	}
-//
-//	outFile.close();
+	// For testing multiple runs, outputting to an output csv file
+	ofstream outFile; // Initialise output file
+	outFile.open("results.csv");
+	outFile << "Input centre: (" << xIn << ',' << yIn << "); pixels in each dimension: " << xPixels << ',' 
+			<< yPixels << "; data points simulated in each dimension: " << points << endl;
 
-	vector<vector<float>> noiseGaussian;
-	//unsigned seed = std::chrono::system_clock::now().time_since_epoch().count();
-	default_random_engine generator(123);
+	std::default_random_engine generator; // Initialise uniform distribution and add to inputted x and y
+	std::uniform_real_distribution<double> distribution(-0.5, 0.5);
+	xIn += distribution(generator);
+	yIn += distribution(generator);
 
-	for (vector<float> v: t->gaussianInput) { // For each row
-		vector<float> rowOut;
-		for (float f: v) { // For each Gaussian value
-			poisson_distribution<int> distribution(sqrt(f));
-			rowOut.push_back(pow(distribution(generator), 2)); // Square the generated Poisson variable
-		}
-		noiseGaussian.push_back(rowOut);
+	outFile << "Running the simulation 10 times for a star position which varies between -0.5 to +0.5 from the input centre" << endl;
+	for (int i = 0; i < 10; i++) {
+
+		Test* t = new Test(xIn * 2 / xPixels, yIn * 2 / yPixels, 1, 1, xPixels, yPixels, points);
+		t->run(true, 1, 1); // Run with noise, with time 1 and area 1
+		float x = (t->xCentre * xPixels) + 0.0; // Convert output to pixels
+		float y = (t->yCentre * yPixels) + 0.0;
+		outFile << i << ',' << sqrt((x - xIn)*(x - xIn) + (y - yIn)*(y - yIn)) << ',' << x << ',' << y << endl;
+		delete t;
 	}
-	// At this point, the matrix is of squared values. Here, find the RMS. 
-	vector<vector<int>> noiseFromGaussian = Test::binData(noiseGaussian, xPixels, yPixels);
-	Test::print2dVector(noiseFromGaussian, true);
-	cout << endl << "Where the seed for Poisson random variable generation is kept the same so that " << endl
-		 << "the original Gaussian is the same, the values for noise generated before (with RMS of the " << endl
-		 << "individual Gaussian noise values) and after the binning of the Gaussian data into pixels" << endl
-		 << "are different. " << endl << endl;
+
+	outFile << endl << "Varying sigma: " << endl;
+	outFile << "Sigma in both dimensions, Distance, x-centre, y-centre" << endl;
+
+	for (float i = 0.1; i < 3; i+=0.1) { // Run test varying sigma
+
+		Test* t = new Test(xIn * 2 / xPixels, yIn * 2 / yPixels, i, i, xPixels, yPixels, points);
+		t->run(true, 1, 1); // Run with noise, with time 1 and area 1
+		float x = (t->xCentre * xPixels) + 0.0;
+		float y = (t->yCentre * yPixels) + 0.0;
+		outFile << i << ',' << sqrt((x - xIn)*(x - xIn) + (y - yIn)*(y - yIn)) << ',' << x << ',' << y << endl;
+		delete t;
+	}
+
+	outFile.close();
 
 	time_t endTime  = time(nullptr);
 	cout << "End time: " << asctime(localtime(&endTime)) << endl;
 	cout << "Duration: " << (endTime - startTime) << " s. " << endl;
 
-	delete t;
 	return 0;
 }
 

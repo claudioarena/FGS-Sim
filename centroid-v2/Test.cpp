@@ -89,8 +89,8 @@ vector<int> Test::sumVert(vector<vector<int>> in, int i, int end) {
 vector<vector<int>> Test::addPoissonNoise(float time, float area) {
 
 	// Seed the generation of Poisson-distributed random variable with the current time
-	//unsigned seed = std::chrono::system_clock::now().time_since_epoch().count();
-	default_random_engine generator(123);
+	unsigned seed = std::chrono::system_clock::now().time_since_epoch().count();
+	default_random_engine generator(seed);
 
 	vector<vector<int>> outData;
 	vector<vector<int>> outNoise;
@@ -231,7 +231,7 @@ void Test::run(bool noise, float time, float area) {
 	pixelData = binData(gaussianInput, horizPixels, vertPixels);
 	if (noise == true) {
 		noiseAfterBin = this->addPoissonNoise(time, area);
-		print2dVector(noiseAfterBin, false); // FIXME: For debug only
+		//print2dVector(noiseAfterBin, false); // For debug only
 	}
 	this->findCentroid();
 
