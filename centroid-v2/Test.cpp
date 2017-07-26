@@ -6,7 +6,7 @@
  *	@file Test.cpp
  *	@brief Bin an inputted Gaussian 2d array and find its centroid
  *	@author Feiyu Fang
- *	@version 2.0.1 24-07-2017
+ *	@version 2.0.1 25-07-2017
  */
 
 #include <chrono>
@@ -89,8 +89,8 @@ vector<int> Test::sumVert(vector<vector<int>> in, int i, int end) {
 vector<vector<int>> Test::addPoissonNoise(float time, float area) {
 
 	// Seed the generation of Poisson-distributed random variable with the current time
-	unsigned seed = std::chrono::system_clock::now().time_since_epoch().count();
-	default_random_engine generator(seed);
+	//unsigned seed = std::chrono::system_clock::now().time_since_epoch().count();
+	default_random_engine generator(123);
 
 	vector<vector<int>> outData;
 	vector<vector<int>> outNoise;
@@ -202,11 +202,13 @@ void Test::findCentroid() {
 /**
  * Prints a 2d vector to the console
  * @param data Data to be printed
+ * @param RMS Whether to print the sqrt of all the elements
  */
-void Test::print2dVector(vector<vector<int>> data) {
+void Test::print2dVector(vector<vector<int>> data, bool RMS) {
 
 	for (int i = 0; i < (int)data.size(); i++) { // Loop through each row
-		for (int j = 0; j < (int)data.at(0).size(); j++) cout << setw(4) << data.at(i).at(j);
+		if (RMS == true) for (int j = 0; j < (int)data.at(0).size(); j++) cout << setw(9) << sqrt(data.at(i).at(j));
+		else for (int j = 0; j < (int)data.at(0).size(); j++) cout << setw(9) << data.at(i).at(j);
 		cout << endl;
 	}
 	cout << endl;
@@ -229,7 +231,7 @@ void Test::run(bool noise, float time, float area) {
 	pixelData = binData(gaussianInput, horizPixels, vertPixels);
 	if (noise == true) {
 		noiseAfterBin = this->addPoissonNoise(time, area);
-		print2dVector(noiseAfterBin); // FIXME: For debug only
+		print2dVector(noiseAfterBin, false); // FIXME: For debug only
 	}
 	this->findCentroid();
 

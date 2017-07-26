@@ -4,7 +4,7 @@
  * @file Test.hpp
  * @brief Header file for Test class
  * @author Feiyu Fang
- * @version 2.0.1 24-07-2017
+ * @version 2.0.1 25-07-2017
  */
 
 #include "Gauss2d.hpp"
@@ -24,7 +24,7 @@ class Test {
 
 		void run(bool noise, float time, float area);
 		static std::vector<std::vector<int>> binData(std::vector<std::vector<float>> dataIn, int h, int v);
-		static void print2dVector(std::vector<std::vector<int>> data); // For testing only
+		static void print2dVector(std::vector<std::vector<int>> data, bool RMS); // For testing only
 
 	private:
 

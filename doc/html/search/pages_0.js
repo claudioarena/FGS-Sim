@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['fgs_2dsim',['FGS-Sim',['../md_README.html',1,'']]]
+  ['centroid_20recovery_20simulation_20changelog',['Centroid recovery simulation changelog',['../md_changelog.html',1,'']]]
 ];

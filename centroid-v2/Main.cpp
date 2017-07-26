@@ -5,7 +5,7 @@
  * @file Main.cpp
  * @brief Main method to run centroid recovery simulation
  * @author Feiyu Fang
- * @version 2.0.1 24-07-2017
+ * @version 2.0.1 25-07-2017
  */
 
 #include <chrono>
@@ -76,18 +76,24 @@ int main() {
 //	outFile.close();
 
 	vector<vector<float>> noiseGaussian;
-	unsigned seed = std::chrono::system_clock::now().time_since_epoch().count();
-	default_random_engine generator(seed);
-	for (vector<float> v: t->gaussianInput) {
+	//unsigned seed = std::chrono::system_clock::now().time_since_epoch().count();
+	default_random_engine generator(123);
+
+	for (vector<float> v: t->gaussianInput) { // For each row
 		vector<float> rowOut;
-		for (float f: v) {
+		for (float f: v) { // For each Gaussian value
 			poisson_distribution<int> distribution(sqrt(f));
-			rowOut.push_back((float)distribution(generator));
+			rowOut.push_back(pow(distribution(generator), 2)); // Square the generated Poisson variable
 		}
 		noiseGaussian.push_back(rowOut);
 	}
+	// At this point, the matrix is of squared values. Here, find the RMS. 
 	vector<vector<int>> noiseFromGaussian = Test::binData(noiseGaussian, xPixels, yPixels);
-	Test::print2dVector(noiseFromGaussian);
+	Test::print2dVector(noiseFromGaussian, true);
+	cout << endl << "Where the seed for Poisson random variable generation is kept the same so that " << endl
+		 << "the original Gaussian is the same, the values for noise generated before (with RMS of the " << endl
+		 << "individual Gaussian noise values) and after the binning of the Gaussian data into pixels" << endl
+		 << "are different. " << endl << endl;
 
 	time_t endTime  = time(nullptr);
 	cout << "End time: " << asctime(localtime(&endTime)) << endl;
@@ -99,9 +105,9 @@ int main() {
 
 // TODO: DONE - Change Poisson noise (photon noise in space) into an array of poisson(sqrt(N)). 
 // DONE - This depends on the area of the telescope and the integration time (star exposure time). 
-// Each value in the Gaussian array should have calculated a corresponding value in a noise array. 
-// The noise in the pixel is then the RMS of all of the noise array elements being binned into the pixel. 
-// Check if this is the same as just the sqrt of the pixel binned value. 
+// DONE - Each value in the Gaussian array should have calculated a corresponding value in a noise array. 
+// DONE - The noise in the pixel is then the RMS of all of the noise array elements being binned into the pixel. 
+// DONE - Check if this is the same as just the sqrt of the pixel binned value. 
 // Look at photons per second for a given magnitude. 
 // Have the separate parameters of an input star magnitude and the integration time, keeping one constant and varying the other. 
 // 1/(sampling frequency) = (exposure time + readout time). 

@@ -134,8 +134,8 @@ Static Public Member Functions</h2></td></tr>
 <tr class="memitem:a75ad20dd0f808edaf02848cc5dbf1dc5"><td class="memItemLeft" align="right" valign="top">static std::vector&lt; std::vector&lt; int &gt; &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_test.html#a75ad20dd0f808edaf02848cc5dbf1dc5">binData</a> (std::vector&lt; std::vector&lt; float &gt;&gt; dataIn, int h, int v)</td></tr>
 <tr class="memdesc:a75ad20dd0f808edaf02848cc5dbf1dc5"><td class="mdescLeft">&#160;</td><td class="mdescRight">Sorts input data into bins.  <a href="#a75ad20dd0f808edaf02848cc5dbf1dc5">More...</a><br /></td></tr>
 <tr class="separator:a75ad20dd0f808edaf02848cc5dbf1dc5"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:afa6d70bacdacd39273cd5a569e6d5581"><td class="memItemLeft" align="right" valign="top">static void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_test.html#afa6d70bacdacd39273cd5a569e6d5581">print2dVector</a> (std::vector&lt; std::vector&lt; int &gt;&gt; data)</td></tr>
-<tr class="separator:afa6d70bacdacd39273cd5a569e6d5581"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a0a9f7b609d29ed6f7a9114a56a4a6418"><td class="memItemLeft" align="right" valign="top">static void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_test.html#a0a9f7b609d29ed6f7a9114a56a4a6418">print2dVector</a> (std::vector&lt; std::vector&lt; int &gt;&gt; data, bool RMS)</td></tr>
+<tr class="separator:a0a9f7b609d29ed6f7a9114a56a4a6418"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-attribs"></a>
 Public Attributes</h2></td></tr>
@@ -276,7 +276,7 @@ std::vector&lt; std::vector&lt; float &gt; &gt;&#160;</td><td class="memItemRigh
 
 </div>
 </div>
-<a class="anchor" id="afa6d70bacdacd39273cd5a569e6d5581"></a>
+<a class="anchor" id="a0a9f7b609d29ed6f7a9114a56a4a6418"></a>
 <div class="memitem">
 <div class="memproto">
 <table class="mlabels">
@@ -287,8 +287,18 @@ std::vector&lt; std::vector&lt; float &gt; &gt;&#160;</td><td class="memItemRigh
           <td class="memname">void Test::print2dVector </td>
           <td>(</td>
           <td class="paramtype">std::vector&lt; std::vector&lt; int &gt;&gt;&#160;</td>
-          <td class="paramname"><em>data</em></td><td>)</td>
+          <td class="paramname"><em>data</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
           <td></td>
+          <td class="paramtype">bool&#160;</td>
+          <td class="paramname"><em>RMS</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
         </tr>
       </table>
   </td>
@@ -300,6 +310,7 @@ std::vector&lt; std::vector&lt; float &gt; &gt;&#160;</td><td class="memItemRigh
 <p>Prints a 2d vector to the console </p><dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramname">data</td><td>Data to be printed </td></tr>
+    <tr><td class="paramname">RMS</td><td>Whether to print the sqrt of all the elements </td></tr>
   </table>
   </dd>
 </dl>
