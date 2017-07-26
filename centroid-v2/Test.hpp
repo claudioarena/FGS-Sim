@@ -7,11 +7,6 @@
  * @version 2.0.1 24-07-2017
  */
 
-#include <ctime>
-#include <iomanip>
-#include <iostream>
-#include <vector>
-
 #include "Gauss2d.hpp"
 
 /**
@@ -27,12 +22,13 @@ class Test {
 		std::vector<std::vector<int>> noiseAfterBin;
 
 		void run(bool noise, float time, float area);
+		static std::vector<std::vector<int>> binData(std::vector<std::vector<float>> dataIn, int h, int v);
 
 	private:
 
 		std::vector<std::vector<float>> gaussianInput;
-		int inWidth;
-		int inHeight;
+		//int inWidth;
+		//int inHeight;
 		std::vector<std::vector<int>> pixelData;
 
 		float inX, inY, sigmaX, sigmaY;
@@ -41,6 +37,5 @@ class Test {
 		static std::vector<float> sumVert(std::vector<std::vector<float>> in, int i, int end);
 		static std::vector<int> sumVert(std::vector<std::vector<int>> in, int i, int end);
 		std::vector<std::vector<int>> addPoissonNoise(float time, float area);
-		void binData(int h, int v);
 		void findCentroid();
 };

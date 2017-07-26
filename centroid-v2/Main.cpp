@@ -33,40 +33,47 @@ int main() {
 
 	int points = sampling * xPixels; 
 	
-	ofstream outFile; // Initialise output file
-	outFile.open("results.csv");
-	outFile << "Input centre: (" << xIn << ',' << yIn << "); pixels in each dimension: " << xPixels << ',' 
-			<< yPixels << "; data points simulated in each dimension: " << points << endl;
+	Test* t = new Test(xIn * 2 / xPixels, yIn * 2 / yPixels, 1, 1, xPixels, yPixels, points);
+	t->run(true, 1, 1); // Run with noise for time 1 and area 1
+	float x = (t->xCentre * xPixels) + 0.5;
+	float y = (t->yCentre * yPixels) + 0.5;
+	cout << sqrt((x - xIn)*(x - xIn) + (y - yIn)*(y - yIn)) << ',' << x << ',' << y << endl;
+	delete t;
 
-	std::default_random_engine generator; // Initialise uniform distribution
-	std::uniform_real_distribution<double> distribution(-0.5, 0.5);
-
-	for (int i = 0; i < 10; i++) {
-		xIn += distribution(generator);
-		yIn += distribution(generator);
-
-		Test* t = new Test(xIn * 2 / xPixels, yIn * 2 / yPixels, 1, 1, xPixels, yPixels, points);
-		t->run(true, 1, 1); // Run with noise
-		float x = (t->xCentre * xPixels) + 0.5;
-		float y = (t->yCentre * yPixels) + 0.5;
-		outFile << i << ',' << sqrt((x - xIn)*(x - xIn) + (y - yIn)*(y - yIn)) << ',' << x << ',' << y << endl;
-		delete t;
-	}
-
-	outFile << endl << "Varying sigma: " << endl;
-	outFile << "Sigma in both dimensions, Distance, x-centre, y-centre" << endl;
-
-	for (float i = 0.1; i < 3; i+=0.1) { // Run test varying sigma
-
-		Test* t = new Test(xIn * 2 / xPixels, yIn * 2 / yPixels, i, i, xPixels, yPixels, points);
-		t->run(true, 1, 1); // Run with noise
-		float x = (t->xCentre * xPixels) + 0.5;
-		float y = (t->yCentre * yPixels) + 0.5;
-		outFile << i << ',' << sqrt((x - xIn)*(x - xIn) + (y - yIn)*(y - yIn)) << ',' << x << ',' << y << endl;
-		delete t;
-	}
-
-	outFile.close();
+//	ofstream outFile; // Initialise output file
+//	outFile.open("results.csv");
+//	outFile << "Input centre: (" << xIn << ',' << yIn << "); pixels in each dimension: " << xPixels << ',' 
+//			<< yPixels << "; data points simulated in each dimension: " << points << endl;
+//
+//	std::default_random_engine generator; // Initialise uniform distribution
+//	std::uniform_real_distribution<double> distribution(-0.5, 0.5);
+//
+//	for (int i = 0; i < 10; i++) {
+//		xIn += distribution(generator);
+//		yIn += distribution(generator);
+//
+//		Test* t = new Test(xIn * 2 / xPixels, yIn * 2 / yPixels, 1, 1, xPixels, yPixels, points);
+//		t->run(true, 1, 1); // Run with noise
+//		float x = (t->xCentre * xPixels) + 0.5;
+//		float y = (t->yCentre * yPixels) + 0.5;
+//		outFile << i << ',' << sqrt((x - xIn)*(x - xIn) + (y - yIn)*(y - yIn)) << ',' << x << ',' << y << endl;
+//		delete t;
+//	}
+//
+//	outFile << endl << "Varying sigma: " << endl;
+//	outFile << "Sigma in both dimensions, Distance, x-centre, y-centre" << endl;
+//
+//	for (float i = 0.1; i < 3; i+=0.1) { // Run test varying sigma
+//
+//		Test* t = new Test(xIn * 2 / xPixels, yIn * 2 / yPixels, i, i, xPixels, yPixels, points);
+//		t->run(true, 1, 1); // Run with noise
+//		float x = (t->xCentre * xPixels) + 0.5;
+//		float y = (t->yCentre * yPixels) + 0.5;
+//		outFile << i << ',' << sqrt((x - xIn)*(x - xIn) + (y - yIn)*(y - yIn)) << ',' << x << ',' << y << endl;
+//		delete t;
+//	}
+//
+//	outFile.close();
 
 	time_t endTime  = time(nullptr);
 	cout << "End time: " << asctime(localtime(&endTime)) << endl;

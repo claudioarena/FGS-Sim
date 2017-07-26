@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['run',['run',['../class_test.html#a16a2d35c42a37aab0318aaaf7994b799',1,'Test']]]
+  ['gauss2d',['Gauss2d',['../class_gauss2d.html#adb18244ac7843844da583b67b098a2ee',1,'Gauss2d']]]
 ];
