@@ -14,6 +14,7 @@
 #include <fstream>
 #include <iostream>
 #include <random>
+#include <vector> // For testing only
 
 #include "Test.hpp"
 
@@ -25,9 +26,9 @@ int main() {
 	time_t startTime = time(nullptr);
 	cout << endl << "Start time: " << asctime(localtime(&startTime)) << endl;
 
-	float xIn = 50; // Input coordinates of defined centre in terms of pixels. 
-	float yIn = 50;
-	int xPixels = 100;
+	float xIn = 5; // Input coordinates of defined centre in terms of pixels. 
+	float yIn = 5;
+	int xPixels = 10;
 	int yPixels = xPixels;
 	int sampling = 10; // Pixel sampling: Simulated points per pixel
 
@@ -38,7 +39,6 @@ int main() {
 	float x = (t->xCentre * xPixels) + 0.5;
 	float y = (t->yCentre * yPixels) + 0.5;
 	cout << sqrt((x - xIn)*(x - xIn) + (y - yIn)*(y - yIn)) << ',' << x << ',' << y << endl;
-	delete t;
 
 //	ofstream outFile; // Initialise output file
 //	outFile.open("results.csv");
@@ -75,10 +75,25 @@ int main() {
 //
 //	outFile.close();
 
+	vector<vector<float>> noiseGaussian;
+	unsigned seed = std::chrono::system_clock::now().time_since_epoch().count();
+	default_random_engine generator(seed);
+	for (vector<float> v: t->gaussianInput) {
+		vector<float> rowOut;
+		for (float f: v) {
+			poisson_distribution<int> distribution(sqrt(f));
+			rowOut.push_back((float)distribution(generator));
+		}
+		noiseGaussian.push_back(rowOut);
+	}
+	vector<vector<int>> noiseFromGaussian = Test::binData(noiseGaussian, xPixels, yPixels);
+	Test::print2dVector(noiseFromGaussian);
+
 	time_t endTime  = time(nullptr);
 	cout << "End time: " << asctime(localtime(&endTime)) << endl;
 	cout << "Duration: " << (endTime - startTime) << " s. " << endl;
 
+	delete t;
 	return 0;
 }
 
@@ -88,11 +103,11 @@ int main() {
 // The noise in the pixel is then the RMS of all of the noise array elements being binned into the pixel. 
 // Check if this is the same as just the sqrt of the pixel binned value. 
 // Look at photons per second for a given magnitude. 
-// Have the separate parameters of an input star magnitude and the integration time, keeping one constant and verying the other. 
+// Have the separate parameters of an input star magnitude and the integration time, keeping one constant and varying the other. 
 // 1/(sampling frequency) = (exposure time + readout time). 
 //
 // Have parameters for things like quantum efficiency and dark current, instrument emissivity = 1. 
-// Use a uniform distribution inside a pixel to define the starting position between simulated Gaussian2d points. 
+// DONE - Use a uniform distribution inside a pixel to define the starting position between simulated Gaussian2d points. 
 // Relate sigma and mu in PSF
 // DONE - Fix memory leak. 
 // DONE - Define the edges as going from 0 to 1 in both dimensions, and then manipulate afterwards. 

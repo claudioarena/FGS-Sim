@@ -200,6 +200,19 @@ void Test::findCentroid() {
 }
 
 /**
+ * Prints a 2d vector to the console
+ * @param data Data to be printed
+ */
+void Test::print2dVector(vector<vector<int>> data) {
+
+	for (int i = 0; i < (int)data.size(); i++) { // Loop through each row
+		for (int j = 0; j < (int)data.at(0).size(); j++) cout << setw(4) << data.at(i).at(j);
+		cout << endl;
+	}
+	cout << endl;
+}
+
+/**
  * Static method to run the centroid determination simulation and return a Test object containing the results. 
  *
  * @brief Run centroid determination simulation for input variables
@@ -214,21 +227,11 @@ void Test::run(bool noise, float time, float area) {
 	gaussianInput = g->generate();
 
 	pixelData = binData(gaussianInput, horizPixels, vertPixels);
-	if (noise == true) noiseAfterBin = this->addPoissonNoise(time, area);
+	if (noise == true) {
+		noiseAfterBin = this->addPoissonNoise(time, area);
+		print2dVector(noiseAfterBin); // FIXME: For debug only
+	}
 	this->findCentroid();
 
-//	// Testing only: Prints 2d pixel data to console
-//	for (int i = 0; i < (int)t->pixelData.size(); i++) {
-//		for (int j = 0; j < (int)t->pixelData.at(0).size(); j++) cout << setw(7) << t->pixelData.at(i).at(j);
-//		cout << endl;
-//	}
-//	cout << endl;
-//	// Testing only: Prints original data to console
-//	for (int i = 0; i < (int)gaussian.size(); i++) {
-//		for (int j = 0; j < (int)gaussian.at(0).size(); j++) cout << setw(10) << gaussian.at(i).at(j);
-//		cout << endl;
-//	}
-//	cout << endl;
-	
 	delete g;
 }

@@ -134,6 +134,8 @@ Static Public Member Functions</h2></td></tr>
 <tr class="memitem:a75ad20dd0f808edaf02848cc5dbf1dc5"><td class="memItemLeft" align="right" valign="top">static std::vector&lt; std::vector&lt; int &gt; &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_test.html#a75ad20dd0f808edaf02848cc5dbf1dc5">binData</a> (std::vector&lt; std::vector&lt; float &gt;&gt; dataIn, int h, int v)</td></tr>
 <tr class="memdesc:a75ad20dd0f808edaf02848cc5dbf1dc5"><td class="mdescLeft">&#160;</td><td class="mdescRight">Sorts input data into bins.  <a href="#a75ad20dd0f808edaf02848cc5dbf1dc5">More...</a><br /></td></tr>
 <tr class="separator:a75ad20dd0f808edaf02848cc5dbf1dc5"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:afa6d70bacdacd39273cd5a569e6d5581"><td class="memItemLeft" align="right" valign="top">static void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_test.html#afa6d70bacdacd39273cd5a569e6d5581">print2dVector</a> (std::vector&lt; std::vector&lt; int &gt;&gt; data)</td></tr>
+<tr class="separator:afa6d70bacdacd39273cd5a569e6d5581"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-attribs"></a>
 Public Attributes</h2></td></tr>
@@ -146,6 +148,9 @@ float&#160;</td><td class="memItemRight" valign="bottom"><b>yCentre</b></td></tr
 <tr class="memitem:abb23ef9884e830dc1ce17232d3258084"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="abb23ef9884e830dc1ce17232d3258084"></a>
 std::vector&lt; std::vector&lt; int &gt; &gt;&#160;</td><td class="memItemRight" valign="bottom"><b>noiseAfterBin</b></td></tr>
 <tr class="separator:abb23ef9884e830dc1ce17232d3258084"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aa4d66f88b9e9e29bc1dcc22d01bce9b9"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="aa4d66f88b9e9e29bc1dcc22d01bce9b9"></a>
+std::vector&lt; std::vector&lt; float &gt; &gt;&#160;</td><td class="memItemRight" valign="bottom"><b>gaussianInput</b></td></tr>
+<tr class="separator:aa4d66f88b9e9e29bc1dcc22d01bce9b9"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p>Class to bin an inputted Gaussian 2d array and find its centroid. </p>
@@ -265,6 +270,36 @@ std::vector&lt; std::vector&lt; int &gt; &gt;&#160;</td><td class="memItemRight"
     <tr><td class="paramname">dataIn</td><td>A 2d vector containing the raw Gaussian data </td></tr>
     <tr><td class="paramname">h</td><td>Number of horizontal pixels to bin the data into </td></tr>
     <tr><td class="paramname">v</td><td>Number of vertical pixels to bin the data into </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
+<a class="anchor" id="afa6d70bacdacd39273cd5a569e6d5581"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void Test::print2dVector </td>
+          <td>(</td>
+          <td class="paramtype">std::vector&lt; std::vector&lt; int &gt;&gt;&#160;</td>
+          <td class="paramname"><em>data</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<p>Prints a 2d vector to the console </p><dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">data</td><td>Data to be printed </td></tr>
   </table>
   </dd>
 </dl>

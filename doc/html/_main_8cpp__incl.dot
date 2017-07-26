@@ -16,10 +16,11 @@ digraph "centroid-v2/Main.cpp"
   Node1 -> Node7 [color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
   Node7 [label="random",height=0.2,width=0.4,color="grey75", fillcolor="white", style="filled"];
   Node1 -> Node8 [color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
-  Node8 [label="Test.hpp",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$_test_8hpp.html",tooltip="Header file for Test class. "];
-  Node8 -> Node9 [color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
-  Node9 [label="Gauss2d.hpp",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$_gauss2d_8hpp.html",tooltip="Header for Gauss2d class. "];
-  Node9 -> Node6 [color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node8 [label="vector",height=0.2,width=0.4,color="grey75", fillcolor="white", style="filled"];
+  Node1 -> Node9 [color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node9 [label="Test.hpp",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$_test_8hpp.html",tooltip="Header file for Test class. "];
   Node9 -> Node10 [color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
-  Node10 [label="vector",height=0.2,width=0.4,color="grey75", fillcolor="white", style="filled"];
+  Node10 [label="Gauss2d.hpp",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$_gauss2d_8hpp.html",tooltip="Header for Gauss2d class. "];
+  Node10 -> Node6 [color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node10 -> Node8 [color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
 }
