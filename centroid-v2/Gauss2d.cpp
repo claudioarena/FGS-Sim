@@ -43,30 +43,45 @@ float Gauss2d::gaussDist(float x, float mu, float sigma) {
 	return (1 / sqrt(2 * M_PI * sigma*sigma)) * exp(-1 * pow(x - mu, 2) / (2 * sigma*sigma));
 }
 
-// Cumulative normal distribution function with X~N(0,1); F=P(X<=z)
-double Gauss2d::normalCDF(double x, double mean, double sigma) {
+/**
+ * Cumulative normal distribution function to integrate between inputted limits for a Gaussian with inputted 
+ * mean and standard deviation. Uses erfc from <cmath> as F(x) is closely related to error function. 
+ *
+ * @brief Integrate a specified Gaussian between limits
+ *
+ * @param a Lower limit of integration
+ * @param b Upper limit of integration
+ * @param mean Mean of the Gaussian
+ * @param sigma Standard deviation of the Gaussian
+ *
+ * @return Value of integrated area
+ */
+float Gauss2d::normalCDF(float a, float b, float mean, float sigma) {
 	
-	float z = (x - mean) / sigma; // Standardising the normal distribution to Z~N(0,1)
-	double out = 0.5 * erfc(-z * M_SQRT1_2);
-	//cout << "x = " << x << ", mu = " << mean << ", sigma = " << sigma << ", z = " << z << ", Between limits: " << out << endl;
-	return out;
+	float z1 = (a - mean) / sigma; // Standardising the normal distribution to Z~N(0,1)
+	float z2 = (b - mean) / sigma;
+	return 0.5 * (erfc(-z2 * M_SQRT1_2) - erfc(-z1 * M_SQRT1_2));
 }
 
-int Gauss2d::integrateBetween(float a, float b, float mu, float sigma, int N) {
-	return (normalCDF(b, mu, sigma) - normalCDF(a, mu, sigma)) * N;
-}
+/**
+ * Static function to generate a vector<int> of a Gaussian of integers sorted into bins. 
 
-vector<vector<int>> Gauss2d::generateData(int N) {
+ * @brief Generates a vector<int> of a Gaussian
+ *
+ * @param N Number of events to bin
+ * @param bins Number of bins to sort the events into
+ * @param mean Mean of the Gaussian
+ * @param sigma Standard deviation of the Gaussian
+ *
+ * @return A vector<int> containing the events sorted into bins
+ */
+vector<int> Gauss2d::generateIntVector(int N, int bins, float mean, float sigma) {
 
-	vector<vector<int>> out;
-	vector<int> horizontalSum; // Vertical array of all the numbers of photons to be distributed per row
-	//float step = 2./hY;
-	for (float i = 0; i < 10; i++) {
-		float value = integrateBetween(i, i + 1, centreY, sigmaY, N);
-		cout << "i = " << i << ", integral = " << value << endl;
-		horizontalSum.push_back(value);
+	vector<int> out; // Vertical array of all the numbers of photons to be distributed per row
+
+	for (int i = 0; i < bins; i++) {
+		out.push_back(normalCDF(i, i+1, mean, sigma) * N);
 	}
-	out.push_back(horizontalSum);
 	return out;
 }
 

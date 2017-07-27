@@ -24,11 +24,10 @@ class Gauss2d {
 		~Gauss2d() ;
 
 		std::vector<std::vector<float>> generate();
-		std::vector<std::vector<int>> generateData(int N);
+		static std::vector<int> generateIntVector(int N, int bins, float mean, float sigma);
 
 	private:
 		float gaussDist(float x, float mu, float sigma);
-		int integrateBetween(float a, float b, float mu, float sigma, int N);
-		static double normalCDF(double x, double mean, double sigma);
+		static float normalCDF(float a, float b, float mean, float sigma);
 
 };

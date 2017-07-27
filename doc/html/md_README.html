@@ -4,7 +4,7 @@
 <meta http-equiv="Content-Type" content="text/xhtml;charset=UTF-8"/>
 <meta http-equiv="X-UA-Compatible" content="IE=9"/>
 <meta name="generator" content="Doxygen 1.8.11"/>
-<title>FGS-Sim: FGS-Sim</title>
+<title>FGS-Sim: README</title>
 <link href="tabs.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="jquery.js"></script>
 <script type="text/javascript" src="dynsections.js"></script>
@@ -100,13 +100,41 @@ $(document).ready(function(){initNavTree('md_README.html','');});
 
 <div class="header">
   <div class="headertitle">
-<div class="title">FGS-Sim </div>  </div>
+<div class="title">README </div>  </div>
 </div><!--header-->
 <div class="contents">
-<div class="textblock"><h2>Centroid determination simulation</h2>
+<div class="textblock"><h1>FGS-Sim</h1>
+<h2>Centroid determination simulation</h2>
 <p>Feiyu Fang</p>
-<p>Twinkle FGS-Sim summer project, July 2017</p>
-<p>Finding the centroid of a defocussed star to sub-pixel accuracy </p>
+<p>Twinkle FGS-Sim summer project, July 2017: Finding the centroid of a defocussed star to sub-pixel accuracy</p>
+<h2>Changelog</h2>
+<p>Version number, Date in ISO 8601 format, Notes on changes</p>
+<ul>
+<li>1.0. 2017-07-12, Initial version.</li>
+<li>1.1. 2017-07-16, Fixed x-axis incorrect determination in findCentroid method in <a class="el" href="_test_8cpp.html" title="Bin an inputted Gaussian 2d array and find its centroid. ">Test.cpp</a></li>
+<li>1.2. 2017-07-17, Changed binData method in <a class="el" href="_test_8cpp.html" title="Bin an inputted Gaussian 2d array and find its centroid. ">Test.cpp</a> to use int instead of float, representing quantised photon counts</li>
+<li>1.3. 2017-07-18, Added option for using Poission noise, using an inputted SNR and sigma.</li>
+<li>2.0.0. 2017-07-20.<ul>
+<li>Moved the main method of <a class="el" href="_main_8cpp.html" title="Main method to run centroid recovery simulation. ">Main.cpp</a> into void run() in <a class="el" href="_test_8cpp.html" title="Bin an inputted Gaussian 2d array and find its centroid. ">Test.cpp</a> to plot graphs of multiple results with loops in <a class="el" href="_main_8cpp.html" title="Main method to run centroid recovery simulation. ">Main.cpp</a>.</li>
+<li>Added capability in Main to create a CSV of results out of a loop for graphs</li>
+</ul>
+</li>
+<li>2.0.1-noise-testing. 2017-07-26.<ul>
+<li>Many bug fixes and performance improvements.</li>
+<li>Changed the noise addition to Poisson noise as X~Po(sqrt(N)).</li>
+<li>Added integration time and telescope aperture as parameters; both currently set to 1 until the photon-magnitude relation is added.</li>
+<li>Started Git sync for version control</li>
+<li>Created Doxygen documentation and experimental Makefile</li>
+<li>Tested whether it makes a difference if Poisson noise is calculated before binning into pixels (and then combining as RMS) or after binning. Result: <div class="image">
+<img src="http://i.imgur.com/AN4TjMR.png"  alt="The results are different" title="Results"/>
+</div>
+ The input Gaussian was kept the same by using the same seed for generating Poisson random variables both before and after passing the data through the binData function. The resulting noise is different.</li>
+<li>Changed relevant functions in <a class="el" href="class_test.html" title="Class to bin an inputted Gaussian 2d array and find its centroid. ">Test</a> class from non-static to static to allow the above testing.</li>
+<li>Uniform distribution was added to vary the starting centre point of a simulated star.</li>
+<li>The input and output coordinates have been changed to refer to pixel coordinates instead of the arbitrary 0-1-2 original coordinate system, although the <a class="el" href="class_gauss2d.html">Gauss2d</a> class still generates a Gaussian with mean 1 for now. </li>
+</ul>
+</li>
+</ul>
 </div></div><!-- contents -->
 </div><!-- doc-content -->
 <!-- start footer part -->

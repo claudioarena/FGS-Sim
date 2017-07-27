@@ -80,10 +80,8 @@ int main() {
 //
 //	outFile.close();
 
-	Gauss2d* g = new Gauss2d(10, 10, 5, 5, 1, 1);
-	vector<vector<int>> T = g->generateData(1000000);
-	for (int i = 0; i < (int)T.at(0).size(); i++) cout << T.at(0).at(i) << endl;
-	delete g;
+	vector<int> T = Gauss2d::generateIntVector(1E6, 10, 5, 1);
+	for (int i = 0; i < (int)T.size(); i++) cout << T.at(i) << endl;
 
 	time_t endTime  = time(nullptr);
 	cout << "End time: " << asctime(localtime(&endTime)) << endl;

@@ -108,6 +108,7 @@ $(document).ready(function(){initNavTree('class_gauss2d.html','');});
 <div class="header">
   <div class="summary">
 <a href="#pub-methods">Public Member Functions</a> &#124;
+<a href="#pub-static-methods">Static Public Member Functions</a> &#124;
 <a href="#pub-attribs">Public Attributes</a> &#124;
 <a href="class_gauss2d-members.html">List of all members</a>  </div>
   <div class="headertitle">
@@ -117,17 +118,26 @@ $(document).ready(function(){initNavTree('class_gauss2d.html','');});
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
-<tr class="memitem:adb18244ac7843844da583b67b098a2ee"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_gauss2d.html#adb18244ac7843844da583b67b098a2ee">Gauss2d</a> (int points, float cx, float cy, float sdX, float sdY)</td></tr>
-<tr class="separator:adb18244ac7843844da583b67b098a2ee"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:af85e278fc1b1260dbe9d89ef7225dfc7"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_gauss2d.html#af85e278fc1b1260dbe9d89ef7225dfc7">Gauss2d</a> (int xPoints, int yPoints, float cx, float cy, float sdX, float sdY)</td></tr>
+<tr class="separator:af85e278fc1b1260dbe9d89ef7225dfc7"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a846d34bb9eeb6a7f91458385086da854"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a846d34bb9eeb6a7f91458385086da854"></a>
 std::vector&lt; std::vector&lt; float &gt; &gt;&#160;</td><td class="memItemRight" valign="bottom"><b>generate</b> ()</td></tr>
 <tr class="separator:a846d34bb9eeb6a7f91458385086da854"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-static-methods"></a>
+Static Public Member Functions</h2></td></tr>
+<tr class="memitem:ace59feee4ab027beec84d29a896353a7"><td class="memItemLeft" align="right" valign="top">static std::vector&lt; int &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_gauss2d.html#ace59feee4ab027beec84d29a896353a7">generateIntVector</a> (int N, int bins, float mean, float sigma)</td></tr>
+<tr class="memdesc:ace59feee4ab027beec84d29a896353a7"><td class="mdescLeft">&#160;</td><td class="mdescRight">Generates a vector&lt;int&gt; of a Gaussian.  <a href="#ace59feee4ab027beec84d29a896353a7">More...</a><br /></td></tr>
+<tr class="separator:ace59feee4ab027beec84d29a896353a7"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-attribs"></a>
 Public Attributes</h2></td></tr>
-<tr class="memitem:a49501e7ae08742833091a9d0c4ddcbe7"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a49501e7ae08742833091a9d0c4ddcbe7"></a>
-int&#160;</td><td class="memItemRight" valign="bottom"><b>h</b></td></tr>
-<tr class="separator:a49501e7ae08742833091a9d0c4ddcbe7"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a74bc09c6a16d46559ef9553ebda3ae9a"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a74bc09c6a16d46559ef9553ebda3ae9a"></a>
+int&#160;</td><td class="memItemRight" valign="bottom"><b>hX</b></td></tr>
+<tr class="separator:a74bc09c6a16d46559ef9553ebda3ae9a"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ace3cbeee73192c6a514f2ece96ee95c5"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="ace3cbeee73192c6a514f2ece96ee95c5"></a>
+int&#160;</td><td class="memItemRight" valign="bottom"><b>hY</b></td></tr>
+<tr class="separator:ace3cbeee73192c6a514f2ece96ee95c5"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a8e6687f91632cba7c300e406367c2b73"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a8e6687f91632cba7c300e406367c2b73"></a>
 float&#160;</td><td class="memItemRight" valign="bottom"><b>centreX</b></td></tr>
 <tr class="separator:a8e6687f91632cba7c300e406367c2b73"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -142,7 +152,7 @@ float&#160;</td><td class="memItemRight" valign="bottom"><b>sigmaY</b></td></tr>
 <tr class="separator:a45c2d354c66bf6cc003ce13aa2a73e49"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
-<a class="anchor" id="adb18244ac7843844da583b67b098a2ee"></a>
+<a class="anchor" id="af85e278fc1b1260dbe9d89ef7225dfc7"></a>
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
@@ -150,7 +160,13 @@ float&#160;</td><td class="memItemRight" valign="bottom"><b>sigmaY</b></td></tr>
           <td class="memname">Gauss2d::Gauss2d </td>
           <td>(</td>
           <td class="paramtype">int&#160;</td>
-          <td class="paramname"><em>points</em>, </td>
+          <td class="paramname"><em>xPoints</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">int&#160;</td>
+          <td class="paramname"><em>yPoints</em>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
@@ -194,6 +210,66 @@ float&#160;</td><td class="memItemRight" valign="bottom"><b>sigmaY</b></td></tr>
   </table>
   </dd>
 </dl>
+
+</div>
+</div>
+<h2 class="groupheader">Member Function Documentation</h2>
+<a class="anchor" id="ace59feee4ab027beec84d29a896353a7"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">vector&lt; int &gt; Gauss2d::generateIntVector </td>
+          <td>(</td>
+          <td class="paramtype">int&#160;</td>
+          <td class="paramname"><em>N</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">int&#160;</td>
+          <td class="paramname"><em>bins</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">float&#160;</td>
+          <td class="paramname"><em>mean</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">float&#160;</td>
+          <td class="paramname"><em>sigma</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Generates a vector&lt;int&gt; of a Gaussian. </p>
+<p>Static function to generate a vector&lt;int&gt; of a Gaussian of integers sorted into bins.</p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">N</td><td>Number of events to bin </td></tr>
+    <tr><td class="paramname">bins</td><td>Number of bins to sort the events into </td></tr>
+    <tr><td class="paramname">mean</td><td>Mean of the Gaussian </td></tr>
+    <tr><td class="paramname">sigma</td><td>Standard deviation of the Gaussian</td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>A vector&lt;int&gt; containing the events sorted into bins </dd></dl>
 
 </div>
 </div>
