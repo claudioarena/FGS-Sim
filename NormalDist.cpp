@@ -5,6 +5,12 @@
 
 using namespace std;
 
+// Cumulative normal distribution function with X~N(0,1); F=P(X<=value)
+double normalCDF(double value)
+{
+	   return 0.5 * erfc(-value * M_SQRT1_2);
+}
+
 int main() {
 	
 	const int nrolls = 10000;
@@ -26,5 +32,7 @@ int main() {
 		cout << i << '-' << i + 1 << ": ";
 		cout << string(p[i] * nstars/nrolls, '*') << endl;
 	}
+
+	cout << normalCDF(0.47) << endl;
 	return 0;
 }

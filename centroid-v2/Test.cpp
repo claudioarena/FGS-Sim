@@ -225,7 +225,7 @@ void Test::print2dVector(vector<vector<int>> data, bool RMS) {
 void Test::run(bool noise, float time, float area) {
 
 	// Generate a h x h 2D array of a Gaussian with noise. 
-	Gauss2d *g = new Gauss2d(h/2, inX, inY, sigmaX, sigmaY);
+	Gauss2d *g = new Gauss2d(h/2, h/2, inX, inY, sigmaX, sigmaY);
 	gaussianInput = g->generate();
 
 	pixelData = binData(gaussianInput, horizPixels, vertPixels);

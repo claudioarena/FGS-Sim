@@ -1,3 +1,4 @@
+<!--- Usi python-pip/grip to preview Markdown documents in the same form as Github formats them. -->
 # FGS-Sim
 ## Centroid determination simulation
 
@@ -12,7 +13,7 @@ Version number, Date in ISO 8601 format, Notes on changes
 - 1.1. 2017-07-16, Fixed x-axis incorrect determination in findCentroid method in Test.cpp
 - 1.2. 2017-07-17, Changed binData method in Test.cpp to use int instead of float, representing quantised photon counts
 - 1.3. 2017-07-18, Added option for using Poission noise, using an inputted SNR and sigma. 
-- 2.0.0. 2017-07-20
+- 2.0.0. 2017-07-20. 
     - Moved the main method of Main.cpp into void run() in Test.cpp to plot graphs of multiple results with loops in Main.cpp. 
     - Added capability in Main to create a CSV of results out of a loop for graphs
 - 2.0.1-noise-testing. 2017-07-26.

@@ -12,9 +12,10 @@
 class Gauss2d {
 
 	public: 
-		Gauss2d(int points, float cx, float cy, float sdX, float sdY); 
+		Gauss2d(int xPoints, int yPoints, float cx, float cy, float sdX, float sdY); 
 		
-		int h;
+		int hX;
+		int hY;
 		float centreX;
 		float centreY;
 		float sigmaX;
@@ -23,8 +24,11 @@ class Gauss2d {
 		~Gauss2d() ;
 
 		std::vector<std::vector<float>> generate();
-	
+		std::vector<std::vector<int>> generateData(int N);
+
 	private:
 		float gaussDist(float x, float mu, float sigma);
+		int integrateBetween(float a, float b, float mu, float sigma, int N);
+		static double normalCDF(double x, double mean, double sigma);
 
 };
