@@ -19,14 +19,17 @@ using namespace std;
 /**
  * Constructs a Gauss2d object to generate a 2d Gaussian
  *
- * @param points The number of data points in each dimension
+ * @param nPhotons Number of photons in the 2d Gaussian
+ * @param xPoints The number of data points in the x-axis
+ * @param yPoints The number of data points in the y-axis
  * @param cx X-coordinate for Gaussian centre
  * @param cy Y-coordinate for Gaussian centre
  * @param sdX Standard deviation of the Gaussian in the x direction
  * @param sdY Standard deviation of the Gaussian in the y direction
  */
-Gauss2d::Gauss2d(int xPoints, int yPoints, float cx, float cy, float sdX, float sdY) {
+Gauss2d::Gauss2d(int nPhotons, int xPoints, int yPoints, float cx, float cy, float sdX, float sdY) {
 
+	N = nPhotons;
 	hX = xPoints;
 	hY = yPoints;
 	centreX = cx;
@@ -37,14 +40,14 @@ Gauss2d::Gauss2d(int xPoints, int yPoints, float cx, float cy, float sdX, float 
 
 Gauss2d::~Gauss2d() {}
 
-// Calculate Gaussian value at x, with mean mu and SD sigma
-float Gauss2d::gaussDist(float x, float mu, float sigma) {
-	
-	return (1 / sqrt(2 * M_PI * sigma*sigma)) * exp(-1 * pow(x - mu, 2) / (2 * sigma*sigma));
-}
+//	// Calculate Gaussian value at x, with mean mu and SD sigma
+//	float Gauss2d::gaussDist(float x, float mu, float sigma) {
+//		
+//		return (1 / sqrt(2 * M_PI * sigma*sigma)) * exp(-1 * pow(x - mu, 2) / (2 * sigma*sigma));
+//	}
 
 /**
- * Cumulative normal distribution function to integrate between inputted limits for a Gaussian with inputted 
+ * Private static function for cumulative normal distribution function to integrate between inputted limits for a Gaussian with inputted 
  * mean and standard deviation. Uses erfc from <cmath> as F(x) is closely related to error function. 
  *
  * @brief Integrate a specified Gaussian between limits
@@ -64,7 +67,7 @@ float Gauss2d::normalCDF(float a, float b, float mean, float sigma) {
 }
 
 /**
- * Static function to generate a vector<int> of a Gaussian of integers sorted into bins. 
+ * Public static function to generate a vector<int> of a Gaussian of integers sorted into bins. 
 
  * @brief Generates a vector<int> of a Gaussian
  *
@@ -85,23 +88,42 @@ vector<int> Gauss2d::generateIntVector(int N, int bins, float mean, float sigma)
 	return out;
 }
 
-// Returns a 2d Gaussian array centred at x, y, valued at 2h points with SD_x sx and SD_y sy. 
-vector<vector<float>> Gauss2d::generate() {
-	int w = 2 * hX; // Width of generated arrays
-	vector<vector<float>> gauss2d;
-	float iValue, jValue;
+/**
+ * Public function to generate a 2d Gaussian in a 2d array of integers, representing N photons being defocussed from a point
+ * source and spread out into a Gaussian. 
+ *
+ * @brief Generates a 2d vector of N photons binned as a Gaussian. 
+ *
+ * @return The output 2d vector
+ */
+vector<vector<int>> Gauss2d::generateIntGaussian() {
 
-	// Generate Gaussians in two dimensions, and then multiply elements to create a 2d Gaussian array.
-	for (int i = 0; i < w; i++) {
-		vector<float> row;
-		iValue = gaussDist((i + 0.5) / hX, centreY, sigmaX);
-		
-		for (int j = 0; j < w; j++) {
-			jValue = gaussDist((j + 0.5) / hX, centreX, sigmaY); 
-			row.push_back(iValue * jValue); 
-		}
+	vector<vector<int>> out;
+	vector<int> horizontalSummed = generateIntVector(N, hY, centreY, sigmaY);
 
-		gauss2d.push_back(row);
+	for (int i: horizontalSummed) {
+		out.push_back(generateIntVector(i, hX, centreX, sigmaX));
 	}
-	return gauss2d;
+	return out;
 }
+
+//	// Returns a 2d Gaussian array centred at x, y, valued at 2h points with SD_x sx and SD_y sy. 
+//	vector<vector<float>> Gauss2d::generate() {
+//		int w = 2 * hX; // Width of generated arrays
+//		vector<vector<float>> gauss2d;
+//		float iValue, jValue;
+//
+//		// Generate Gaussians in two dimensions, and then multiply elements to create a 2d Gaussian array.
+//		for (int i = 0; i < w; i++) {
+//			vector<float> row;
+//			iValue = gaussDist((i + 0.5) / hX, centreY, sigmaX);
+//			
+//			for (int j = 0; j < w; j++) {
+//				jValue = gaussDist((j + 0.5) / hX, centreX, sigmaY); 
+//				row.push_back(iValue * jValue); 
+//			}
+//
+//			gauss2d.push_back(row);
+//		}
+//		return gauss2d;
+//	}

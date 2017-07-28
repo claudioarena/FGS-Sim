@@ -12,11 +12,10 @@
 #include <cmath>
 #include <ctime>
 #include <fstream>
+#include <iomanip>
 #include <iostream>
 #include <random>
-#include <vector> // For testing only
 
-//#include "Gauss2d.hpp"
 #include "Test.hpp"
 
 using namespace std;
@@ -27,61 +26,65 @@ int main() {
 	time_t startTime = time(nullptr);
 	cout << endl << "Start time: " << asctime(localtime(&startTime)) << endl;
 
-	float xIn = 50; // Input coordinates of defined centre in terms of pixels. 
-	float yIn = 50;
-	int xPixels = 100;
+	float xIn = 20; // Input coordinates of defined centre in terms of pixels. 
+	float yIn = 30;
+	int xPixels = 10;
 	int yPixels = xPixels;
 	int sampling = 10; // Pixel sampling: Simulated points per pixel
 
 	int points = sampling * xPixels; 
 	
-	// For testing just one run, outputting to the console instead of a file. 
-	Test* t = new Test(xIn * 2 / xPixels, yIn * 2 / yPixels, 1, 1, xPixels, yPixels, points);
-	t->run(true, 1, 1); // Run with noise for time 1 and area 1
-	float x = (t->xCentre * xPixels);
-	float y = (t->yCentre * yPixels);
-	cout << sqrt((x - xIn)*(x - xIn) + (y - yIn)*(y - yIn)) << ',' << x << ',' << y << endl;
-	delete t;
+//	// For testing just one run, outputting to the console instead of a file. 
+//	Test* t = new Test(1E6, xIn, yIn, 10, 10, xPixels, yPixels, points);
+//	t->run(true, 1, 1); // Run with noise for time 1 and area 1
+//	float x = (t->xCentre * xPixels);
+//	float y = (t->yCentre * yPixels);
+//	float expectedX = xIn / sampling;
+//	float expectedY = yIn / sampling;
+//	cout << sqrt((x - expectedX)*(x - expectedX) + (y - expectedY)*(y -	expectedY)) << ',' << x << ',' << y << endl;
+//	Test::print2dVector(t->pixelData);
+//	delete t;
 
-//	// For testing multiple runs, outputting to an output csv file
-//	ofstream outFile; // Initialise output file
-//	outFile.open("results.csv");
-//	outFile << "Input centre: (" << xIn << ',' << yIn << "); pixels in each dimension: " << xPixels << ',' 
-//			<< yPixels << "; data points simulated in each dimension: " << points << endl;
-//
-//	std::default_random_engine generator; // Initialise uniform distribution and add to inputted x and y
-//	std::uniform_real_distribution<double> distribution(-0.5, 0.5);
-//	xIn += distribution(generator);
-//	yIn += distribution(generator);
-//
-//	outFile << "Running the simulation 10 times for a star position which varies between -0.5 to +0.5 from the input centre" << endl;
-//	for (int i = 0; i < 10; i++) {
-//
-//		Test* t = new Test(xIn * 2 / xPixels, yIn * 2 / yPixels, 1, 1, xPixels, yPixels, points);
-//		t->run(true, 1, 1); // Run with noise, with time 1 and area 1
-//		float x = (t->xCentre * xPixels); // Convert output to pixels
-//		float y = (t->yCentre * yPixels);
-//		outFile << i << ',' << sqrt((x - xIn)*(x - xIn) + (y - yIn)*(y - yIn)) << ',' << x << ',' << y << endl;
-//		delete t;
-//	}
-//
-//	outFile << endl << "Varying sigma: " << endl;
-//	outFile << "Sigma in both dimensions, Distance, x-centre, y-centre" << endl;
-//
-//	for (float i = 0.1; i < 3; i+=0.1) { // Run test varying sigma
-//
-//		Test* t = new Test(xIn * 2 / xPixels, yIn * 2 / yPixels, i, i, xPixels, yPixels, points);
-//		t->run(true, 1, 1); // Run with noise, with time 1 and area 1
-//		float x = (t->xCentre * xPixels) + 0.0;
-//		float y = (t->yCentre * yPixels) + 0.0;
-//		outFile << i << ',' << sqrt((x - xIn)*(x - xIn) + (y - yIn)*(y - yIn)) << ',' << x << ',' << y << endl;
-//		delete t;
-//	}
-//
-//	outFile.close();
+	// For testing multiple runs, outputting to an output csv file
+	ofstream outFile; // Initialise output file
+	outFile.open("results.csv");
+	outFile << "Input centre: (" << xIn << ',' << yIn << "); pixels in each dimension: " << xPixels << ',' 
+			<< yPixels << "; data points simulated in each dimension: " << points << endl;
 
-	vector<int> T = Gauss2d::generateIntVector(1E6, 10, 5, 1);
-	for (int i = 0; i < (int)T.size(); i++) cout << T.at(i) << endl;
+	std::default_random_engine generator; // Initialise uniform distribution and add to inputted x and y
+	std::uniform_real_distribution<double> distribution(-0.5, 0.5);
+	xIn += distribution(generator);
+	yIn += distribution(generator);
+
+	outFile << "Running the simulation 10 times for a star position which varies between -0.5 to +0.5 from the input centre" << endl;
+	for (int i = 0; i < 10; i++) {
+
+		Test* t = new Test(1E6, xIn, yIn, 10, 10, xPixels, yPixels, points);
+		t->run(true, 1, 1); // Run with noise, with time 1 and area 1
+		float x = (t->xCentre * xPixels); // Convert output to pixels
+		float y = (t->yCentre * yPixels);
+		float expectedX = xIn / sampling;
+		float expectedY = yIn / sampling;
+		outFile << i << ',' << sqrt((x - expectedX)*(x - expectedX) + (y - expectedY)*(y - expectedY)) << ',' << x << ',' << y << endl;
+		delete t;
+	}
+
+	outFile << endl << "Varying sigma: " << endl;
+	outFile << "Sigma in both dimensions, Distance, x-centre, y-centre" << endl;
+
+	for (float i = 10; i <= 100; i+=10) { // Run test varying sigma
+
+		Test* t = new Test(1E6, xIn, yIn, i, i, xPixels, yPixels, points);
+		t->run(true, 1, 1); // Run with noise, with time 1 and area 1
+		float x = (t->xCentre * xPixels);
+		float y = (t->yCentre * yPixels);
+		float expectedX = xIn / sampling;
+		float expectedY = yIn / sampling;
+		outFile << i << ',' << sqrt((x - expectedX)*(x - expectedX) + (y - expectedY)*(y - expectedY)) << ',' << x << ',' << y << endl;
+		delete t;
+	}
+
+	outFile.close();
 
 	time_t endTime  = time(nullptr);
 	cout << "End time: " << asctime(localtime(&endTime)) << endl;

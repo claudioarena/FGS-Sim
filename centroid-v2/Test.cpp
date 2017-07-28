@@ -23,6 +23,7 @@ using namespace std;
 /**
  * Constructs a Test object to bin inputted data and find its centroid. 
  *
+ * @param nPhotons Number of photons to simulate
  * @param xIn X-coordinate of the Gaussian 2d vector to be generated
  * @param yIn Y-coordinate of the Gaussian 2d vector to be generated
  * @param sdX Standard deviation of the generated Gaussian 2d vector in the x-direction
@@ -31,7 +32,9 @@ using namespace std;
  * @param vPixels Number of bins in the y-direction to sort the data into
  * @param points Number of data points per dimension to simulate
  */
-Test::Test(float xIn, float yIn, float sdX, float sdY, int hPixels, int vPixels, int points) {
+Test::Test(int nPhotons, float xIn, float yIn, float sdX, float sdY, int hPixels, int vPixels, int points) {
+	
+	N = nPhotons;
 	inX = xIn;
 	inY = yIn;
 	sigmaX = sdX;
@@ -44,7 +47,7 @@ Test::Test(float xIn, float yIn, float sdX, float sdY, int hPixels, int vPixels,
 Test::~Test() {}
 
 /**
- * Static method to sum an inputted 2d array vertically. 
+ * Private static method to sum an inputted 2d array vertically. 
  * Overloaded to both input and output either float or int. 
  *
  * @param in vector<vector<float>> input to be summed over
@@ -80,7 +83,7 @@ vector<int> Test::sumVert(vector<vector<int>> in, int i, int end) {
 }
 
 /**
- * Take the current Test object and add Poisson noise to the pixelData. 
+ * Private function to take the current Test object and add Poisson noise to the pixelData. 
  *
  * @param time Exposure time
  * @param area Telescope aperture area
@@ -100,9 +103,9 @@ vector<vector<int>> Test::addPoissonNoise(float time, float area) {
 		vector<int> rowOutNoise;
 
 		for (int i: v) { // For each pixel value in the row, generate its noise and add to output vector. 
-
-			poisson_distribution<int> distribution(sqrt(i)); // Noise ~ Po(sqrt(value))
-			int noiseAddition = distribution(generator) * time * area;
+			float lambda = sqrt(i);
+			poisson_distribution<int> distribution(lambda); // Noise ~ Po(sqrt(value))
+			int noiseAddition = i - (distribution(generator) * time * area);
 			rowOutNoise.push_back(noiseAddition);
 			rowOutData.push_back(noiseAddition + i);
 		}
@@ -116,26 +119,26 @@ vector<vector<int>> Test::addPoissonNoise(float time, float area) {
 }
 
 /**
- *	Static function to sort an inputted 2d vector into bins, representing the collection of photons in pixels.
+ *	Private static function to sort an inputted 2d vector into bins, representing the collection of photons in pixels.
  *
  *	@brief Sorts input data into bins.
+ *
  *	@param dataIn A 2d vector containing the raw Gaussian data
  *	@param h Number of horizontal pixels to bin the data into
  *	@param v Number of vertical pixels to bin the data into
  */
-vector<vector<int>> Test::binData(vector<vector<float>> dataIn, int h, int v) {
+vector<vector<int>> Test::binData(vector<vector<int>> dataIn, int h, int v) {
 
-	vector<vector<float>> outputFloat;
 	vector<vector<int>> out;
 	int inHeight = dataIn.size();
 	int inWidth = dataIn.at(0).size();
 	int pixelHeight = inHeight / v; // Height and width of output 2d vector: 
 	int pixelWidth = inWidth / h;  // number of input elements per bin in each dimension
 	
-	vector<vector<float>> xBinned; // Vector where the data have been binned in x, but not yet in y. 
-	for (vector<float> v: dataIn) { // Loop to bin data in x and store in xBinned
-		float total = 0;
-		vector<float> xTotals;
+	vector<vector<int>> xBinned; // Vector where the data have been binned in x, but not yet in y. 
+	for (vector<int> v: dataIn) { // Loop to bin data in x and store in xBinned
+		int total = 0;
+		vector<int> xTotals;
 		int i = 0;
 
 		while (i < inWidth) { // Bin each row of data
@@ -153,21 +156,15 @@ vector<vector<int>> Test::binData(vector<vector<float>> dataIn, int h, int v) {
 	// Bin data vertically
 	int i = 0;
 	while (i < inHeight) { // Loop over each pixel
-		outputFloat.push_back(Test::sumVert(xBinned, i, pixelHeight)); // Put a row of pixels into the output vector<vector<float>>
+		out.push_back(Test::sumVert(xBinned, i, pixelHeight)); // Put a row of pixels into the output vector<vector<float>>
 		i += pixelHeight;
 	}
 	
-	// Cast all the values in the 2d vector from float into int, as photons are quantised. Output to pixelData.
-	for (vector<float> v: outputFloat) {
-		vector<int> rowOut;
-		for (float f: v) rowOut.push_back((int)f);
-		out.push_back(rowOut);
-	}
 	return out;
 }
 
 /**
- * Method to find the centroid of the pixel data and put its co-ordinates into this object
+ * Private method to find the centroid of the pixel data and put its co-ordinates into this object
  */
 void Test::findCentroid() { 
 	
@@ -200,24 +197,23 @@ void Test::findCentroid() {
 }
 
 /**
- * Prints a 2d vector to the console
+ * Public static function to print a 2d vector to the console
  * @param data Data to be printed
- * @param RMS Whether to print the sqrt of all the elements
  */
-void Test::print2dVector(vector<vector<int>> data, bool RMS) {
+void Test::print2dVector(vector<vector<int>> data) {
 
 	for (int i = 0; i < (int)data.size(); i++) { // Loop through each row
-		if (RMS == true) for (int j = 0; j < (int)data.at(0).size(); j++) cout << setw(9) << sqrt(data.at(i).at(j));
-		else for (int j = 0; j < (int)data.at(0).size(); j++) cout << setw(9) << data.at(i).at(j);
+		for (int j = 0; j < (int)data.at(0).size(); j++) cout << setw(9) << data.at(i).at(j);
 		cout << endl;
 	}
 	cout << endl;
 }
 
 /**
- * Static method to run the centroid determination simulation and return a Test object containing the results. 
+ * Public method to run the centroid determination simulation and return a Test object containing the results. 
  *
  * @brief Run centroid determination simulation for input variables
+ * 
  * @param noise Boolean whether to add Poisson noise to the pixel data
  * @param time Integration time, as more time means more photons collected
  * @param area Area of telescope aperture, as more area means more photons
@@ -225,14 +221,10 @@ void Test::print2dVector(vector<vector<int>> data, bool RMS) {
 void Test::run(bool noise, float time, float area) {
 
 	// Generate a h x h 2D array of a Gaussian with noise. 
-	Gauss2d *g = new Gauss2d(h/2, h/2, inX, inY, sigmaX, sigmaY);
-	gaussianInput = g->generate();
-
+	Gauss2d *g = new Gauss2d(N, h, h, inX, inY, sigmaX, sigmaY);
+	gaussianInput = g->generateIntGaussian();
 	pixelData = binData(gaussianInput, horizPixels, vertPixels);
-	if (noise == true) {
-		noiseAfterBin = this->addPoissonNoise(time, area);
-		//print2dVector(noiseAfterBin, false); // For debug only
-	}
+	if (noise == true) noiseAfterBin = this->addPoissonNoise(time, area);
 	this->findCentroid();
 
 	delete g;

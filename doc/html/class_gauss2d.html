@@ -118,11 +118,14 @@ $(document).ready(function(){initNavTree('class_gauss2d.html','');});
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
-<tr class="memitem:af85e278fc1b1260dbe9d89ef7225dfc7"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_gauss2d.html#af85e278fc1b1260dbe9d89ef7225dfc7">Gauss2d</a> (int xPoints, int yPoints, float cx, float cy, float sdX, float sdY)</td></tr>
-<tr class="separator:af85e278fc1b1260dbe9d89ef7225dfc7"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a846d34bb9eeb6a7f91458385086da854"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a846d34bb9eeb6a7f91458385086da854"></a>
+<tr class="memitem:ab4ffbaeba822effd1340f30c9ede8283"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_gauss2d.html#ab4ffbaeba822effd1340f30c9ede8283">Gauss2d</a> (int nPhotons, int xPoints, int yPoints, float cx, float cy, float sdX, float sdY)</td></tr>
+<tr class="separator:ab4ffbaeba822effd1340f30c9ede8283"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a184a41751d105d11b316882c4e05b6a1"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a184a41751d105d11b316882c4e05b6a1"></a>
 std::vector&lt; std::vector&lt; float &gt; &gt;&#160;</td><td class="memItemRight" valign="bottom"><b>generate</b> ()</td></tr>
-<tr class="separator:a846d34bb9eeb6a7f91458385086da854"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="separator:a184a41751d105d11b316882c4e05b6a1"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:af1910ec2fcc81039b3c95606345f9b00"><td class="memItemLeft" align="right" valign="top">std::vector&lt; std::vector&lt; int &gt; &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_gauss2d.html#af1910ec2fcc81039b3c95606345f9b00">generateIntGaussian</a> ()</td></tr>
+<tr class="memdesc:af1910ec2fcc81039b3c95606345f9b00"><td class="mdescLeft">&#160;</td><td class="mdescRight">Generates a 2d vector of N photons binned as a Gaussian.  <a href="#af1910ec2fcc81039b3c95606345f9b00">More...</a><br /></td></tr>
+<tr class="separator:af1910ec2fcc81039b3c95606345f9b00"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-static-methods"></a>
 Static Public Member Functions</h2></td></tr>
@@ -132,6 +135,9 @@ Static Public Member Functions</h2></td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-attribs"></a>
 Public Attributes</h2></td></tr>
+<tr class="memitem:a9a0635594a433008ea304c26c3748809"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a9a0635594a433008ea304c26c3748809"></a>
+int&#160;</td><td class="memItemRight" valign="bottom"><b>N</b></td></tr>
+<tr class="separator:a9a0635594a433008ea304c26c3748809"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a74bc09c6a16d46559ef9553ebda3ae9a"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a74bc09c6a16d46559ef9553ebda3ae9a"></a>
 int&#160;</td><td class="memItemRight" valign="bottom"><b>hX</b></td></tr>
 <tr class="separator:a74bc09c6a16d46559ef9553ebda3ae9a"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -152,13 +158,19 @@ float&#160;</td><td class="memItemRight" valign="bottom"><b>sigmaY</b></td></tr>
 <tr class="separator:a45c2d354c66bf6cc003ce13aa2a73e49"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
-<a class="anchor" id="af85e278fc1b1260dbe9d89ef7225dfc7"></a>
+<a class="anchor" id="ab4ffbaeba822effd1340f30c9ede8283"></a>
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
           <td class="memname">Gauss2d::Gauss2d </td>
           <td>(</td>
+          <td class="paramtype">int&#160;</td>
+          <td class="paramname"><em>nPhotons</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
           <td class="paramtype">int&#160;</td>
           <td class="paramname"><em>xPoints</em>, </td>
         </tr>
@@ -202,7 +214,9 @@ float&#160;</td><td class="memItemRight" valign="bottom"><b>sigmaY</b></td></tr>
 <p>Constructs a <a class="el" href="class_gauss2d.html">Gauss2d</a> object to generate a 2d Gaussian</p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
-    <tr><td class="paramname">points</td><td>The number of data points in each dimension </td></tr>
+    <tr><td class="paramname">nPhotons</td><td>Number of photons in the 2d Gaussian </td></tr>
+    <tr><td class="paramname">xPoints</td><td>The number of data points in the x-axis </td></tr>
+    <tr><td class="paramname">yPoints</td><td>The number of data points in the y-axis </td></tr>
     <tr><td class="paramname">cx</td><td>X-coordinate for Gaussian centre </td></tr>
     <tr><td class="paramname">cy</td><td>Y-coordinate for Gaussian centre </td></tr>
     <tr><td class="paramname">sdX</td><td>Standard deviation of the Gaussian in the x direction </td></tr>
@@ -214,6 +228,25 @@ float&#160;</td><td class="memItemRight" valign="bottom"><b>sigmaY</b></td></tr>
 </div>
 </div>
 <h2 class="groupheader">Member Function Documentation</h2>
+<a class="anchor" id="af1910ec2fcc81039b3c95606345f9b00"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">vector&lt; vector&lt; int &gt; &gt; Gauss2d::generateIntGaussian </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Generates a 2d vector of N photons binned as a Gaussian. </p>
+<p>Public function to generate a 2d Gaussian in a 2d array of integers, representing N photons being defocussed from a point source and spread out into a Gaussian.</p>
+<dl class="section return"><dt>Returns</dt><dd>The output 2d vector </dd></dl>
+
+</div>
+</div>
 <a class="anchor" id="ace59feee4ab027beec84d29a896353a7"></a>
 <div class="memitem">
 <div class="memproto">
@@ -259,7 +292,7 @@ float&#160;</td><td class="memItemRight" valign="bottom"><b>sigmaY</b></td></tr>
 </div><div class="memdoc">
 
 <p>Generates a vector&lt;int&gt; of a Gaussian. </p>
-<p>Static function to generate a vector&lt;int&gt; of a Gaussian of integers sorted into bins.</p>
+<p>Public static function to generate a vector&lt;int&gt; of a Gaussian of integers sorted into bins.</p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramname">N</td><td>Number of events to bin </td></tr>
