@@ -4,7 +4,7 @@
  * @file Gauss2d.hpp
  * @brief Header for Gauss2d class
  * @author Feiyu Fang
- * @version 2.0.1 24-07-2017
+ * @version 2.1 28-07-2017
  */
 #include <iostream>
 #include <vector>

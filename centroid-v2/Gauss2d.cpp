@@ -5,7 +5,7 @@
  * @file Gauss2d.cpp
  * @brief Generate a 2d Gaussian with noise
  * @author Feiyu Fang 
- * @version 2.0.1 24-07-2017
+ * @version 2.1 28-07-2017
  */
 
 #include <cmath>
@@ -39,12 +39,6 @@ Gauss2d::Gauss2d(int nPhotons, int xPoints, int yPoints, float cx, float cy, flo
 }
 
 Gauss2d::~Gauss2d() {}
-
-//	// Calculate Gaussian value at x, with mean mu and SD sigma
-//	float Gauss2d::gaussDist(float x, float mu, float sigma) {
-//		
-//		return (1 / sqrt(2 * M_PI * sigma*sigma)) * exp(-1 * pow(x - mu, 2) / (2 * sigma*sigma));
-//	}
 
 /**
  * Private static function for cumulative normal distribution function to integrate between inputted limits for a Gaussian with inputted 
@@ -107,23 +101,3 @@ vector<vector<int>> Gauss2d::generateIntGaussian() {
 	return out;
 }
 
-//	// Returns a 2d Gaussian array centred at x, y, valued at 2h points with SD_x sx and SD_y sy. 
-//	vector<vector<float>> Gauss2d::generate() {
-//		int w = 2 * hX; // Width of generated arrays
-//		vector<vector<float>> gauss2d;
-//		float iValue, jValue;
-//
-//		// Generate Gaussians in two dimensions, and then multiply elements to create a 2d Gaussian array.
-//		for (int i = 0; i < w; i++) {
-//			vector<float> row;
-//			iValue = gaussDist((i + 0.5) / hX, centreY, sigmaX);
-//			
-//			for (int j = 0; j < w; j++) {
-//				jValue = gaussDist((j + 0.5) / hX, centreX, sigmaY); 
-//				row.push_back(iValue * jValue); 
-//			}
-//
-//			gauss2d.push_back(row);
-//		}
-//		return gauss2d;
-//	}

@@ -4,6 +4,8 @@ var NAVTREEINDEX0 =
 "_gauss2d_8hpp.html":[2,0,0,1],
 "_gauss2d_8hpp_source.html":[2,0,0,1],
 "_main_8cpp.html":[2,0,0,2],
+"_main_8cpp.html#a7701a3c0e155b0939d67bbdf592fab36":[2,0,0,2,2],
+"_main_8cpp.html#a980b88b89019f30ddd95f1986cc4b77a":[2,0,0,2,1],
 "_main_8cpp.html#ae66f6b31b5ad750f1fe042a706a4e3d4":[2,0,0,2,0],
 "_test_8cpp.html":[2,0,0,3],
 "_test_8hpp.html":[2,0,0,4],
@@ -33,6 +35,8 @@ var NAVTREEINDEX0 =
 "files.html":[2,0],
 "functions.html":[1,2,0],
 "functions_func.html":[1,2,1],
+"globals.html":[2,1,0],
+"globals_func.html":[2,1,1],
 "index.html":[],
 "md_README.html":[0],
 "pages.html":[]

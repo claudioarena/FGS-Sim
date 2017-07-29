@@ -4,7 +4,7 @@
  * @file Test.hpp
  * @brief Header file for Test class
  * @author Feiyu Fang
- * @version 2.0.1 25-07-2017
+ * @version 2.1 28-07-2017
  */
 
 #include "Gauss2d.hpp"

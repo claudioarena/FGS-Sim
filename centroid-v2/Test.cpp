@@ -1,12 +1,12 @@
 /**
- *	Twinkle FGS-Sim: Centroid recovery simulation
- *	Purpose: Take a noisy 2d Gaussian and bin it into pixels, representing defocussing of a star. 
- *  Then calculate the centroid from the pixel data. 
+ * Twinkle FGS-Sim: Centroid recovery simulation
+ * Purpose: Take a noisy 2d Gaussian and bin it into pixels, representing defocussing of a star. 
+ * Then calculate the centroid from the pixel data. 
  *
- *	@file Test.cpp
- *	@brief Bin an inputted Gaussian 2d array and find its centroid
- *	@author Feiyu Fang
- *	@version 2.0.1 25-07-2017
+ * @file Test.cpp
+ * @brief Bin an inputted Gaussian 2d array and find its centroid
+ * @author Feiyu Fang
+ * @version 2.1 28-07-2017
  */
 
 #include <chrono>
