@@ -30,9 +30,10 @@ using namespace std;
  * @param sdY Standard deviation of the generated Gaussian 2d vector in the y-direction
  * @param hPixels Number of bins in the x-direction to sort the data into
  * @param vPixels Number of bins in the y-direction to sort the data into
- * @param points Number of data points per dimension to simulate
+ * @param xPoints Number of data points to simulate in the x-direction
+ * @param yPoints Number of data points to simulate in the y-direction
  */
-Test::Test(int nPhotons, float xIn, float yIn, float sdX, float sdY, int hPixels, int vPixels, int points) {
+Test::Test(int nPhotons, float xIn, float yIn, float sdX, float sdY, int hPixels, int vPixels, int xPoints, int yPoints) {
 	
 	N = nPhotons;
 	inX = xIn;
@@ -41,33 +42,20 @@ Test::Test(int nPhotons, float xIn, float yIn, float sdX, float sdY, int hPixels
 	sigmaY = sdY;
 	horizPixels = hPixels;
 	vertPixels = vPixels;
-	h = points;
+	pointsX = xPoints;
+	pointsY = yPoints;
 }
 
 Test::~Test() {}
 
 /**
  * Private static method to sum an inputted 2d array vertically. 
- * Overloaded to both input and output either float or int. 
  *
- * @param in vector<vector<float>> input to be summed over
+ * @param in vector<vector<int>> input to be summed over
  * @param i Beginning line index to sum from
  * @param end Number of lines to sum over, starting from parameter i
- * @return A vector<float> containing the vertical sums
+ * @return A vector<int> containing the vertical sums
  */
-vector<float> Test::sumVert(vector<vector<float>> in, int i, int end) {
-
-	vector<float> yOut;
-	int w = in.at(0).size(); // Width of input data
-
-	for (int j = 0; j < w; j++) { // Calculate vertical subtotal over a single column
-		float subTotal = 0;
-		for (int k = i; k < (i + end); k++) subTotal += in.at(k).at(j);
-		yOut.push_back(subTotal);
-	}
-
-	return yOut;
-}
 vector<int> Test::sumVert(vector<vector<int>> in, int i, int end) {
 
 	vector<int> yOut;
@@ -85,8 +73,8 @@ vector<int> Test::sumVert(vector<vector<int>> in, int i, int end) {
 /**
  * Private function to take the current Test object and add Poisson noise to the pixelData. 
  *
- * @param time Exposure time
- * @param area Telescope aperture area
+ * @param time Exposure time /s
+ * @param area Telescope aperture area /ms^-2
  * @return outNoise A 2d vector of just the generated noise
  */
 vector<vector<int>> Test::addPoissonNoise(float time, float area) {
@@ -119,7 +107,7 @@ vector<vector<int>> Test::addPoissonNoise(float time, float area) {
 }
 
 /**
- *	Private static function to sort an inputted 2d vector into bins, representing the collection of photons in pixels.
+ *	Private function to sort an inputted 2d vector into bins, representing the collection of photons in pixels.
  *
  *	@brief Sorts input data into bins.
  *
@@ -127,9 +115,8 @@ vector<vector<int>> Test::addPoissonNoise(float time, float area) {
  *	@param h Number of horizontal pixels to bin the data into
  *	@param v Number of vertical pixels to bin the data into
  */
-vector<vector<int>> Test::binData(vector<vector<int>> dataIn, int h, int v) {
+void Test::binData(vector<vector<int>> dataIn, int h, int v) {
 
-	vector<vector<int>> out;
 	int inHeight = dataIn.size();
 	int inWidth = dataIn.at(0).size();
 	int pixelHeight = inHeight / v; // Height and width of output 2d vector: 
@@ -156,18 +143,16 @@ vector<vector<int>> Test::binData(vector<vector<int>> dataIn, int h, int v) {
 	// Bin data vertically
 	int i = 0;
 	while (i < inHeight) { // Loop over each pixel
-		out.push_back(Test::sumVert(xBinned, i, pixelHeight)); // Put a row of pixels into the output vector<vector<float>>
+		pixelData.push_back(Test::sumVert(xBinned, i, pixelHeight)); // Put a row of pixels into the output vector<vector<float>>
 		i += pixelHeight;
 	}
-	
-	return out;
 }
 
 /**
  * Private method to find the centroid of the pixel data and put its co-ordinates into this object
  */
 void Test::findCentroid() { 
-	
+
 	float totalWeight = 0; // Sum over all elements of the 2d array to find the weighting
 	for (vector<int> v: pixelData) {
 		for (float f: v) totalWeight += f;
@@ -220,10 +205,10 @@ void Test::print2dVector(vector<vector<int>> data) {
  */
 void Test::run(bool noise, float time, float area) {
 
-	// Generate a h x h 2D array of a Gaussian with noise. 
-	Gauss2d *g = new Gauss2d(N, h, h, inX, inY, sigmaX, sigmaY);
-	gaussianInput = g->generateIntGaussian();
-	pixelData = binData(gaussianInput, horizPixels, vertPixels);
+	// Generate a 2D array of a Gaussian with noise. 
+	Gauss2d *g = new Gauss2d(N, pointsX, pointsY, inX, inY, sigmaX, sigmaY);
+	gaussianInput = g->generate();
+	this->binData(gaussianInput, horizPixels, vertPixels);
 	if (noise == true) noiseAfterBin = this->addPoissonNoise(time, area);
 	this->findCentroid();
 

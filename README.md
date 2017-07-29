@@ -1,4 +1,4 @@
-<!--- Usi python-pip/grip to preview Markdown documents in the same form as Github formats them. -->
+<!--- Tip: Use python-pip/grip to preview Markdown documents in the same form as Github formats them. -->
 # FGS-Sim
 ## Centroid determination simulation
 
@@ -31,4 +31,10 @@ Version number, Date in ISO 8601 format, Notes on changes
 	- Uniform distribution was added to vary the starting centre point of a simulated star. 
 	- The input and output coordinates have been changed to refer to pixel coordinates instead of the arbitrary 0-1-2 original coordinate system, although the Gauss2d class
 	still generates a Gaussian with mean 1 for now. 
-
+- 2.1. 2017-07-28. 
+    - Rewrote Gauss2d class to generate a 2d array of integers to allow simulation of the defocussing of N photons into a Gaussian. Also resulted in much more efficient code, with
+	the simulation running ~4x faster with excellent accuracy. 
+	- Used Claudio's Google Sheet to convert stellar magnitudes into photons s^-1 m^-2 to have a stellar magnitude input in Main.cpp, resulting in N photons defocussed by Gauss2d.
+	- Changed the Poisson noise method in the Test class to N - (X * time * area), where X~Po(sqrt(N)). This allows photon noise to be either positive or negative. 
+	- Fixed the input of the star coordinates to be in terms of the pixel index. 
+	- Bug fixes and performance and floxibility improvements. 

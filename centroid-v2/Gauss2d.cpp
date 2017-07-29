@@ -83,14 +83,16 @@ vector<int> Gauss2d::generateIntVector(int N, int bins, float mean, float sigma)
 }
 
 /**
- * Public function to generate a 2d Gaussian in a 2d array of integers, representing N photons being defocussed from a point
- * source and spread out into a Gaussian. 
+ * Private function to generate a 2d Gaussian in a 2d array of integers, representing N photons being defocussed 
+ * from a point source and spread out into a Gaussian. The function first generates a 1D Gaussian of integers,
+ * representing the number of photons to be put into each row. The individual rows of integer Gaussians are 
+ * then generated, each containing the number of photons specified in the original 1D Gaussian for that row. 
  *
  * @brief Generates a 2d vector of N photons binned as a Gaussian. 
  *
- * @return The output 2d vector
+ * @return The output 2d vector of normally distributed integers
  */
-vector<vector<int>> Gauss2d::generateIntGaussian() {
+vector<vector<int>> Gauss2d::generate() {
 
 	vector<vector<int>> out;
 	vector<int> horizontalSummed = generateIntVector(N, hY, centreY, sigmaY);
@@ -100,4 +102,3 @@ vector<vector<int>> Gauss2d::generateIntGaussian() {
 	}
 	return out;
 }
-

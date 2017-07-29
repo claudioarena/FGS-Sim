@@ -13,22 +13,20 @@ class Gauss2d {
 
 	public: 
 		Gauss2d(int nPhotons, int xPoints, int yPoints, float cx, float cy, float sdX, float sdY); 
+		~Gauss2d() ;
 		
+		float centreX;
+		float centreY;
+
+		std::vector<std::vector<int>> generate();
+
+	private:
 		int N;
 		int hX;
 		int hY;
-		float centreX;
-		float centreY;
 		float sigmaX;
 		float sigmaY;
 
-		~Gauss2d() ;
-
-		std::vector<std::vector<float>> generate();
 		static std::vector<int> generateIntVector(int N, int bins, float mean, float sigma);
-		std::vector<std::vector<int>> generateIntGaussian();
-	private:
-		float gaussDist(float x, float mu, float sigma);
 		static float normalCDF(float a, float b, float mean, float sigma);
-
 };
