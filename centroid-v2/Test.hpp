@@ -22,7 +22,7 @@ class Test {
 		std::vector<std::vector<int>> pixelData;
 		std::vector<std::vector<int>> gaussianInput; 
 		
-		void run(bool noise, float time, float area);
+		void run(bool noise, float time, float area, float QE, float temperature, float emissivity, int readout);
 		static void print2dVector(std::vector<std::vector<int>> data); 
 
 	private:
@@ -31,7 +31,7 @@ class Test {
 		int N, horizPixels, vertPixels, pointsX, pointsY;
 
 		static std::vector<int> sumVert(std::vector<std::vector<int>> in, int i, int end);
-		std::vector<std::vector<int>> addPoissonNoise(float time, float area);
+		std::vector<std::vector<int>> addPoissonNoise(float time, float area, float QE, float temperature, float emissivity, int readout);
 		void binData(std::vector<std::vector<int>> dataIn, int h, int v);
 		void findCentroid();
 };

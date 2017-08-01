@@ -137,7 +137,9 @@ $(document).ready(function(){initNavTree('md_README.html','');});
 <li>2.1. 2017-07-28.<ul>
 <li>Rewrote <a class="el" href="class_gauss2d.html">Gauss2d</a> class to generate a 2d array of integers to allow simulation of the defocussing of N photons into a Gaussian. Also resulted in much more efficient code, with the simulation running ~4x faster with excellent accuracy.</li>
 <li>Used Claudio's Google Sheet to convert stellar magnitudes into photons s^-1 m^-2 to have a stellar magnitude input in <a class="el" href="_main_8cpp.html" title="Main method to run centroid recovery simulation. ">Main.cpp</a>, resulting in N photons defocussed by <a class="el" href="class_gauss2d.html">Gauss2d</a>.</li>
-<li>Changed the Poisson noise method in the <a class="el" href="class_test.html" title="Class to bin an inputted Gaussian 2d array and find its centroid. ">Test</a> class to N - (X * time * area), where X~Po(sqrt(N)). This allows photon noise to be either positive or negative. </li>
+<li>Changed the Poisson noise method in the <a class="el" href="class_test.html" title="Class to bin an inputted Gaussian 2d array and find its centroid. ">Test</a> class to N - (X * time * area), where X~Po(sqrt(N)). This allows photon noise to be either positive or negative.</li>
+<li>Fixed the input of the star coordinates to be in terms of the pixel index.</li>
+<li>Bug fixes and performance and floxibility improvements. </li>
 </ul>
 </li>
 </ul>

@@ -31,10 +31,27 @@ Version number, Date in ISO 8601 format, Notes on changes
 	- Uniform distribution was added to vary the starting centre point of a simulated star. 
 	- The input and output coordinates have been changed to refer to pixel coordinates instead of the arbitrary 0-1-2 original coordinate system, although the Gauss2d class
 	still generates a Gaussian with mean 1 for now. 
-- 2.1. 2017-07-28. 
+- 2.1.0 2017-07-28. 
     - Rewrote Gauss2d class to generate a 2d array of integers to allow simulation of the defocussing of N photons into a Gaussian. Also resulted in much more efficient code, with
 	the simulation running ~4x faster with excellent accuracy. 
 	- Used Claudio's Google Sheet to convert stellar magnitudes into photons s^-1 m^-2 to have a stellar magnitude input in Main.cpp, resulting in N photons defocussed by Gauss2d.
 	- Changed the Poisson noise method in the Test class to N - (X * time * area), where X~Po(sqrt(N)). This allows photon noise to be either positive or negative. 
 	- Fixed the input of the star coordinates to be in terms of the pixel index. 
-	- Bug fixes and performance and floxibility improvements. 
+	- Bug fixes and performance and flexibility improvements. 
+- 2.0.1 2017-08-01
+	- Fixed addition of Poisson noise, where the number of photons recorded was added to the output matrix twice
+	- Added parameters for various kinds of noise and inefficiencies:
+		- Emissivity, where the ideal case is e=1
+		- Quantum efficiency, where ideal case is QE=0
+	- Added parameters for other noise from the [E2V CCD230-42 datasheet](https://www.e2v.com/resources/account/download-datasheet/1328 "CCD datasheet"): 
+		- Temperature-dependent dark current, calculated from a temperature input. References: 
+			- Dyer, "A phenomenological model for the Meyer-Neldel rule", 
+			[J. Phys. C: Solid State Phys. 19 (1986) pp. 5655-5664.](http://iopscience.iop.org/article/10.1088/0022-3719/19/28/016)
+			- Widenhorn et al, "Temperature dependence of dark current in a CCD", [Proc. SPIE 4669, Sensors and Camera Systems for Scientific, Industrial, and Digital Photography 
+			Applications III, 193 (April 26, 2002)](http://dx.doi.org/10.1117/12.463446)
+		- Readout noise, distributed according to Poisson statistics
+	- Plotted the first real results. 
+		- At 273K with noise but with ideal emissivity and quantum efficiency: 
+		![Levels out at sigma ~40 for magnitude < 13](http://i.imgur.com/VHxvK8e.png "Result with noise")
+		- Ideal Gaussian input, with no noise of any kind: 
+		![Accurate for all except magnitude 15](http://i.imgur.com/fTqxLlr.png "Result without noise")

@@ -75,14 +75,21 @@ vector<int> Test::sumVert(vector<vector<int>> in, int i, int end) {
  *
  * @param time Exposure time /s
  * @param area Telescope aperture area /ms^-2
+ * @param QE Quantum efficiency of the sensor. Ideal 1. 
+ * @param temperature Temperature of the sensor. Ideal -> 0.
+ * @param emissivity Emissivity of the sensor. Ideal blackbody 1. 
+ * @param readout Readout noise /electrons, quoted as variance. Ideal 0.
  * @return outNoise A 2d vector of just the generated noise
  */
-vector<vector<int>> Test::addPoissonNoise(float time, float area) {
+vector<vector<int>> Test::addPoissonNoise(float time, float area, float QE, float temperature, float emissivity, int readout) {
 
 	// Seed the generation of Poisson-distributed random variable with the current time
 	unsigned seed = std::chrono::system_clock::now().time_since_epoch().count();
 	default_random_engine generator(seed);
 
+	float darkSignal = 0.1 * exp(5E-7 * 6.63E-34 * ((1./248)-(1./temperature)) / 1.38E-23); // Dark current variance for 500nm
+	poisson_distribution<int> darkCurrentDist(darkSignal); // Noise from dark current
+	poisson_distribution<int> readNoiseDist(readout); // Read noise
 	vector<vector<int>> outData;
 	vector<vector<int>> outNoise;
 	
@@ -93,9 +100,9 @@ vector<vector<int>> Test::addPoissonNoise(float time, float area) {
 		for (int i: v) { // For each pixel value in the row, generate its noise and add to output vector. 
 			float lambda = sqrt(i);
 			poisson_distribution<int> distribution(lambda); // Noise ~ Po(sqrt(value))
-			int noiseAddition = i - (distribution(generator) * time * area);
+			int noiseAddition = ((lambda - distribution(generator)) * time * area) + darkCurrentDist(generator) + readNoiseDist(generator);
 			rowOutNoise.push_back(noiseAddition);
-			rowOutData.push_back(noiseAddition + i);
+			rowOutData.push_back((noiseAddition + i) * emissivity * QE);
 		}
 
 		outData.push_back(rowOutData);
@@ -202,14 +209,18 @@ void Test::print2dVector(vector<vector<int>> data) {
  * @param noise Boolean whether to add Poisson noise to the pixel data
  * @param time Integration time, as more time means more photons collected
  * @param area Area of telescope aperture, as more area means more photons
+ * @param QE Quantum efficiency of the CCD. Ideal 1
+ * @param temperature Temperature of the sensor /K. Ideal 0. 
+ * @param emissivity Emissivity of the sensor. Ideal blackbody 1.
+ * @param readout Readout noise /electrons. Ideal 0. 
  */
-void Test::run(bool noise, float time, float area) {
+void Test::run(bool noise, float time, float area, float QE, float temperature, float emissivity, int readout) {
 
 	// Generate a 2D array of a Gaussian with noise. 
 	Gauss2d *g = new Gauss2d(N, pointsX, pointsY, inX, inY, sigmaX, sigmaY);
 	gaussianInput = g->generate();
 	this->binData(gaussianInput, horizPixels, vertPixels);
-	if (noise == true) noiseAfterBin = this->addPoissonNoise(time, area);
+	if (noise == true) noiseAfterBin = this->addPoissonNoise(time, area, QE, temperature, emissivity, readout);
 	this->findCentroid();
 
 	delete g;

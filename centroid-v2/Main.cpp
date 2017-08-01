@@ -33,14 +33,19 @@ using namespace std;
  * @param sampling Number of data points per pixel
  * @param time Integration time /s
  * @param area Area of telescope aperture /ms^-2
+ * @param QE Quantum efficiency. Ideal 1.
+ * @param temperature Temperature of the sensor /K. Ideal -> 0.
+ * @param emissivity Emissivity of the sensor. Ideal 1.
+ * @param readout Readout noise /electrons. Ideal 0.
  */
-void runOnce(int N, float xIn, float yIn, float sigmaX, float sigmaY, int xPixels, int yPixels, int sampling, float time, float area) {
+void runOnce(int N, float xIn, float yIn, float sigmaX, float sigmaY, int xPixels, int yPixels, int sampling, 
+			 float time, float area, float QE, float temperature, float emissivity, int readout) {
 
 	cout << "Total photons: " << N << endl;
 	int xPoints = xPixels * sampling;
 	int yPoints = yPixels * sampling;
 	Test* t = new Test(N, xIn * sampling, yIn * sampling, sigmaX, sigmaY, xPixels, yPixels, xPoints, yPoints);
-	t->run(true, time, area); // Run with noise for input time and area 
+	t->run(true, time, area, QE, temperature, emissivity, readout); // Run with noise for input time and area 
 	float x = (t->xCentre * xPixels);
 	float y = (t->yCentre * yPixels);
 	cout << "The input coordinates were (" << xIn << ',' << yIn << "). The calculated centroid was (" << x << ',' << y << ")." << endl;
@@ -61,15 +66,18 @@ void runOnce(int N, float xIn, float yIn, float sigmaX, float sigmaY, int xPixel
  * @param N Number of photons to detect
  * @param xIn x-coordinate of star
  * @param yIn y-coordinate of star
- * @param sigmaX Standard deviation of Gaussian in x-axis
- * @param sigmaY Standard deviation of Gaussian in y-axis
- * @param xPixels Number of pixels to bin the photons into in the x-axis
- * @param yPixels Number of pixels to bin the photons into in the y-axis
+ * @param xPixels Number of pixels in the x-axis to bin the data into
+ * @param yPixels Number of pixels in the y-axis to bin the data into
  * @param sampling Number of data points per pixel
  * @param time Integration time /s
  * @param area Area of telescope aperture /ms^-2
+ * @param QE Quantum efficiency. Ideal 1.
+ * @param temperature Temperature of the sensor /K. Ideal -> 0.
+ * @param emissivity Emissivity of the sensor. Ideal 1.
+ * @param readout Readout noise /electrons. Ideal 0.
  */
-void runToFile(int N, float xIn, float yIn, float sigmaX, float sigmaY, int xPixels, int yPixels, int sampling, float time, float area) {
+void runToFile(float xIn, float yIn, int xPixels, int yPixels, int sampling, float time, float area, float QE,
+			   float temperature, float emissivity, int readout) {
 
 	int xPoints = xPixels * sampling;
 	int yPoints = yPixels * sampling;
@@ -77,7 +85,8 @@ void runToFile(int N, float xIn, float yIn, float sigmaX, float sigmaY, int xPix
 	// For testing multiple runs, outputting to an output csv file
 	ofstream outFile; // Initialise output file
 	outFile.open("results.csv");
-	outFile << "Input centre: (" << xIn << ';' << yIn << "), pixels in each dimension: " << xPixels << ';' 
+
+/*	outFile << "Input centre: (" << xIn << ';' << yIn << "), pixels in each dimension: " << xPixels << ';' 
 			<< yPixels << ", data points simulated in each dimension: " << xPoints << "; " << yPoints << endl;
 
 	std::default_random_engine generator; // Initialise uniform distribution and add to inputted x and y
@@ -93,18 +102,22 @@ void runToFile(int N, float xIn, float yIn, float sigmaX, float sigmaY, int xPix
 		outFile << i << ',' << sqrt((x - xIn)*(x - xIn) + (y - yIn)*(y - yIn)) << ',' << x << ',' << y << endl;
 		delete t;
 	}
-
+*/
 	outFile << endl << "Varying sigma: " << endl;
 	outFile << "Sigma in both dimensions, Distance, x-centre, y-centre" << endl;
 
-	for (float i = 10; i <= 100; i+=10) { // Run test varying sigma
+	for (int mag = 10; mag <= 15; mag++) { // Run test varying magnitude
+		outFile << endl << "Magnitude: " << mag << endl;
+		for (float i = 10; i <= 100; i+=10) { // Run test varying sigma for each magnitude
+			int N = pow(2.512, -1 * mag) * 3.36E10; // Convert magnitude to photons s^-1 m^-2
+			Test* t = new Test(N, xIn * sampling, yIn * sampling, i, i, xPixels, yPixels, xPoints, yPoints);
+			t->run(false, time, area, QE, temperature, emissivity, readout); // Run with noise for input time and area 
 
-		Test* t = new Test(N, xIn, yIn, i, i, xPixels, yPixels, xPoints, yPoints);
-		t->run(true, time, area); // Run with noise, with time and area
-		float x = (t->xCentre * xPixels);
-		float y = (t->yCentre * yPixels);
-		outFile << i << ',' << sqrt((x - xIn)*(x - xIn) + (y - yIn)*(y - yIn)) << ',' << x << ',' << y << endl;
-		delete t;
+			float x = (t->xCentre * xPixels);
+			float y = (t->yCentre * yPixels);
+			outFile << i << ',' << sqrt((x - xIn)*(x - xIn) + (y - yIn)*(y - yIn)) << ',' << x << ',' << y << endl;
+			delete t;
+		}
 	}
 	outFile.close();
 }
@@ -115,17 +128,23 @@ int main() {
 	time_t startTime = time(nullptr);
 	cout << endl << "Start time: " << asctime(localtime(&startTime)) << endl;
 
-	float magnitude = 14; // Star magnitude
+	//float magnitude = 14; // Star magnitude
 	float xIn = 4.2; // Input coordinates of defined centre in terms of pixels. 
 	float yIn = 4.8;
-	int xPixels = 10;
-	int yPixels = 10;
-	int sampling = 10; // Pixel sampling: Simulated points per pixel
+	int xPixels = 100;
+	int yPixels = 100;
+	int sampling = 100; // Pixel sampling: Simulated points per pixel
+	float exposureTime = 1;
+	float area = 1;
+	float QE = 1;
+	float temperature = 273;
+	float emissivity = 1;
+	int readout = 0;
 
-	float N = pow(2.512, -1 * magnitude) * 3.36E10; // Convert magnitude to photons s^-1 m^-2
+	//float N = pow(2.512, -1 * magnitude) * 3.36E10; // Convert magnitude to photons s^-1 m^-2
+	//runOnce(N, xIn, yIn, 10, 10, xPixels, yPixels, sampling, exposureTime, area, QE, temperature, emissivity, readout);
 	
-	runOnce(N, xIn, yIn, 10, 10, xPixels, yPixels, sampling, 1, 1);
-	runToFile(N, xIn, yIn, 10, 10, xPixels, yPixels, sampling, 1, 1);
+	runToFile(xIn, yIn, xPixels, yPixels, sampling, exposureTime, area, QE, temperature, emissivity, readout);
 
 	time_t endTime  = time(nullptr);
 	cout << "End time: " << asctime(localtime(&endTime)) << endl;
@@ -143,7 +162,7 @@ int main() {
 // DONE - Have the separate parameters of an input star magnitude and the integration time, keeping one constant and varying the other. 
 // 1/(sampling frequency) = (exposure time + readout time). 
 //
-// Have parameters for things like quantum efficiency and dark current, instrument emissivity = 1. 
+// DONE - Have parameters for things like quantum efficiency and dark current, instrument emissivity = 1. 
 // DONE - Use a uniform distribution inside a pixel to define the starting position between simulated Gaussian2d points. 
 // Relate sigma and mu in PSF
 // DONE - Fix memory leak. 
