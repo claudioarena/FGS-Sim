@@ -1,9 +1,9 @@
 var indexSectionsWithContent =
 {
-  0: "gmprt",
+  0: "gmprst",
   1: "gt",
   2: "gmt",
-  3: "gmprt",
+  3: "gmprst",
   4: "r"
 };
 

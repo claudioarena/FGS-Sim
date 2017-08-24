@@ -1,6 +1,4 @@
 var searchData=
 [
-  ['test',['Test',['../class_test.html',1,'Test'],['../class_test.html#af724ced9e693e09436a6f220787cef46',1,'Test::Test()']]],
-  ['test_2ecpp',['Test.cpp',['../_test_8cpp.html',1,'']]],
-  ['test_2ehpp',['Test.hpp',['../_test_8hpp.html',1,'']]]
+  ['sumphotons',['sumPhotons',['../_main_8cpp.html#ab55df007a3c2b5b5e100191754c95bc6',1,'Main.cpp']]]
 ];

@@ -4,7 +4,7 @@
  * @file Test.hpp
  * @brief Header file for Test class
  * @author Feiyu Fang
- * @version 2.1.1 01-08-2017
+ * @version 2.1.3 24-08-2017
  */
 
 #include "Gauss2d.hpp"
@@ -22,7 +22,7 @@ class Test {
 		std::vector<std::vector<int>> pixelData;
 		std::vector<std::vector<int>> gaussianInput; 
 		
-		void run(bool noise, float time, float area, float QE, float temperature, float emissivity, int readout);
+		void run(bool noise, float time, float area, float QE, float temperature, float emissivity, int readout, float ADU);
 		static void print2dVector(std::vector<std::vector<int>> data); 
 
 	private:
@@ -31,7 +31,7 @@ class Test {
 		int N, horizPixels, vertPixels, pointsX, pointsY;
 
 		static std::vector<int> sumVert(std::vector<std::vector<int>> in, int i, int end);
-		std::vector<std::vector<int>> addPoissonNoise(float time, float area, float QE, float temperature, float emissivity, int readout);
+		std::vector<std::vector<int>> addNoise(float time, float area, float QE, float temperature, float emissivity, int readout, float ADU);
 		void binData(std::vector<std::vector<int>> dataIn, int h, int v);
 		void findCentroid();
 };

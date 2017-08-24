@@ -60,9 +60,13 @@ Version number, Date in ISO 8601 format, Notes on changes
 	10k x 10k s-pixels binned into 100x100 pixels. 
 - 2.1.3 2017-08-24
 	- Notice that the E2V CCD230-42 is rated for operating temperature 153-323K. Detector to be at 72K. 
+	- Added ADU parameter, set as ideal 1 electron per count for now. 
 	- Updated some of the placeholder 0 and 1 variables in main() to the actual values:
 		- Detector temperature: 72K; Reference: White book p67.
 		- Aperture minimum 45cm; p15 and mirror M1 diameter 45cm p18. 
 		- Quantum efficiency at -25C of back-illuminated E2V CCD230-42: ~0.8 with basic broadband coating at visual wavelengths. 
 		- Readout noise of 230-42: 8 e- RMS at -25C at 750 kHz. 
 		- Emissivity [seems to be 1](http://www.ctio.noao.edu/pipermail/ccd-world/2015/001366.html). 
+	- Created block diagram of the modular code: 
+	![Block diagram of the code](http://i.imgur.com/VbaaLUO.png "Flowchart of the modular code")
+	- Implemented output of parameters and of photons simulated and detected. 

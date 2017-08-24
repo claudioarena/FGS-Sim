@@ -80,8 +80,9 @@ vector<int> Test::sumVert(vector<vector<int>> in, int i, int end) {
  * @param emissivity Emissivity of the sensor. Ideal blackbody 1. 
  * @param readout Readout noise /electrons, quoted as variance. Ideal 0.
  * @return outNoise A 2d vector of just the generated noise
+ * @param ADU Analogue-to-digital units. Electrons per count; ideal 1. 
  */
-vector<vector<int>> Test::addPoissonNoise(float time, float area, float QE, float temperature, float emissivity, int readout) {
+vector<vector<int>> Test::addNoise(float time, float area, float QE, float temperature, float emissivity, int readout, float ADU) {
 
 	// Seed the generation of Poisson-distributed random variable with the current time
 	unsigned seed = std::chrono::system_clock::now().time_since_epoch().count();
@@ -102,7 +103,7 @@ vector<vector<int>> Test::addPoissonNoise(float time, float area, float QE, floa
 			poisson_distribution<int> distribution(lambda); // Noise ~ Po(sqrt(value))
 			int noiseAddition = ((lambda - distribution(generator)) * time * area) + darkCurrentDist(generator) + readNoiseDist(generator);
 			rowOutNoise.push_back(noiseAddition);
-			rowOutData.push_back((noiseAddition + i) * emissivity * QE);
+			rowOutData.push_back((noiseAddition + i) * emissivity * QE * ADU);
 		}
 
 		outData.push_back(rowOutData);
@@ -213,14 +214,15 @@ void Test::print2dVector(vector<vector<int>> data) {
  * @param temperature Temperature of the sensor /K. Ideal 0. 
  * @param emissivity Emissivity of the sensor. Ideal blackbody 1.
  * @param readout Readout noise /electrons. Ideal 0. 
+ * @param ADU Analogue-to-digital units. Electrons per count; ideal 1. 
  */
-void Test::run(bool noise, float time, float area, float QE, float temperature, float emissivity, int readout) {
+void Test::run(bool noise, float time, float area, float QE, float temperature, float emissivity, int readout, float ADU) {
 
 	// Generate a 2D array of a Gaussian with noise. 
 	Gauss2d *g = new Gauss2d(N, pointsX, pointsY, inX, inY, sigmaX, sigmaY);
 	gaussianInput = g->generate();
 	this->binData(gaussianInput, horizPixels, vertPixels);
-	if (noise == true) noiseAfterBin = this->addPoissonNoise(time, area, QE, temperature, emissivity, readout);
+	if (noise == true) noiseAfterBin = this->addNoise(time, area, QE, temperature, emissivity, readout, ADU);
 	this->findCentroid();
 
 	delete g;

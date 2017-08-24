@@ -121,7 +121,6 @@ $(document).ready(function(){initNavTree('_main_8cpp.html','');});
 <code>#include &lt;iomanip&gt;</code><br />
 <code>#include &lt;iostream&gt;</code><br />
 <code>#include &lt;random&gt;</code><br />
-<code>#include &lt;string&gt;</code><br />
 <code>#include &quot;<a class="el" href="_test_8hpp_source.html">Test.hpp</a>&quot;</code><br />
 </div><div class="textblock"><div class="dynheader">
 Include dependency graph for Main.cpp:</div>
@@ -133,12 +132,14 @@ Include dependency graph for Main.cpp:</div>
 </div><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="func-members"></a>
 Functions</h2></td></tr>
-<tr class="memitem:a23465a06f89315b7806f20014df5128d"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="_main_8cpp.html#a23465a06f89315b7806f20014df5128d">runOnce</a> (int N, float xIn, float yIn, float sigmaX, float sigmaY, int xPixels, int yPixels, int sampling, float time, float area, float QE, float temperature, float emissivity, int readout)</td></tr>
-<tr class="memdesc:a23465a06f89315b7806f20014df5128d"><td class="mdescLeft">&#160;</td><td class="mdescRight"><a class="el" href="class_test.html" title="Class to bin an inputted Gaussian 2d array and find its centroid. ">Test</a> one run, outputting to the console instead of a file.  <a href="#a23465a06f89315b7806f20014df5128d">More...</a><br /></td></tr>
-<tr class="separator:a23465a06f89315b7806f20014df5128d"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a206dd35d1880af4d027574118f29f3c4"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="_main_8cpp.html#a206dd35d1880af4d027574118f29f3c4">runToFile</a> (float xIn, float yIn, int xPixels, int yPixels, int sampling, float time, float area, float QE, float temperature, float emissivity, int readout)</td></tr>
-<tr class="memdesc:a206dd35d1880af4d027574118f29f3c4"><td class="mdescLeft">&#160;</td><td class="mdescRight"><a class="el" href="class_test.html" title="Class to bin an inputted Gaussian 2d array and find its centroid. ">Test</a> multiple runs, outputting the results to a CSV file.  <a href="#a206dd35d1880af4d027574118f29f3c4">More...</a><br /></td></tr>
-<tr class="separator:a206dd35d1880af4d027574118f29f3c4"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ab55df007a3c2b5b5e100191754c95bc6"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="_main_8cpp.html#ab55df007a3c2b5b5e100191754c95bc6">sumPhotons</a> (vector&lt; vector&lt; int &gt;&gt; matrix)</td></tr>
+<tr class="separator:ab55df007a3c2b5b5e100191754c95bc6"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ad2cf23eeae48402d77a38895f3a25b9e"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="_main_8cpp.html#ad2cf23eeae48402d77a38895f3a25b9e">runOnce</a> (int N, float xIn, float yIn, float sigmaX, float sigmaY, int xPixels, int yPixels, int sampling, float time, float area, float QE, float temperature, float emissivity, int readout, float ADU)</td></tr>
+<tr class="memdesc:ad2cf23eeae48402d77a38895f3a25b9e"><td class="mdescLeft">&#160;</td><td class="mdescRight"><a class="el" href="class_test.html" title="Class to bin an inputted Gaussian 2d array and find its centroid. ">Test</a> one run, outputting to the console instead of a file.  <a href="#ad2cf23eeae48402d77a38895f3a25b9e">More...</a><br /></td></tr>
+<tr class="separator:ad2cf23eeae48402d77a38895f3a25b9e"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aa256f9ec9562e0ac4c26f900a6c24369"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="_main_8cpp.html#aa256f9ec9562e0ac4c26f900a6c24369">runToFile</a> (float xIn, float yIn, int xPixels, int yPixels, int sampling, float time, float area, float QE, float temperature, float emissivity, int readout, float ADU)</td></tr>
+<tr class="memdesc:aa256f9ec9562e0ac4c26f900a6c24369"><td class="mdescLeft">&#160;</td><td class="mdescRight"><a class="el" href="class_test.html" title="Class to bin an inputted Gaussian 2d array and find its centroid. ">Test</a> multiple runs, outputting the results to a CSV file.  <a href="#aa256f9ec9562e0ac4c26f900a6c24369">More...</a><br /></td></tr>
+<tr class="separator:aa256f9ec9562e0ac4c26f900a6c24369"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ae66f6b31b5ad750f1fe042a706a4e3d4"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="ae66f6b31b5ad750f1fe042a706a4e3d4"></a>
 int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="_main_8cpp.html#ae66f6b31b5ad750f1fe042a706a4e3d4">main</a> ()</td></tr>
 <tr class="memdesc:ae66f6b31b5ad750f1fe042a706a4e3d4"><td class="mdescLeft">&#160;</td><td class="mdescRight">Main method. Runs tests with inputted parameters. <br /></td></tr>
@@ -148,9 +149,9 @@ int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="_main
 <div class="textblock"><p>Main method to run centroid recovery simulation. </p>
 <p>Twinkle FGS-Sim: Centroid recovery simulation Purpose: Generate a 2d Gaussian with noise, bin it into "pixels" and find the centroid of the binned data.</p>
 <dl class="section author"><dt>Author</dt><dd>Feiyu Fang </dd></dl>
-<dl class="section version"><dt>Version</dt><dd>2.1.2 01-08-2017 </dd></dl>
+<dl class="section version"><dt>Version</dt><dd>2.1.3 24-08-2017 </dd></dl>
 </div><h2 class="groupheader">Function Documentation</h2>
-<a class="anchor" id="a23465a06f89315b7806f20014df5128d"></a>
+<a class="anchor" id="ad2cf23eeae48402d77a38895f3a25b9e"></a>
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
@@ -236,7 +237,13 @@ int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="_main
           <td class="paramkey"></td>
           <td></td>
           <td class="paramtype">int&#160;</td>
-          <td class="paramname"><em>readout</em>&#160;</td>
+          <td class="paramname"><em>readout</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">float&#160;</td>
+          <td class="paramname"><em>ADU</em>&#160;</td>
         </tr>
         <tr>
           <td></td>
@@ -263,13 +270,14 @@ int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="_main
     <tr><td class="paramname">temperature</td><td>Temperature of the sensor /K. Ideal -&gt; 0. </td></tr>
     <tr><td class="paramname">emissivity</td><td>Emissivity of the sensor. Ideal 1. </td></tr>
     <tr><td class="paramname">readout</td><td>Readout noise /electrons. Ideal 0. </td></tr>
+    <tr><td class="paramname">ADU</td><td>Analogue-to-digital units. Electrons per count; ideal 1. </td></tr>
   </table>
   </dd>
 </dl>
 
 </div>
 </div>
-<a class="anchor" id="a206dd35d1880af4d027574118f29f3c4"></a>
+<a class="anchor" id="aa256f9ec9562e0ac4c26f900a6c24369"></a>
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
@@ -337,7 +345,13 @@ int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="_main
           <td class="paramkey"></td>
           <td></td>
           <td class="paramtype">int&#160;</td>
-          <td class="paramname"><em>readout</em>&#160;</td>
+          <td class="paramname"><em>readout</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">float&#160;</td>
+          <td class="paramname"><em>ADU</em>&#160;</td>
         </tr>
         <tr>
           <td></td>
@@ -356,14 +370,39 @@ int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="_main
     <tr><td class="paramname">yPixels</td><td>Number of pixels in the y-axis to bin the data into </td></tr>
     <tr><td class="paramname">sampling</td><td>Number of data points per pixel </td></tr>
     <tr><td class="paramname">time</td><td>Integration time /s </td></tr>
-    <tr><td class="paramname">area</td><td>Area of telescope aperture /ms^-2 </td></tr>
+    <tr><td class="paramname">area</td><td>Area of telescope aperture /m^2 </td></tr>
     <tr><td class="paramname">QE</td><td>Quantum efficiency. Ideal 1. </td></tr>
     <tr><td class="paramname">temperature</td><td>Temperature of the sensor /K. Ideal -&gt; 0. </td></tr>
     <tr><td class="paramname">emissivity</td><td>Emissivity of the sensor. Ideal 1. </td></tr>
     <tr><td class="paramname">readout</td><td>Readout noise /electrons. Ideal 0. </td></tr>
+    <tr><td class="paramname">ADU</td><td>Analogue-to-digital units. Electrons per count; ideal 1. </td></tr>
   </table>
   </dd>
 </dl>
+
+</div>
+</div>
+<a class="anchor" id="ab55df007a3c2b5b5e100191754c95bc6"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">int sumPhotons </td>
+          <td>(</td>
+          <td class="paramtype">vector&lt; vector&lt; int &gt;&gt;&#160;</td>
+          <td class="paramname"><em>matrix</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>Returns the total number of photons in a pixel grid, either of pixels or simels.</p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">matrix</td><td>The pixel grid in a 2d int vector </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>Total number of photons in the inputted matrix </dd></dl>
 
 </div>
 </div>
