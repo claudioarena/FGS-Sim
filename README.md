@@ -38,12 +38,12 @@ Version number, Date in ISO 8601 format, Notes on changes
 	- Changed the Poisson noise method in the Test class to N - (X * time * area), where X~Po(sqrt(N)). This allows photon noise to be either positive or negative. 
 	- Fixed the input of the star coordinates to be in terms of the pixel index. 
 	- Bug fixes and performance and flexibility improvements. 
-- 2.0.1 2017-08-01
+- 2.1.1 2017-08-01
 	- Fixed addition of Poisson noise, where the number of photons recorded was added to the output matrix twice
 	- Added parameters for various kinds of noise and inefficiencies:
 		- Emissivity, where the ideal case is e=1
 		- Quantum efficiency, where ideal case is QE=0
-	- Added parameters for other noise from the [E2V CCD230-42 datasheet](https://www.e2v.com/resources/account/download-datasheet/1328 "CCD datasheet"): 
+	- Added parameters for other noise from the [E2V CCD230-42 datasheet](https://www.e2v.com/resources/account/download-datasheet/3828 "CCD datasheet"): 
 		- Temperature-dependent dark current, calculated from a temperature input. References: 
 			- Dyer, "A phenomenological model for the Meyer-Neldel rule", 
 			[J. Phys. C: Solid State Phys. 19 (1986) pp. 5655-5664.](http://iopscience.iop.org/article/10.1088/0022-3719/19/28/016)
@@ -55,3 +55,14 @@ Version number, Date in ISO 8601 format, Notes on changes
 		![Levels out at sigma ~40 for magnitude < 13](http://i.imgur.com/VHxvK8e.png "Result with noise")
 		- Ideal Gaussian input, with no noise of any kind: 
 		![Accurate for all except magnitude 15](http://i.imgur.com/fTqxLlr.png "Result without noise")
+- 2.1.2 2017-08-06.
+	- Looking at the error dependent on the position of the centre within the central pixel, it seems like this dependence is greater for smaller sigma, as shown below for 
+	10k x 10k s-pixels binned into 100x100 pixels. 
+- 2.1.3 2017-08-24
+	- Notice that the E2V CCD230-42 is rated for operating temperature 153-323K. Detector to be at 72K. 
+	- Updated some of the placeholder 0 and 1 variables in main() to the actual values:
+		- Detector temperature: 72K; Reference: White book p67.
+		- Aperture minimum 45cm; p15 and mirror M1 diameter 45cm p18. 
+		- Quantum efficiency at -25C of back-illuminated E2V CCD230-42: ~0.8 with basic broadband coating at visual wavelengths. 
+		- Readout noise of 230-42: 8 e- RMS at -25C at 750 kHz. 
+		- Emissivity [seems to be 1](http://www.ctio.noao.edu/pipermail/ccd-world/2015/001366.html). 

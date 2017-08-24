@@ -6,7 +6,7 @@
  * @file Test.cpp
  * @brief Bin an inputted Gaussian 2d array and find its centroid
  * @author Feiyu Fang
- * @version 2.1 28-07-2017
+ * @version 2.1.3 24-08-2017
  */
 
 #include <chrono>
@@ -87,7 +87,7 @@ vector<vector<int>> Test::addPoissonNoise(float time, float area, float QE, floa
 	unsigned seed = std::chrono::system_clock::now().time_since_epoch().count();
 	default_random_engine generator(seed);
 
-	float darkSignal = 0.1 * exp(5E-7 * 6.63E-34 * ((1./248)-(1./temperature)) / 1.38E-23); // Dark current variance for 500nm
+	float darkSignal = 0.2 * exp(5E-7 * 6.63E-34 * ((1./248)-(1./temperature)) / 1.38E-23); // Dark current variance for 500nm
 	poisson_distribution<int> darkCurrentDist(darkSignal); // Noise from dark current
 	poisson_distribution<int> readNoiseDist(readout); // Read noise
 	vector<vector<int>> outData;

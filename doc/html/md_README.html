@@ -134,12 +134,57 @@ $(document).ready(function(){initNavTree('md_README.html','');});
 <li>The input and output coordinates have been changed to refer to pixel coordinates instead of the arbitrary 0-1-2 original coordinate system, although the <a class="el" href="class_gauss2d.html">Gauss2d</a> class still generates a Gaussian with mean 1 for now.</li>
 </ul>
 </li>
-<li>2.1. 2017-07-28.<ul>
+<li>2.1.0 2017-07-28.<ul>
 <li>Rewrote <a class="el" href="class_gauss2d.html">Gauss2d</a> class to generate a 2d array of integers to allow simulation of the defocussing of N photons into a Gaussian. Also resulted in much more efficient code, with the simulation running ~4x faster with excellent accuracy.</li>
 <li>Used Claudio's Google Sheet to convert stellar magnitudes into photons s^-1 m^-2 to have a stellar magnitude input in <a class="el" href="_main_8cpp.html" title="Main method to run centroid recovery simulation. ">Main.cpp</a>, resulting in N photons defocussed by <a class="el" href="class_gauss2d.html">Gauss2d</a>.</li>
 <li>Changed the Poisson noise method in the <a class="el" href="class_test.html" title="Class to bin an inputted Gaussian 2d array and find its centroid. ">Test</a> class to N - (X * time * area), where X~Po(sqrt(N)). This allows photon noise to be either positive or negative.</li>
 <li>Fixed the input of the star coordinates to be in terms of the pixel index.</li>
-<li>Bug fixes and performance and floxibility improvements. </li>
+<li>Bug fixes and performance and flexibility improvements.</li>
+</ul>
+</li>
+<li>2.1.1 2017-08-01<ul>
+<li>Fixed addition of Poisson noise, where the number of photons recorded was added to the output matrix twice</li>
+<li>Added parameters for various kinds of noise and inefficiencies:<ul>
+<li>Emissivity, where the ideal case is e=1</li>
+<li>Quantum efficiency, where ideal case is QE=0</li>
+</ul>
+</li>
+<li>Added parameters for other noise from the <a href="https://www.e2v.com/resources/account/download-datasheet/3828" title="CCD datasheet">E2V CCD230-42 datasheet</a>:<ul>
+<li>Temperature-dependent dark current, calculated from a temperature input. References:<ul>
+<li>Dyer, "A phenomenological model for the Meyer-Neldel rule", <a href="http://iopscience.iop.org/article/10.1088/0022-3719/19/28/016">J. Phys. C: Solid State Phys. 19 (1986) pp. 5655-5664.</a></li>
+<li>Widenhorn et al, "Temperature dependence of dark current in a CCD", <a href="http://dx.doi.org/10.1117/12.463446">Proc. SPIE 4669, Sensors and Camera Systems for Scientific, Industrial, and Digital Photography Applications III, 193 (April 26, 2002)</a></li>
+</ul>
+</li>
+<li>Readout noise, distributed according to Poisson statistics</li>
+</ul>
+</li>
+<li>Plotted the first real results.<ul>
+<li>At 273K with noise but with ideal emissivity and quantum efficiency: <div class="image">
+<img src="http://i.imgur.com/VHxvK8e.png"  alt="Levels out at sigma ~40 for magnitude &lt; 13" title="Result with noise"/>
+</div>
+</li>
+<li>Ideal Gaussian input, with no noise of any kind: <div class="image">
+<img src="http://i.imgur.com/fTqxLlr.png"  alt="Accurate for all except magnitude 15" title="Result without noise"/>
+</div>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>2.1.2 2017-08-06.<ul>
+<li>Looking at the error dependent on the position of the centre within the central pixel, it seems like this dependence is greater for smaller sigma, as shown below for 10k x 10k s-pixels binned into 100x100 pixels.</li>
+</ul>
+</li>
+<li>2.1.3 2017-08-24<ul>
+<li>Notice that the E2V CCD230-42 is rated for operating temperature 153-323K. Detector to be at 72K.</li>
+<li>Updated some of the placeholder 0 and 1 variables in <a class="el" href="_main_8cpp.html#ae66f6b31b5ad750f1fe042a706a4e3d4" title="Main method. Runs tests with inputted parameters. ">main()</a> to the actual values:<ul>
+<li>Detector temperature: 72K; Reference: White book p67.</li>
+<li>Aperture minimum 45cm; p15 and mirror M1 diameter 45cm p18.</li>
+<li>Quantum efficiency at -25C of back-illuminated E2V CCD230-42: ~0.8 with basic broadband coating at visual wavelengths.</li>
+<li>Readout noise of 230-42: 8 e- RMS at -25C at 750 kHz.</li>
+<li>Emissivity <a href="http://www.ctio.noao.edu/pipermail/ccd-world/2015/001366.html">seems to be 1</a>. </li>
+</ul>
+</li>
 </ul>
 </li>
 </ul>
