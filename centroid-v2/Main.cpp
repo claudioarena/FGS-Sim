@@ -34,43 +34,6 @@ int sumPhotons(vector<vector<int>> matrix) {
 }
 
 /**
- * @brief Test one run, outputting to the console instead of a file. 
- *
- * @param N Number of photons to detect
- * @param xIn x-coordinate of star
- * @param yIn y-coordinate of star
- * @param sigmaX Standard deviation of Gaussian in x-axis
- * @param sigmaY Standard deviation of Gaussian in y-axis
- * @param xPixels Number of pixels to bin the photons into in the x-axis
- * @param yPixels Number of pixels to bin the photons into in the y-axis
- * @param sampling Number of data points per pixel
- * @param time Integration time /s
- * @param area Area of telescope aperture /ms^-2
- * @param QE Quantum efficiency. Ideal 1.
- * @param temperature Temperature of the sensor /K. Ideal -> 0.
- * @param emissivity Emissivity of the sensor. Ideal 1.
- * @param readout Readout noise /electrons. Ideal 0.
- * @param ADU Analogue-to-digital units. Electrons per count; ideal 1. 
- */
-void runOnce(int N, float xIn, float yIn, float sigmaX, float sigmaY, int xPixels, int yPixels, int sampling, 
-			 float time, float area, float QE, float temperature, float emissivity, int readout, float ADU) {
-
-	cout << "Total photons: " << N << endl;
-	int xPoints = xPixels * sampling;
-	int yPoints = yPixels * sampling;
-	Test* t = new Test(N, xIn * sampling, yIn * sampling, sigmaX, sigmaY, xPixels, yPixels, xPoints, yPoints);
-	t->run(true, time, area, QE, temperature, emissivity, readout, ADU); // Run with noise for input time and area 
-	float x = (t->xCentre * xPixels);
-	float y = (t->yCentre * yPixels);
-	cout << "The input coordinates were (" << xIn << ',' << yIn << "). The calculated centroid was (" << x << ',' << y << ")." << endl;
-	cout << "Error in pixel units = " << sqrt((x - xIn)*(x - xIn) + (y - yIn)*(y - yIn)) << endl << endl;
-	//Test::print2dVector(t->pixelData);
-	cout << "Total photons detected: " << sumPhotons(t->pixelData) << endl;
-
-	delete t;
-}
-
-/**
  * @brief Test multiple runs, outputting the results to a CSV file. 
  *
  * @param xIn x-coordinate of star
@@ -103,22 +66,6 @@ void runToFile(float xIn, float yIn, int xPixels, int yPixels, int sampling, flo
 			<< readout << " electrons. " << endl;
 	std::default_random_engine generator; // Initialise uniform distribution and add to inputted x and y
 	std::uniform_real_distribution<double> distribution(-0.5, 0.5);
-
-//	outFile << "Running for a star position which varies between -0.5 to +0.5 from the input centre, sigma = 1," << endl;
-//	for (int s = 1; s <= 20; s++) {
-//		cout << "Calculating for sigma = " << s << "..." << endl;
-//		for (float i = -0.5; i < 0.5; i += 0.1) {
-//
-//			int gaussianCentreX = (xIn + i) * sampling;
-//			Test* t = new Test(532235, gaussianCentreX, yIn * sampling, s, s, xPixels, yPixels, xPoints, yPoints);
-//			t->run(true, time, area, QE, temperature, emissivity, readout); // Run with noise, with time and area
-//			float x = (t->xCentre * xPixels); // Convert output to pixels
-//			float y = (t->yCentre * yPixels);
-//			outFile << i << ',' << sqrt((x - (xIn + i))*(x - (xIn + i)) + (y - yIn)*(y - yIn)) << ',' << x << ',' << y << endl;
-//			//Test::print2dVector(t->pixelData);
-//			delete t;
-//		}
-//	}
 
 	outFile << endl << "Varying sigma: " << endl;
 	outFile << "Sigma in both dimensions, Distance, x-centre, y-centre, photons in, photons detected" << endl;
@@ -161,9 +108,6 @@ int main() {
 	float emissivity = 1; // Proportion of input photons sent to FGS; parameter for dichroic. 
 	int readout = 8;
 	float ADU = 1;
-	
-	//float N = pow(2.512, -1 * magnitude) * 3.36E10; // Convert magnitude to photons s^-1 m^-2
-	//runOnce(N, xIn, yIn, 10, 10, xPixels, yPixels, sampling, exposureTime, area, QE, temperature, emissivity, readout);
 	
 	runToFile(xIn, yIn, xPixels, yPixels, sampling, exposureTime, area, QE, temperature, emissivity, readout, ADU);
 
