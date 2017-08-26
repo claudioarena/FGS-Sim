@@ -1,93 +1,20 @@
 /**
  * Twinkle FGS-Sim: Centroid recovery simulation
- * Purpose: Generate a 2d Gaussian with noise, bin it into "pixels" and find the centroid of the binned data.
+ * Purpose: Run a Monte Carlo simulation to generate a 2d Gaussian with noise, bin it into "pixels" and find 
+ * the centroid of the binned data.
  *
  * @file Main.cpp
  * @brief Main method to run centroid recovery simulation
  * @author Feiyu Fang
- * @version 2.1.3 24-08-2017
+ * @version 2.2 26-08-2017
  */
 
 #include <chrono>
-#include <cmath>
-#include <ctime>
-#include <fstream>
-#include <iomanip>
 #include <iostream>
-#include <random>
 
-#include "Test.hpp"
+#include "MonteCarlo.hpp"
 
 using namespace std;
-
-/**
- * Returns the total number of photons in a pixel grid, either of pixels or simels.
- *
- * @param matrix The pixel grid in a 2d int vector
- * @return Total number of photons in the inputted matrix
- */
-int sumPhotons(vector<vector<int>> matrix) {
-	
-	int sum = 0;
-	for (vector<int> v: matrix) {for (int i: v) sum += i;}
-	return sum;
-}
-
-/**
- * @brief Test multiple runs, outputting the results to a CSV file. 
- *
- * @param xIn x-coordinate of star
- * @param yIn y-coordinate of star
- * @param xPixels Number of pixels in the x-axis to bin the data into
- * @param yPixels Number of pixels in the y-axis to bin the data into
- * @param sampling Number of data points per pixel
- * @param time Integration time /s
- * @param area Area of telescope aperture /m^2
- * @param QE Quantum efficiency. Ideal 1.
- * @param temperature Temperature of the sensor /K. Ideal -> 0.
- * @param emissivity Emissivity of the sensor. Ideal 1.
- * @param readout Readout noise /electrons. Ideal 0.
- * @param ADU Analogue-to-digital units. Electrons per count; ideal 1. 
- */
-void runToFile(float xIn, float yIn, int xPixels, int yPixels, int sampling, float time, float area, float QE,
-			   float temperature, float emissivity, int readout, float ADU) {
-
-	int xPoints = xPixels * sampling;
-	int yPoints = yPixels * sampling;
-	
-	// For testing multiple runs, outputting to an output csv file
-	ofstream outFile; // Initialise output file
-	outFile.open("results.csv");
-
-	outFile << "Input centre: (" << xIn << ';' << yIn << "), pixels in each dimension: " << xPixels << ';' 
-			<< yPixels << ", data points simulated in each dimension: " << xPoints << "; " << yPoints << endl;
-	outFile << "Exposure time: " << time << " s; Telescope pupil area: " << area << " m^2; QE: " << QE
-			<< "; Temperature: " << temperature << " K; Emissivity of sensor: " << emissivity << "; Readout noise: "
-			<< readout << " electrons. " << endl;
-	std::default_random_engine generator; // Initialise uniform distribution and add to inputted x and y
-	std::uniform_real_distribution<double> distribution(-0.5, 0.5);
-
-	outFile << endl << "Varying sigma: " << endl;
-	outFile << "Sigma in both dimensions, Distance, x-centre, y-centre, photons in, photons detected" << endl;
-
-	for (int mag = 7; mag <= 13; mag += 3) { // Run test varying magnitude
-		outFile << endl << "Magnitude: " << mag << endl;
-		for (float i = 1; i <= 10; i += 1) { // Run test varying sigma for each magnitude
-			int N = pow(2.512, -1 * mag) * 3.36E10; // Convert magnitude to photons s^-1 m^-2
-			float uniformX = xIn + distribution(generator);
-			float uniformY = yIn + distribution(generator);
-			Test* t = new Test(N, uniformX * sampling, uniformY * sampling, i, i, xPixels, yPixels, xPoints, yPoints);
-			t->run(true, time, area, QE, temperature, emissivity, readout, ADU); // Run with noise for input time and area 
-
-			float x = (t->xCentre * xPixels);
-			float y = (t->yCentre * yPixels);
-			outFile << i << ',' << sqrt((x - uniformX)*(x - uniformX) + (y - uniformY)*(y - uniformY)) << ','
-					<< x << ',' << y << sumPhotons(t->gaussianInput) << ',' << sumPhotons(t->pixelData) << endl;
-			delete t;
-		}
-	}
-	outFile.close();
-}
 
 ///Main method. Runs tests with inputted parameters.
 int main() {
@@ -95,7 +22,6 @@ int main() {
 	time_t startTime = time(nullptr);
 	cout << '\a' << endl << "Start time: " << asctime(localtime(&startTime)) << endl;
 
-	//float magnitude = 12; // Star magnitude
 	float xIn = 50;//; // Input coordinates of defined centre in terms of pixels. 
 	float yIn = 50;
 	int xPixels = 100;
@@ -109,13 +35,14 @@ int main() {
 	int readout = 8;
 	float ADU = 1;
 	
-	runToFile(xIn, yIn, xPixels, yPixels, sampling, exposureTime, area, QE, temperature, emissivity, readout, ADU);
+	MonteCarlo* m = new MonteCarlo(xIn, yIn, xPixels, yPixels, sampling, exposureTime, area, QE, temperature, emissivity, readout, ADU);
+	m->runToFile("results.csv");
+	delete m;
 
 	time_t endTime  = time(nullptr);
 	cout << "End time: " << asctime(localtime(&endTime)) << endl;
-	cout << "Duration: " << (endTime - startTime) << " s. " << endl;
+	cout << "Duration: " << (endTime - startTime) << " s. " << endl << '\a';
 
-	cout << '\a';
 	return 0;
 }
 
