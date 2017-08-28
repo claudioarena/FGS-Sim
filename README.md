@@ -72,3 +72,5 @@ Version number, Date in ISO 8601 format, Notes on changes
 	- Implemented output of parameters and of photons simulated and detected. 
 - 2.2.0 2017-08-26
 	- In order to run Monte Carlo simulations of the centroid determination error, the runToFile function was moved from Main.cpp into a newly-created MonteCarlo class. 
+	- File I/O handling moved to constructor and destructor of MonteCarlo class. 
+	- MonteCarlo.run(magnitude, iterations) created from parts of original runToFile(params) to run each sigma a given number of times and output the average to the output file. 

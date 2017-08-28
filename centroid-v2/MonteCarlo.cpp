@@ -55,10 +55,10 @@ MonteCarlo::MonteCarlo(string fileName, float inX, float inY, int horizPixels, i
 
 	// Open file and output parameters
 	outFile.open(fileName);
-	outFile << "Input centre: (" << xIn << ';' << yIn << "); pixels in each dimension: (" << xPixels << ';' 
-			<< yPixels << "); data points simulated in each dimension: (" << xPoints << "; " << yPoints << ')' << endl;
-	outFile << "Exposure time: " << time << " s; Telescope pupil area: " << area << " m^2; QE: " << QE
-			<< "; Temperature: " << temperature << " K; Emissivity of sensor: " << emissivity << "; Readout noise: "
+	outFile << "Input centre: (" << xIn << ';' << yIn << "), Pixels in each dimension: (" << xPixels << ';' 
+			<< yPixels << "), Data points simulated in each dimension: (" << xPoints << "; " << yPoints << ")," << endl;
+	outFile << "Exposure time: " << time << " s, Telescope pupil area: " << area << " m^2, QE: " << QE
+			<< "; Temperature: " << temperature << " K, Emissivity of sensor: " << emissivity << "; Readout noise: "
 			<< readout << " electrons. " << endl;
 
 	outFile << endl << "Varying sigma: " << endl;
@@ -98,8 +98,11 @@ float MonteCarlo::average(vector<float> in) {
 }
 
 /**
- *
+ * Run Monte Carlo simulation for star at a random position within a pixel with a given magnitude, running for n times
+ * 
+ * @brief Run Monte Carlo simulation
  * @param mag Magnitude of the star to be tested
+ * @param n Number of times to run simulation for each sigma
  */
 void MonteCarlo::run(float mag, int iterations) {
 
@@ -108,6 +111,8 @@ void MonteCarlo::run(float mag, int iterations) {
 
 	outFile << endl << "Magnitude: " << mag << endl;
 	for (float i = 1; i <= 10; i += 1) { // Run test varying sigma for each magnitude
+		
+		cout << "Calculating for magnitude = " << mag << ", sigma = " << i << " ..." << endl;
 		vector<float> errors; // Vector to hold the error from each Monte Carlo simulation
 		vector<float> photonsIn; 
 		vector<float> photonsOut;
@@ -118,6 +123,7 @@ void MonteCarlo::run(float mag, int iterations) {
 			float uniformY = yIn + distribution(generator);
 			Test* t = new Test(N, uniformX * sampling, uniformY * sampling, i, i, xPixels, yPixels, xPoints, yPoints);
 			t->run(true, time, area, QE, temperature, emissivity, readout, ADU); // Run with noise for input time and area 
+			//t->run(true, 1, 1, 1, 273, 1, 0, 1);
 
 			float x = (t->xCentre * xPixels);
 			float y = (t->yCentre * yPixels);
