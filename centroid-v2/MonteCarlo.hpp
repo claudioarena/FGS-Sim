@@ -7,16 +7,19 @@
  * @version 2.2 26-08-2017
  */
 
+#include <fstream>
 #include "Test.hpp"
 
 class MonteCarlo {
 	public: 
-		MonteCarlo(float inX, float inY, int horizPixels, int vertPixels, int samp, float t, float diameter, float qEff, float temp, float e, int readNoise, float analogueDigitalUnits);
+		MonteCarlo(std::string fileName, float inX, float inY, int horizPixels, int vertPixels, int samp, float t, float diameter, float qEff, float temp, float e, int readNoise, float analogueDigitalUnits);
 		~MonteCarlo();
-		void runToFile(std::string fileName);
+		void run(float mag, int iterations);
 
 	private:
 		float xIn, yIn, time, area, QE, temperature, emissivity, ADU;
-		int xPixels, yPixels, sampling, readout;
+		int xPixels, yPixels, sampling, readout, xPoints, yPoints;
+		std::ofstream outFile;
 		static int sumPhotons(std::vector<std::vector<int>>);
+		static float average(std::vector<float>);
 };
