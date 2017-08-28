@@ -22,10 +22,10 @@ int main() {
 	time_t startTime = time(nullptr);
 	cout << '\a' << endl << "Start time: " << asctime(localtime(&startTime)) << endl;
 
-	float xIn = 50;//; // Input coordinates of defined centre in terms of pixels. 
-	float yIn = 50;
-	int xPixels = 100;
-	int yPixels = 100;
+	float xIn = 500;//; // Input coordinates of defined centre in terms of pixels. 
+	float yIn = 500;
+	int xPixels = 1000;
+	int yPixels = 1000;
 	int sampling = 10; // Pixel sampling: Simulated points per pixel
 	float exposureTime = 1;
 	float diameter = 0.45; // Entrance pupil diameter /m. 450mm from Twinkle whitebook. 

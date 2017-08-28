@@ -123,7 +123,6 @@ void MonteCarlo::run(float mag, int iterations) {
 			float uniformY = yIn + distribution(generator);
 			Test* t = new Test(N, uniformX * sampling, uniformY * sampling, i, i, xPixels, yPixels, xPoints, yPoints);
 			t->run(true, time, area, QE, temperature, emissivity, readout, ADU); // Run with noise for input time and area 
-			//t->run(true, 1, 1, 1, 273, 1, 0, 1);
 
 			float x = (t->xCentre * xPixels);
 			float y = (t->yCentre * yPixels);

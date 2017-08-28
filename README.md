@@ -67,10 +67,13 @@ Version number, Date in ISO 8601 format, Notes on changes
 		- Quantum efficiency at -25C of back-illuminated E2V CCD230-42: ~0.8 with basic broadband coating at visual wavelengths. 
 		- Readout noise of 230-42: 8 e- RMS at -25C at 750 kHz. 
 		- Emissivity [seems to be 1](http://www.ctio.noao.edu/pipermail/ccd-world/2015/001366.html). 
-	- Created block diagram of the modular code: 
-	![Block diagram of the code](http://i.imgur.com/VbaaLUO.png "Flowchart of the modular code")
+	- (Created block diagram of the modular code](http://i.imgur.com/VbaaLUO.png "Flowchart of the modular code")
 	- Implemented output of parameters and of photons simulated and detected. 
 - 2.2.0 2017-08-26
 	- In order to run Monte Carlo simulations of the centroid determination error, the runToFile function was moved from Main.cpp into a newly-created MonteCarlo class. 
 	- File I/O handling moved to constructor and destructor of MonteCarlo class. 
 	- MonteCarlo.run(magnitude, iterations) created from parts of original runToFile(params) to run each sigma a given number of times and output the average to the output file. 
+	- Block diagram updated: 
+	![Block diagram](http://i.imgur.com/sQmubHB.png "Block diagram of the modular code")
+	- Preliminary Monte Carlo results found: 
+	![1000x1000 simels binned into 100x100 pixels](http://i.imgur.com/qaXKpmN.png "Preliminary results")
