@@ -110,7 +110,7 @@ void MonteCarlo::run(float mag, int iterations) {
 	std::uniform_real_distribution<double> distribution(-0.5, 0.5);
 
 	outFile << endl << "Magnitude: " << mag << endl;
-	for (float i = 1; i <= 10; i += 1) { // Run test varying sigma for each magnitude
+	for (float i = 10; i <= 100; i += 10) { // Run test varying sigma for each magnitude
 		
 		cout << "Calculating for magnitude = " << mag << ", sigma = " << i << " ..." << endl;
 		vector<float> errors; // Vector to hold the error from each Monte Carlo simulation

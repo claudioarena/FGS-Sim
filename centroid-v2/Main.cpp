@@ -42,7 +42,7 @@ int main() {
 	delete m; // Close output file
 
 	time_t endTime  = time(nullptr);
-	cout << endl << "End time: " << asctime(localtime(&endTime)) << endl;
+	cout << "End time: " << asctime(localtime(&endTime)) << endl;
 	cout << "Duration: " << (endTime - startTime) << " s. " << endl << '\a';
 
 	return 0;
