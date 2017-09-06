@@ -36,8 +36,9 @@ using namespace std;
  * @param e Emissivity of the dichroic. Ideal 1. 
  * @param readNoise Readout noise /electrons. Ideal 0. 
  * @param analogueDigitalUnits Analogue-to-digital units. Electrons per count; ideal 1.
+ * @param darkCurrent Dark current for the sensor. Ideal 0. 
  */
-MonteCarlo::MonteCarlo(string fileName, float inX, float inY, int horizPixels, int vertPixels, int samp, float t, float diameter, float qEff, float temp, float e, int readNoise, float analogueDigitalUnits) {
+MonteCarlo::MonteCarlo(string fileName, float inX, float inY, int horizPixels, int vertPixels, int samp, float t, float diameter, float qEff, float temp, float e, int readNoise, float analogueDigitalUnits, float darkCurrent) {
 	xIn = inX;
 	yIn = inY;
 	xPixels = horizPixels;
@@ -50,6 +51,7 @@ MonteCarlo::MonteCarlo(string fileName, float inX, float inY, int horizPixels, i
 	emissivity = e;
 	readout = readNoise;
 	ADU = analogueDigitalUnits;
+	darkSignal = darkCurrent;
 	
 	xPoints = xPixels * sampling;
 	yPoints = yPixels * sampling;
@@ -118,25 +120,29 @@ float MonteCarlo::stdDev(vector<float> in) {
  * @param mag Magnitude of the star to be tested
  * @param n Number of times to run simulation for each sigma
  */
-void MonteCarlo::run(float mag, int iterations) {
+void MonteCarlo::run(float magB, float magV, float magR, int iterations) {
 
 	std::default_random_engine generator; // Initialise uniform distribution and add to inputted x and y
 	std::uniform_real_distribution<double> distribution(-0.5, 0.5);
 
-	outFile << endl << "Magnitude: " << mag << endl;
+	outFile << endl << "B-magnitude: " << magB << ",V-magnitude: " << magV << ",R-magnitude: " << magR << endl;
 	for (float i = 1; i <= 10; i += 1) { // Run test varying sigma for each magnitude
 		
-		cout << "Calculating for magnitude = " << mag << ", sigma = " << i << " ..." << endl;
+		cout << "Calculating for B, V, R magnitudes = " << magB << ", " << magV << ", " << magR << ", sigma = " << i << " ..." << endl;
 		vector<float> errors; // Vector to hold the error from each Monte Carlo simulation
 		vector<float> photonsIn; 
 		vector<float> photonsOut;
 
 		for (int j = 0; j < iterations; j++) { /// Iterate each sigma x times at random star positions and find average
-			int N = pow(2.512, -1 * mag) * 3.36E10; // Convert magnitude to photons s^-1 m^-2. TODO: Use band-specific normalisation to introduce band magnitudes. 
+			int photonsB = Test::photonsInBand(magB, 'B'); // Convert magnitude in each band to photons s^-1 m^-2.
+			int photonsV = Test::photonsInBand(magV, 'V');
+			int photonsR = Test::photonsInBand(magR, 'R');
+			int N = photonsB + photonsV + photonsR; // Total photons in all bands
+
 			float uniformX = xIn + distribution(generator);
 			float uniformY = yIn + distribution(generator);
 			Test* t = new Test(N, uniformX * sampling, uniformY * sampling, i, i, xPixels, yPixels, xPoints, yPoints);
-			t->run(true, time, area, QE, temperature, emissivity, readout, ADU); // Run with noise for input time and area 
+			t->run(true, time, area, QE, temperature, emissivity, readout, ADU, darkSignal); // Run with noise for input time and area 
 
 			float x = (t->xCentre * xPixels);
 			float y = (t->yCentre * yPixels);

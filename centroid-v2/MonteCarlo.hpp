@@ -12,12 +12,12 @@
 
 class MonteCarlo {
 	public: 
-		MonteCarlo(std::string fileName, float inX, float inY, int horizPixels, int vertPixels, int samp, float t, float diameter, float qEff, float temp, float e, int readNoise, float analogueDigitalUnits);
+		MonteCarlo(std::string fileName, float inX, float inY, int horizPixels, int vertPixels, int samp, float t, float diameter, float qEff, float temp, float e, int readNoise, float analogueDigitalUnits, float darkCurrent);
 		~MonteCarlo();
-		void run(float mag, int iterations);
+		void run(float magB, float magV, float magR, int iterations);
 
 	private:
-		float xIn, yIn, time, area, QE, temperature, emissivity, ADU;
+		float xIn, yIn, time, area, QE, temperature, emissivity, ADU, darkSignal;
 		int xPixels, yPixels, sampling, readout, xPoints, yPoints;
 		std::ofstream outFile;
 		static int sumPhotons(std::vector<std::vector<int>>);

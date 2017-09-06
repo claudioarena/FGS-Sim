@@ -1,6 +1,6 @@
 var class_monte_carlo =
 [
-    [ "MonteCarlo", "class_monte_carlo.html#a63cf9d25929cd512f1f695eb58dbedd5", null ],
+    [ "MonteCarlo", "class_monte_carlo.html#ac7b02ceedd159e4c7ef14bfa3368fb15", null ],
     [ "~MonteCarlo", "class_monte_carlo.html#af53fc3a679af18b51a3002b4c1f6b6c2", null ],
-    [ "run", "class_monte_carlo.html#a35a14aa463a29256a846fa53d89d7204", null ]
+    [ "run", "class_monte_carlo.html#aa6c533db4e8624c4453bfc0ce106d464", null ]
 ];

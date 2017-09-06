@@ -22,8 +22,9 @@ class Test {
 		std::vector<std::vector<int>> pixelData;
 		std::vector<std::vector<int>> gaussianInput; 
 		
-		void run(bool noise, float time, float area, float QE, float temperature, float emissivity, int readout, float ADU);
+		void run(bool noise, float time, float area, float QE, float temperature, float emissivity, int readout, float ADU, float darkSignal);
 		static void print2dVector(std::vector<std::vector<int>> data); 
+		static int photonsInBand(float mag, char band);
 
 	private:
 		std::vector<std::vector<int>> noiseAfterBin; 
@@ -31,7 +32,8 @@ class Test {
 		int N, horizPixels, vertPixels, pointsX, pointsY;
 
 		static std::vector<int> sumVert(std::vector<std::vector<int>> in, int i, int end);
-		std::vector<std::vector<int>> addNoise(float time, float area, float QE, float temperature, float emissivity, int readout, float ADU);
+		static int mirrorThermalNoise(float area, float temperature);
+		std::vector<std::vector<int>> addNoise(float time, float area, float QE, float temperature, float emissivity, int readout, float ADU, float darkSignal, bool zodiacal);
 		void binData(std::vector<std::vector<int>> dataIn, int h, int v);
 		void findCentroid();
 };

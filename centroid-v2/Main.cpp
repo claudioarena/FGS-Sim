@@ -22,22 +22,23 @@ int main() {
 	time_t startTime = time(nullptr);
 	cout << '\a' << endl << "Start time: " << asctime(localtime(&startTime)) << endl;
 
-	float xIn = 50;//; // Input coordinates of defined centre in terms of pixels. 
+	float xIn = 50; // Input coordinates of defined centre in terms of pixels. 
 	float yIn = 50;
 	int xPixels = 100;
 	int yPixels = 100;
 	int sampling = 10; // Pixel sampling: Simulated points per pixel
-	float exposureTime = 1;
+	float exposureTime = 0.1; // Time /s
 	float diameter = 0.45; // Entrance pupil diameter /m. 450mm from Twinkle whitebook. 
 	float QE = 0.8;
 	float temperature = 72;
 	float emissivity = 1; // Proportion of input photons sent to FGS; parameter for dichroic. 
 	int readout = 8;
 	float ADU = 1;
+	float darkSignal = 0.2;
 	
-	MonteCarlo* m = new MonteCarlo("results.csv", xIn, yIn, xPixels, yPixels, sampling, exposureTime, diameter, QE, temperature, emissivity, readout, ADU);
+	MonteCarlo* m = new MonteCarlo("results.csv", xIn, yIn, xPixels, yPixels, sampling, exposureTime, diameter, QE, temperature, emissivity, readout, ADU, darkSignal);
 	for (int mag = 7; mag <= 13; mag += 3) {
-		m->run(mag, 10); // Each Monte Carlo simulation uses the average of 10 runs
+		m->run(mag, mag, mag, 10); // Each Monte Carlo simulation uses the average of 10 runs
 	}
 	delete m; // Close output file
 
@@ -55,12 +56,12 @@ int main() {
 // Read some FGS literature to have a body of work that can be cited and referenced, with some problems already solved.
 //
 // Find out what noise is dominant. Photon Poisson noise, or dark current? Find the order of the noise. 
-// Add emissivity of 0.01-0.03 for the temperature of the mirrors, where the mirror will also be emitting infrared photons. 
-// Add contribution to background signal from zodiacal light, depending on the output of the Sun. 
-// Introduce magnitude bands. Use J or K magnitudes for the Twinkle instrumentation. Possibly add multiple magnitude inputs for each band. 
-// Use inputs of B-magnitude, V-magnitude, R-magnitude. (Next level: start from star temperature at a certain distance. )
-// Use integration time of between 0.1 and 0.01 s. 
-// Error bars in graphs, with standard deviation. 
+// DONE - Add emissivity of 0.01-0.03 for the temperature of the mirrors, where the mirror will also be emitting infrared photons. 
+// DONE - Add contribution to background signal from zodiacal light, depending on the output of the Sun. 
+// DONE - Introduce magnitude bands. Use J or K magnitudes for the Twinkle instrumentation. Possibly add multiple magnitude inputs for each band. 
+// DONE - Use inputs of B-magnitude, V-magnitude, R-magnitude. (Next level: start from star temperature at a certain distance. )
+// DONE - Use integration time of between 0.1 and 0.01 s. 
+// DONE - Error bars in graphs, with standard deviation. 
 // Try finding a parametric curve for the graphs, depending on time, star magnitude, etc. This means that we wouldn't need to find 100 Monte Carlos. 
 //
 // Go back from number of photons to flux by multiplying by hv. Take the centre of the frequency band as the frequency. 

@@ -116,19 +116,19 @@ $(document).ready(function(){initNavTree('class_monte_carlo.html','');});
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
-<tr class="memitem:a63cf9d25929cd512f1f695eb58dbedd5"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_monte_carlo.html#a63cf9d25929cd512f1f695eb58dbedd5">MonteCarlo</a> (std::string fileName, float inX, float inY, int horizPixels, int vertPixels, int samp, float t, float diameter, float qEff, float temp, float e, int readNoise, float analogueDigitalUnits)</td></tr>
-<tr class="memdesc:a63cf9d25929cd512f1f695eb58dbedd5"><td class="mdescLeft">&#160;</td><td class="mdescRight">Constructs a <a class="el" href="class_monte_carlo.html">MonteCarlo</a> object with input parameters and opens file.  <a href="#a63cf9d25929cd512f1f695eb58dbedd5">More...</a><br /></td></tr>
-<tr class="separator:a63cf9d25929cd512f1f695eb58dbedd5"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ac7b02ceedd159e4c7ef14bfa3368fb15"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_monte_carlo.html#ac7b02ceedd159e4c7ef14bfa3368fb15">MonteCarlo</a> (std::string fileName, float inX, float inY, int horizPixels, int vertPixels, int samp, float t, float diameter, float qEff, float temp, float e, int readNoise, float analogueDigitalUnits, float darkCurrent)</td></tr>
+<tr class="memdesc:ac7b02ceedd159e4c7ef14bfa3368fb15"><td class="mdescLeft">&#160;</td><td class="mdescRight">Constructs a <a class="el" href="class_monte_carlo.html">MonteCarlo</a> object with input parameters and opens file.  <a href="#ac7b02ceedd159e4c7ef14bfa3368fb15">More...</a><br /></td></tr>
+<tr class="separator:ac7b02ceedd159e4c7ef14bfa3368fb15"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:af53fc3a679af18b51a3002b4c1f6b6c2"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="af53fc3a679af18b51a3002b4c1f6b6c2"></a>
 &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_monte_carlo.html#af53fc3a679af18b51a3002b4c1f6b6c2">~MonteCarlo</a> ()</td></tr>
 <tr class="memdesc:af53fc3a679af18b51a3002b4c1f6b6c2"><td class="mdescLeft">&#160;</td><td class="mdescRight">Destructor for <a class="el" href="class_monte_carlo.html">MonteCarlo</a> object closes the current file. <br /></td></tr>
 <tr class="separator:af53fc3a679af18b51a3002b4c1f6b6c2"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a35a14aa463a29256a846fa53d89d7204"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_monte_carlo.html#a35a14aa463a29256a846fa53d89d7204">run</a> (float mag, int iterations)</td></tr>
-<tr class="memdesc:a35a14aa463a29256a846fa53d89d7204"><td class="mdescLeft">&#160;</td><td class="mdescRight">Run Monte Carlo simulation.  <a href="#a35a14aa463a29256a846fa53d89d7204">More...</a><br /></td></tr>
-<tr class="separator:a35a14aa463a29256a846fa53d89d7204"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aa6c533db4e8624c4453bfc0ce106d464"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_monte_carlo.html#aa6c533db4e8624c4453bfc0ce106d464">run</a> (float magB, float magV, float magR, int iterations)</td></tr>
+<tr class="memdesc:aa6c533db4e8624c4453bfc0ce106d464"><td class="mdescLeft">&#160;</td><td class="mdescRight">Run Monte Carlo simulation.  <a href="#aa6c533db4e8624c4453bfc0ce106d464">More...</a><br /></td></tr>
+<tr class="separator:aa6c533db4e8624c4453bfc0ce106d464"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
-<a class="anchor" id="a63cf9d25929cd512f1f695eb58dbedd5"></a>
+<a class="anchor" id="ac7b02ceedd159e4c7ef14bfa3368fb15"></a>
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
@@ -208,7 +208,13 @@ Public Member Functions</h2></td></tr>
           <td class="paramkey"></td>
           <td></td>
           <td class="paramtype">float&#160;</td>
-          <td class="paramname"><em>analogueDigitalUnits</em>&#160;</td>
+          <td class="paramname"><em>analogueDigitalUnits</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">float&#160;</td>
+          <td class="paramname"><em>darkCurrent</em>&#160;</td>
         </tr>
         <tr>
           <td></td>
@@ -234,6 +240,7 @@ Public Member Functions</h2></td></tr>
     <tr><td class="paramname">e</td><td>Emissivity of the dichroic. Ideal 1. </td></tr>
     <tr><td class="paramname">readNoise</td><td>Readout noise /electrons. Ideal 0. </td></tr>
     <tr><td class="paramname">analogueDigitalUnits</td><td>Analogue-to-digital units. Electrons per count; ideal 1. </td></tr>
+    <tr><td class="paramname">darkCurrent</td><td>Dark current for the sensor. Ideal 0. </td></tr>
   </table>
   </dd>
 </dl>
@@ -241,7 +248,7 @@ Public Member Functions</h2></td></tr>
 </div>
 </div>
 <h2 class="groupheader">Member Function Documentation</h2>
-<a class="anchor" id="a35a14aa463a29256a846fa53d89d7204"></a>
+<a class="anchor" id="aa6c533db4e8624c4453bfc0ce106d464"></a>
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
@@ -249,7 +256,19 @@ Public Member Functions</h2></td></tr>
           <td class="memname">void MonteCarlo::run </td>
           <td>(</td>
           <td class="paramtype">float&#160;</td>
-          <td class="paramname"><em>mag</em>, </td>
+          <td class="paramname"><em>magB</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">float&#160;</td>
+          <td class="paramname"><em>magV</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">float&#160;</td>
+          <td class="paramname"><em>magR</em>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>

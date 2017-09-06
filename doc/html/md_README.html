@@ -198,10 +198,17 @@ $(document).ready(function(){initNavTree('md_README.html','');});
 <img src="http://i.imgur.com/sQmubHB.png"  alt="Block diagram" title="Block diagram of the modular code"/>
 </div>
 </li>
-<li>Preliminary Monte Carlo results found: <div class="image">
-<img src="http://i.imgur.com/qaXKpmN.png"  alt="1000x1000 simels binned into 100x100 pixels" title="Preliminary results"/>
+<li><a href="http://i.imgur.com/qaXKpmN.png" title="Preliminary results">Preliminary Monte Carlo results found: 1000x1000 simels binned into 100x100 pixels</a></li>
+</ul>
+</li>
+<li>2.2.1 2017-09-06<ul>
+<li>Standard deviation of Monte Carlo runs added to <a class="el" href="class_monte_carlo.html">MonteCarlo</a> class for error bars on graph. <div class="image">
+<img src="https://i.imgur.com/qiyPEQr.png"  alt="1000x1000 simels binned into 100x100 pixels" title="Preliminary results"/>
 </div>
- </li>
+</li>
+<li>Magnitude bands introduced. B, V and R magnitudes can be inputted separately.</li>
+<li>Added thermal noise from infrared emission from the mirrors.</li>
+<li>Added background from zodiacal light into Test::addNoise(params). The FGS FOV is taken to be 3 arcminutes, hence the 180 arcseconds normalisation. Reference: Schmude R., "Photoelectric Magnitude Measurements of the Zodiacal Light", <a href="http://adsabs.harvard.edu/full/1999IAPPP..75...24S" title="Journal link">International Amateur-Professional Photoelectric Photometry Communication, No. 75, p.24 (1999)</a> </li>
 </ul>
 </li>
 </ul>

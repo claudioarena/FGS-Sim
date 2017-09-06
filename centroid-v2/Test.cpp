@@ -71,6 +71,53 @@ vector<int> Test::sumVert(vector<vector<int>> in, int i, int end) {
 }
 
 /**
+ * Public static function to find the number of photons per second for a given band-magnitude. Defaults to 
+ * combination of B, V and R bands. 
+ * @brief Finds the number of photons per second for a given band and magnitude. 
+ * @param mag Band-magnitude of the star
+ * @param band Spectral band: B, V, R. 
+ * @return Number of photons from a star in the given band per second
+ */
+int Test::photonsInBand(float mag, char band) {
+
+	double out = pow(2.512, -1 * mag); // Photons per second = pow(2.512, -1 * mag) * 3.36E10, etc. 
+	switch (band) {
+		case 'B':
+			out *= 1.415E10;
+			break;
+		case 'V':
+			out *= 8.79E9;
+			break;
+		case 'R':
+			out *= 1.07E10;
+			break;
+		default:
+			out *= 3.36E10;
+			break;
+	}
+	return out;
+}
+
+/**
+ * Private static function to calculate the number of infrared photons emitted by the mirrors through thermal emission. 
+ * @brief Calculates noise from mirror infrared emission
+ * @param area Area of mirror
+ * @param temperature Temperature of mirror
+ * @return Number of infrared photons emitted from mirror per second
+ */
+int Test::mirrorThermalNoise(float area, float temperature) {
+	const float SB = 5.67E-8;		// Stefan-Boltzmann constant
+	const float WIEN = 2.9E-3;		// Wien's displacement constant
+	const float PLANCK = 6.63E-34;	// Planck's constant
+	float emiss = 0.02;				// Mirror emissivity
+
+	float power = area * emiss * SB * pow(temperature, 4);
+	float wavelength = WIEN / temperature;
+
+	return power / (PLANCK * 3E8 / wavelength);
+}
+
+/**
  * Private function to take the current Test object and add Poisson noise to the pixelData. 
  *
  * @param time Exposure time /s
@@ -81,16 +128,23 @@ vector<int> Test::sumVert(vector<vector<int>> in, int i, int end) {
  * @param readout Readout noise /electrons, quoted as variance. Ideal 0.
  * @return outNoise A 2d vector of just the generated noise
  * @param ADU Analogue-to-digital units. Electrons per count; ideal 1. 
+ * @param darkSignal Dark current /electrons. 
+ * @param zodiacal Boolean specifying whether to add background photons from zodiacal light
  */
-vector<vector<int>> Test::addNoise(float time, float area, float QE, float temperature, float emissivity, int readout, float ADU) {
+vector<vector<int>> Test::addNoise(float time, float area, float QE, float temperature, float emissivity, int readout, float ADU, float darkSignal, bool zodiacal) {
 
 	// Seed the generation of Poisson-distributed random variable with the current time
 	unsigned seed = std::chrono::system_clock::now().time_since_epoch().count();
 	default_random_engine generator(seed);
 
-	float darkSignal = 0.2 * exp(5E-7 * 6.63E-34 * ((1./248)-(1./temperature)) / 1.38E-23); // Dark current variance for 500nm
-	poisson_distribution<int> darkCurrentDist(darkSignal); // Noise from dark current
+	int zodiacalPhotons = 0;
+	if (zodiacal == true) zodiacalPhotons += (180. / this->horizPixels) * (180. / this->vertPixels) * (photonsInBand(22.37, 'B') + photonsInBand(21.89, 'V')); // Background photons from zodiacal light. See line 84 of ../README.md. 
+	float dark = darkSignal * exp(5E-7 * 6.63E-34 * ((1./248)-(1./temperature)) / 1.38E-23); // Dark current variance for 500nm
+
+	poisson_distribution<int> darkCurrentDist(dark); // Noise from dark current
 	poisson_distribution<int> readNoiseDist(readout); // Read noise
+	poisson_distribution<int> mirrorThermalEmission(mirrorThermalNoise(area, temperature));
+	poisson_distribution<int> zodiacalLight(zodiacalPhotons);
 	vector<vector<int>> outData;
 	vector<vector<int>> outNoise;
 	
@@ -100,8 +154,8 @@ vector<vector<int>> Test::addNoise(float time, float area, float QE, float tempe
 
 		for (int i: v) { // For each pixel value in the row, generate its noise and add to output vector. 
 			float lambda = sqrt(i);
-			poisson_distribution<int> distribution(lambda); // Noise ~ Po(sqrt(value))
-			int noiseAddition = ((lambda - distribution(generator)) * time * area) + darkCurrentDist(generator) + readNoiseDist(generator);
+			poisson_distribution<int> photonNoise(lambda); // Noise ~ Po(sqrt(value))
+			int noiseAddition = (lambda - photonNoise(generator)) + zodiacalLight(generator) + readNoiseDist(generator) + ((darkCurrentDist(generator) + (mirrorThermalEmission(generator) * area)) * time);
 			rowOutNoise.push_back(noiseAddition);
 			rowOutData.push_back((noiseAddition + i) * emissivity * QE * ADU);
 		}
@@ -215,14 +269,15 @@ void Test::print2dVector(vector<vector<int>> data) {
  * @param emissivity Emissivity of the sensor. Ideal blackbody 1.
  * @param readout Readout noise /electrons. Ideal 0. 
  * @param ADU Analogue-to-digital units. Electrons per count; ideal 1. 
+ * @param darkSignal Dark signal /electrons
  */
-void Test::run(bool noise, float time, float area, float QE, float temperature, float emissivity, int readout, float ADU) {
+void Test::run(bool noise, float time, float area, float QE, float temperature, float emissivity, int readout, float ADU, float darkSignal) {
 
 	// Generate a 2D array of a Gaussian with noise. 
 	Gauss2d *g = new Gauss2d(N, pointsX, pointsY, inX, inY, sigmaX, sigmaY);
 	gaussianInput = g->generate();
 	this->binData(gaussianInput, horizPixels, vertPixels);
-	if (noise == true) noiseAfterBin = this->addNoise(time, area, QE, temperature, emissivity, readout, ADU);
+	if (noise == true) noiseAfterBin = this->addNoise(time, area, QE, temperature, emissivity, readout, ADU, darkSignal, true);
 	this->findCentroid();
 
 	delete g;

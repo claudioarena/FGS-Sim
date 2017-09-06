@@ -75,5 +75,12 @@ Version number, Date in ISO 8601 format, Notes on changes
 	- MonteCarlo.run(magnitude, iterations) created from parts of original runToFile(params) to run each sigma a given number of times and output the average to the output file. 
 	- Block diagram updated: 
 	![Block diagram](http://i.imgur.com/sQmubHB.png "Block diagram of the modular code")
-	- Preliminary Monte Carlo results found: 
-	![1000x1000 simels binned into 100x100 pixels](http://i.imgur.com/qaXKpmN.png "Preliminary results")
+	- [Preliminary Monte Carlo results found: 1000x1000 simels binned into 100x100 pixels](http://i.imgur.com/qaXKpmN.png "Preliminary results")
+- 2.2.1 2017-09-06
+	- Standard deviation of Monte Carlo runs added to MonteCarlo class for error bars on graph. 
+	![1000x1000 simels binned into 100x100 pixels](https://i.imgur.com/qiyPEQr.png "Preliminary results")
+	- Magnitude bands introduced. B, V and R magnitudes can be inputted separately. 
+	- Added thermal noise from infrared emission from the mirrors. 
+	- Added background from zodiacal light into Test::addNoise(params). The FGS FOV is taken to be 3 arcminutes, hence the 180 arcseconds normalisation. 
+	Reference: Schmude R., "Photoelectric Magnitude Measurements of the Zodiacal Light", 
+	[International Amateur-Professional Photoelectric Photometry Communication, No. 75, p.24 (1999)](http://adsabs.harvard.edu/full/1999IAPPP..75...24S "Journal link")
