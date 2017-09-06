@@ -8,6 +8,7 @@
  * @version 2.2 26-08-2017
  */
 
+#include <algorithm>
 #include <cmath>
 #include <fstream>
 #include <iostream>
@@ -55,14 +56,13 @@ MonteCarlo::MonteCarlo(string fileName, float inX, float inY, int horizPixels, i
 
 	// Open file and output parameters
 	outFile.open(fileName);
-	outFile << "Input centre: (" << xIn << ';' << yIn << "), Pixels in each dimension: (" << xPixels << ';' 
-			<< yPixels << "), Data points simulated in each dimension: (" << xPoints << "; " << yPoints << ")," << endl;
-	outFile << "Exposure time: " << time << " s, Telescope pupil area: " << area << " m^2, QE: " << QE
-			<< "; Temperature: " << temperature << " K, Emissivity of sensor: " << emissivity << "; Readout noise: "
-			<< readout << " electrons. " << endl;
+	outFile << "Test: Varying sigma, Input centre: (" << xIn << ';' << yIn << "), Pixels in each dimension: ("
+			<< xPixels << ';' << yPixels << "), Data points simulated in each dimension: (" << xPoints << "; "
+			<< yPoints << ")," << "Exposure time: " << time << " s" << endl;
+	outFile << "Telescope pupil area: " << area << " m^2, QE: " << QE << ", Temperature: " << temperature 
+			<< " K, Emissivity of sensor: " << emissivity << ", Readout noise: " << readout << " electrons. " << endl;
 
-	outFile << endl << "Varying sigma: " << endl;
-	outFile << "Sigma in both dimensions, Average distance, Photons in, Photons detected" << endl;
+	outFile << endl << "Sigma in both dimensions, Average distance, Photons in, Photons detected, Monte Carlo standard deviation" << endl;
 }
 
 
@@ -92,9 +92,23 @@ int MonteCarlo::sumPhotons(vector<vector<int>> matrix) {
  */
 float MonteCarlo::average(vector<float> in) {
 
-	float sum = 0;
-	for (float f: in) sum += f;
+	float sum = accumulate(in.begin(), in.end(), 0.);
 	return (sum / in.size());
+}
+
+/**
+ * Private static function to calculate the standard deviation of a vector of floats
+ * @brief Calculates the standard deviation of numbers held in a vector
+ * @param in A vector<float> containing the numbers whose SD is to be found
+ * @return Standard deviation
+ */
+float MonteCarlo::stdDev(vector<float> in) {
+	
+	float mean = average(in);
+	float accum = 0.0;
+	for_each (begin(in), end(in), [&](const float d) {accum += (d - mean) * (d - mean);});
+
+	return sqrt(accum / (in.size()-1));
 }
 
 /**
@@ -110,7 +124,7 @@ void MonteCarlo::run(float mag, int iterations) {
 	std::uniform_real_distribution<double> distribution(-0.5, 0.5);
 
 	outFile << endl << "Magnitude: " << mag << endl;
-	for (float i = 10; i <= 100; i += 10) { // Run test varying sigma for each magnitude
+	for (float i = 1; i <= 10; i += 1) { // Run test varying sigma for each magnitude
 		
 		cout << "Calculating for magnitude = " << mag << ", sigma = " << i << " ..." << endl;
 		vector<float> errors; // Vector to hold the error from each Monte Carlo simulation
@@ -118,7 +132,7 @@ void MonteCarlo::run(float mag, int iterations) {
 		vector<float> photonsOut;
 
 		for (int j = 0; j < iterations; j++) { /// Iterate each sigma x times at random star positions and find average
-			int N = pow(2.512, -1 * mag) * 3.36E10; // Convert magnitude to photons s^-1 m^-2
+			int N = pow(2.512, -1 * mag) * 3.36E10; // Convert magnitude to photons s^-1 m^-2. TODO: Use band-specific normalisation to introduce band magnitudes. 
 			float uniformX = xIn + distribution(generator);
 			float uniformY = yIn + distribution(generator);
 			Test* t = new Test(N, uniformX * sampling, uniformY * sampling, i, i, xPixels, yPixels, xPoints, yPoints);
@@ -126,13 +140,11 @@ void MonteCarlo::run(float mag, int iterations) {
 
 			float x = (t->xCentre * xPixels);
 			float y = (t->yCentre * yPixels);
-			//outFile << i << ',' << sqrt((x - uniformX)*(x - uniformX) + (y - uniformY)*(y - uniformY)) << ','
-			//		<< x << ',' << y << ',' << sumPhotons(t->gaussianInput) << ',' << sumPhotons(t->pixelData) << endl;
 			errors.push_back(sqrt((x - uniformX)*(x - uniformX) + (y - uniformY)*(y - uniformY)));
 			photonsIn.push_back(sumPhotons(t->gaussianInput));
 			photonsOut.push_back(sumPhotons(t->pixelData));
 			delete t;
 		}
-		outFile << i << ',' << average(errors) << ',' << average(photonsIn) << ',' << average(photonsOut) << endl;
+		outFile << i << ',' << average(errors) << ',' << average(photonsIn) << ',' << average(photonsOut) << ',' << stdDev(errors) << endl;
 	}
 }

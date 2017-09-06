@@ -186,15 +186,22 @@ $(document).ready(function(){initNavTree('md_README.html','');});
 <li>Emissivity <a href="http://www.ctio.noao.edu/pipermail/ccd-world/2015/001366.html">seems to be 1</a>.</li>
 </ul>
 </li>
-<li>Created block diagram of the modular code: <div class="image">
-<img src="http://i.imgur.com/VbaaLUO.png"  alt="Block diagram of the code" title="Flowchart of the modular code"/>
-</div>
-</li>
+<li>(Created block diagram of the modular code](<a href="http://i.imgur.com/VbaaLUO.png">http://i.imgur.com/VbaaLUO.png</a> "Flowchart of the modular code")</li>
 <li>Implemented output of parameters and of photons simulated and detected.</li>
 </ul>
 </li>
 <li>2.2.0 2017-08-26<ul>
-<li>In order to run Monte Carlo simulations of the centroid determination error, the runToFile function was moved from <a class="el" href="_main_8cpp.html" title="Main method to run centroid recovery simulation. ">Main.cpp</a> into a newly-created <a class="el" href="class_monte_carlo.html">MonteCarlo</a> class. </li>
+<li>In order to run Monte Carlo simulations of the centroid determination error, the runToFile function was moved from <a class="el" href="_main_8cpp.html" title="Main method to run centroid recovery simulation. ">Main.cpp</a> into a newly-created <a class="el" href="class_monte_carlo.html">MonteCarlo</a> class.</li>
+<li>File I/O handling moved to constructor and destructor of <a class="el" href="class_monte_carlo.html">MonteCarlo</a> class.</li>
+<li>MonteCarlo.run(magnitude, iterations) created from parts of original runToFile(params) to run each sigma a given number of times and output the average to the output file.</li>
+<li>Block diagram updated: <div class="image">
+<img src="http://i.imgur.com/sQmubHB.png"  alt="Block diagram" title="Block diagram of the modular code"/>
+</div>
+</li>
+<li>Preliminary Monte Carlo results found: <div class="image">
+<img src="http://i.imgur.com/qaXKpmN.png"  alt="1000x1000 simels binned into 100x100 pixels" title="Preliminary results"/>
+</div>
+ </li>
 </ul>
 </li>
 </ul>

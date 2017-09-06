@@ -22,4 +22,5 @@ class MonteCarlo {
 		std::ofstream outFile;
 		static int sumPhotons(std::vector<std::vector<int>>);
 		static float average(std::vector<float>);
+		static float stdDev(std::vector<float>);
 };

@@ -22,10 +22,10 @@ int main() {
 	time_t startTime = time(nullptr);
 	cout << '\a' << endl << "Start time: " << asctime(localtime(&startTime)) << endl;
 
-	float xIn = 500;//; // Input coordinates of defined centre in terms of pixels. 
-	float yIn = 500;
-	int xPixels = 1000;
-	int yPixels = 1000;
+	float xIn = 50;//; // Input coordinates of defined centre in terms of pixels. 
+	float yIn = 50;
+	int xPixels = 100;
+	int yPixels = 100;
 	int sampling = 10; // Pixel sampling: Simulated points per pixel
 	float exposureTime = 1;
 	float diameter = 0.45; // Entrance pupil diameter /m. 450mm from Twinkle whitebook. 
@@ -49,20 +49,19 @@ int main() {
 }
 
 // TODO: 
-// DONE - Read through the Twinkle documents to replace the 0 and 1 and 273 parameters in int main() with the actual values.
-// DONE - (E2V CCD230-42) Pick a CCD detector and plug in the parameters. It can be changed later. Use back-illuminated. 
-// Change output to be more easily graphed. 
-// DONE - Make pixels vs simels consistent. Re-generate all the graphs generated to be consistent. 
-// DONE - Re-plot error by sigma by magnitude. Try magnitudes 7, 10, 13. 
-// Run Monte Carlo for that graph, finding an average. Maximum of error axis at 0.2. Make sure the plots are representative with averages and not just one run.
-// DONE - Implement comparison of input photons and detected photons. 
-// DONE - Output parameters simulated at beginning of run to console. 
-// DONE - Create flowchart of I/O of the centroid simulation, going through all modular parts of the code.
 // Magnitude -> W.m^-2 flux -> Add photon noise and background radiation -> Calculate number of photons -> Convert n_photons to n_photo-electrons
 //			 -> Add dark current -> Multiply by exposure time -> Add readout noise from datasheet. 
-// DONE - Include a ADU placeholder = 1 for digital readout. 
 // Look up Jansky units. Claudio's spreadsheet converts magnitude to flux, and then flux to photons. Make sure the flux is in W.m^-2.Hz^-1. 
 // Read some FGS literature to have a body of work that can be cited and referenced, with some problems already solved.
+//
+// Find out what noise is dominant. Photon Poisson noise, or dark current? Find the order of the noise. 
+// Add emissivity of 0.01-0.03 for the temperature of the mirrors, where the mirror will also be emitting infrared photons. 
+// Add contribution to background signal from zodiacal light, depending on the output of the Sun. 
+// Introduce magnitude bands. Use J or K magnitudes for the Twinkle instrumentation. Possibly add multiple magnitude inputs for each band. 
+// Use inputs of B-magnitude, V-magnitude, R-magnitude. (Next level: start from star temperature at a certain distance. )
+// Use integration time of between 0.1 and 0.01 s. 
+// Error bars in graphs, with standard deviation. 
+// Try finding a parametric curve for the graphs, depending on time, star magnitude, etc. This means that we wouldn't need to find 100 Monte Carlos. 
 //
 // Go back from number of photons to flux by multiplying by hv. Take the centre of the frequency band as the frequency. 
 // (Level 2: Take spectral dependence on star temperature for frequency. )
