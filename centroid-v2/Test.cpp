@@ -6,7 +6,7 @@
  * @file Test.cpp
  * @brief Bin an inputted Gaussian 2d array and find its centroid
  * @author Feiyu Fang
- * @version 2.1.3 24-08-2017
+ * @version 2.2.1 07-09-2017
  */
 
 #include <chrono>
@@ -32,8 +32,9 @@ using namespace std;
  * @param vPixels Number of bins in the y-direction to sort the data into
  * @param xPoints Number of data points to simulate in the x-direction
  * @param yPoints Number of data points to simulate in the y-direction
+ * @param zodiac Whether to include zodiacal light as a background
  */
-Test::Test(int nPhotons, float xIn, float yIn, float sdX, float sdY, int hPixels, int vPixels, int xPoints, int yPoints) {
+Test::Test(int nPhotons, float xIn, float yIn, float sdX, float sdY, int hPixels, int vPixels, int xPoints, int yPoints, bool zodiac) {
 	
 	N = nPhotons;
 	inX = xIn;
@@ -44,6 +45,7 @@ Test::Test(int nPhotons, float xIn, float yIn, float sdX, float sdY, int hPixels
 	vertPixels = vPixels;
 	pointsX = xPoints;
 	pointsY = yPoints;
+	zodiacal = zodiac;
 }
 
 Test::~Test() {}
@@ -131,7 +133,7 @@ int Test::mirrorThermalNoise(float area, float temperature) {
  * @param darkSignal Dark current /electrons. 
  * @param zodiacal Boolean specifying whether to add background photons from zodiacal light
  */
-vector<vector<int>> Test::addNoise(float time, float area, float QE, float temperature, float emissivity, int readout, float ADU, float darkSignal, bool zodiacal) {
+vector<vector<int>> Test::addNoise(float time, float area, float QE, float temperature, float emissivity, int readout, float ADU, float darkSignal) {
 
 	// Seed the generation of Poisson-distributed random variable with the current time
 	unsigned seed = std::chrono::system_clock::now().time_since_epoch().count();
@@ -277,7 +279,7 @@ void Test::run(bool noise, float time, float area, float QE, float temperature, 
 	Gauss2d *g = new Gauss2d(N, pointsX, pointsY, inX, inY, sigmaX, sigmaY);
 	gaussianInput = g->generate();
 	this->binData(gaussianInput, horizPixels, vertPixels);
-	if (noise == true) noiseAfterBin = this->addNoise(time, area, QE, temperature, emissivity, readout, ADU, darkSignal, true);
+	if (noise == true) noiseAfterBin = this->addNoise(time, area, QE, temperature, emissivity, readout, ADU, darkSignal);
 	this->findCentroid();
 
 	delete g;

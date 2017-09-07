@@ -5,7 +5,7 @@
  * @file MonteCarlo.cpp
  * @brief Monte Carlo simulation of centroid determination error
  * @author Feiyu Fang
- * @version 2.2 26-08-2017
+ * @version 2.2.1 07-09-2017
  */
 
 #include <algorithm>
@@ -37,8 +37,9 @@ using namespace std;
  * @param readNoise Readout noise /electrons. Ideal 0. 
  * @param analogueDigitalUnits Analogue-to-digital units. Electrons per count; ideal 1.
  * @param darkCurrent Dark current for the sensor. Ideal 0. 
+ * @param zodiac Whether to include zodiacal light as a background
  */
-MonteCarlo::MonteCarlo(string fileName, float inX, float inY, int horizPixels, int vertPixels, int samp, float t, float diameter, float qEff, float temp, float e, int readNoise, float analogueDigitalUnits, float darkCurrent) {
+MonteCarlo::MonteCarlo(string fileName, float inX, float inY, int horizPixels, int vertPixels, int samp, float t, float diameter, float qEff, float temp, float e, int readNoise, float analogueDigitalUnits, float darkCurrent, bool zodiac) {
 	xIn = inX;
 	yIn = inY;
 	xPixels = horizPixels;
@@ -52,26 +53,28 @@ MonteCarlo::MonteCarlo(string fileName, float inX, float inY, int horizPixels, i
 	readout = readNoise;
 	ADU = analogueDigitalUnits;
 	darkSignal = darkCurrent;
+	zodiacal = zodiac;
 	
 	xPoints = xPixels * sampling;
 	yPoints = yPixels * sampling;
 
-	// Open file and output parameters
-	outFile.open(fileName);
-	outFile << "Test: Varying sigma, Input centre: (" << xIn << ';' << yIn << "), Pixels in each dimension: ("
-			<< xPixels << ';' << yPixels << "), Data points simulated in each dimension: (" << xPoints << "; "
-			<< yPoints << ")," << "Exposure time: " << time << " s" << endl;
-	outFile << "Telescope pupil area: " << area << " m^2, QE: " << QE << ", Temperature: " << temperature 
-			<< " K, Emissivity of sensor: " << emissivity << ", Readout noise: " << readout << " electrons. " << endl;
-
-	outFile << endl << "Sigma in both dimensions, Average distance, Photons in, Photons detected, Monte Carlo standard deviation" << endl;
+	cout << fileName << endl;
+//	// Open file and output parameters
+//	outFile.open(fileName);
+//	outFile << "Test: Varying sigma, Input centre: (" << xIn << ';' << yIn << "), Pixels in each dimension: ("
+//			<< xPixels << ';' << yPixels << "), Data points simulated in each dimension: (" << xPoints << "; "
+//			<< yPoints << ")," << "Exposure time: " << time << " s" << endl;
+//	outFile << "Telescope pupil area: " << area << " m^2, QE: " << QE << ", Temperature: " << temperature 
+//			<< " K, Emissivity of sensor: " << emissivity << ", Readout noise: " << readout << " electrons. " << endl;
+//
+//	outFile << endl << "Sigma in both dimensions, Average distance, Photons in, Photons detected, Monte Carlo standard deviation" << endl;
 }
 
 
 /**
  * @brief Destructor for MonteCarlo object closes the current file
  */
-MonteCarlo::~MonteCarlo() {outFile.close();}
+MonteCarlo::~MonteCarlo() {/*outFile.close();*/}
 
 /**
  * Private static function to return the total number of photons in a pixel grid, either of pixels or simels.
@@ -120,15 +123,16 @@ float MonteCarlo::stdDev(vector<float> in) {
  * @param mag Magnitude of the star to be tested
  * @param n Number of times to run simulation for each sigma
  */
-void MonteCarlo::run(float magB, float magV, float magR, int iterations) {
+float MonteCarlo::run(float magB, float magV, float magR, int iterations) {
 
+	float total = 0.;
 	std::default_random_engine generator; // Initialise uniform distribution and add to inputted x and y
 	std::uniform_real_distribution<double> distribution(-0.5, 0.5);
 
-	outFile << endl << "B-magnitude: " << magB << ",V-magnitude: " << magV << ",R-magnitude: " << magR << endl;
+//	outFile << endl << "B-magnitude: " << magB << "; V-magnitude: " << magV << "; R-magnitude: " << magR << endl;
 	for (float i = 1; i <= 10; i += 1) { // Run test varying sigma for each magnitude
 		
-		cout << "Calculating for B, V, R magnitudes = " << magB << ", " << magV << ", " << magR << ", sigma = " << i << " ..." << endl;
+//		cout << "Calculating for B, V, R magnitudes = " << magB << ", " << magV << ", " << magR << ", sigma = " << i << " ..." << endl;
 		vector<float> errors; // Vector to hold the error from each Monte Carlo simulation
 		vector<float> photonsIn; 
 		vector<float> photonsOut;
@@ -141,7 +145,7 @@ void MonteCarlo::run(float magB, float magV, float magR, int iterations) {
 
 			float uniformX = xIn + distribution(generator);
 			float uniformY = yIn + distribution(generator);
-			Test* t = new Test(N, uniformX * sampling, uniformY * sampling, i, i, xPixels, yPixels, xPoints, yPoints);
+			Test* t = new Test(N, uniformX * sampling, uniformY * sampling, i, i, xPixels, yPixels, xPoints, yPoints, zodiacal);
 			t->run(true, time, area, QE, temperature, emissivity, readout, ADU, darkSignal); // Run with noise for input time and area 
 
 			float x = (t->xCentre * xPixels);
@@ -151,6 +155,8 @@ void MonteCarlo::run(float magB, float magV, float magR, int iterations) {
 			photonsOut.push_back(sumPhotons(t->pixelData));
 			delete t;
 		}
-		outFile << i << ',' << average(errors) << ',' << average(photonsIn) << ',' << average(photonsOut) << ',' << stdDev(errors) << endl;
+//		outFile << i << ',' << average(errors) << ',' << average(photonsIn) << ',' << average(photonsOut) << ',' << stdDev(errors) << endl;
+		total += accumulate(errors.begin(), errors.end(), 0.);
 	}
+	return total;
 }

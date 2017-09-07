@@ -6,7 +6,7 @@
  * @file Main.cpp
  * @brief Main method to run centroid recovery simulation
  * @author Feiyu Fang
- * @version 2.2 26-08-2017
+ * @version 2.2.1 07-09-2017
  */
 
 #include <chrono>
@@ -16,7 +16,17 @@
 
 using namespace std;
 
-///Main method. Runs tests with inputted parameters.
+/// Run iteratively for Monte Carlo determination of dominant error
+void run(ofstream& out, float xIn, float yIn, int xPixels, int yPixels, int sampling, float exposureTime, float diameter, float QE, float temperature, float emissivity, int readout, float ADU, float darkSignal, bool zodiacal) {
+	MonteCarlo* n = new MonteCarlo("results.csv", xIn, yIn, xPixels, yPixels, sampling, exposureTime, diameter, QE, temperature, emissivity, readout, ADU, darkSignal, zodiacal);
+	for (int mag = 7; mag <= 13; mag += 3) {
+		for (int i = 0; i < 10; i++) out << n->run(mag, mag, mag, 10) << ','; // Each Monte Carlo simulation uses the average of 10 runs
+		out << endl;
+	}
+	delete n; 
+}
+
+/// Main method. Runs tests with inputted parameters.
 int main() {
 	
 	time_t startTime = time(nullptr);
@@ -31,16 +41,60 @@ int main() {
 	float diameter = 0.45; // Entrance pupil diameter /m. 450mm from Twinkle whitebook. 
 	float QE = 0.8;
 	float temperature = 72;
-	float emissivity = 1; // Proportion of input photons sent to FGS; parameter for dichroic. 
+	float emissivity = 0.3; // Proportion of input photons sent to FGS; parameter for dichroic. 
 	int readout = 8;
 	float ADU = 1;
 	float darkSignal = 0.2;
+	bool zodiacal = true;
 	
-	MonteCarlo* m = new MonteCarlo("results.csv", xIn, yIn, xPixels, yPixels, sampling, exposureTime, diameter, QE, temperature, emissivity, readout, ADU, darkSignal);
-	for (int mag = 7; mag <= 13; mag += 3) {
-		m->run(mag, mag, mag, 10); // Each Monte Carlo simulation uses the average of 10 runs
-	}
-	delete m; // Close output file
+//	MonteCarlo* m = new MonteCarlo("results.csv", xIn, yIn, xPixels, yPixels, sampling, exposureTime, diameter, 1, temperature, emissivity, readout, ADU, darkSignal, zodiacal);
+//	for (int mag = 7; mag <= 13; mag += 3) {
+//		m->run(mag, mag, mag, 10);
+//	}
+//	delete m; // Close output file
+	
+	ofstream outFile;
+	outFile.open("dominantError.csv");
+	
+	outFile << endl << "All present" << endl;
+	run(outFile, xIn, yIn, xPixels, yPixels, sampling, exposureTime, diameter, QE, temperature, emissivity, readout, ADU, darkSignal, zodiacal);
+
+	outFile << endl << "QE = 1" << endl;
+	run(outFile, xIn, yIn, xPixels, yPixels, sampling, exposureTime, diameter, 1, temperature, emissivity, readout, ADU, darkSignal, zodiacal);
+
+	outFile << endl << "Temperature = 1K" << endl;
+	run(outFile, xIn, yIn, xPixels, yPixels, sampling, exposureTime, diameter, QE, 1, emissivity, readout, ADU, darkSignal, zodiacal);
+
+	outFile << endl << "Emissivity = 1" << endl;
+	run(outFile, xIn, yIn, xPixels, yPixels, sampling, exposureTime, diameter, QE, temperature, 1, readout, ADU, darkSignal, zodiacal);
+
+	outFile << endl << "No readout noise" << endl;
+	run(outFile, xIn, yIn, xPixels, yPixels, sampling, exposureTime, diameter, QE, temperature, emissivity, 0, ADU, darkSignal, zodiacal);
+
+	outFile << endl << "No dark signal" << endl;
+	run(outFile, xIn, yIn, xPixels, yPixels, sampling, exposureTime, diameter, QE, temperature, emissivity, readout, ADU, 0, zodiacal);
+
+	outFile << endl << "No zodiacal light" << endl;
+	run(outFile, xIn, yIn, xPixels, yPixels, sampling, exposureTime, diameter, QE, temperature, emissivity, readout, ADU, darkSignal, false);
+
+	outFile << endl << "With no zodiacal light:" << endl;
+
+	outFile << endl << "QE = 1" << endl;
+	run(outFile, xIn, yIn, xPixels, yPixels, sampling, exposureTime, diameter, 1, temperature, emissivity, readout, ADU, darkSignal, false);
+
+	outFile << endl << "Temperature = 1K" << endl;
+	run(outFile, xIn, yIn, xPixels, yPixels, sampling, exposureTime, diameter, QE, 1, emissivity, readout, ADU, darkSignal, false);
+
+	outFile << endl << "Emissivity = 1" << endl;
+	run(outFile, xIn, yIn, xPixels, yPixels, sampling, exposureTime, diameter, QE, temperature, 1, readout, ADU, darkSignal, false);
+
+	outFile << endl << "No readout noise" << endl;
+	run(outFile, xIn, yIn, xPixels, yPixels, sampling, exposureTime, diameter, QE, temperature, emissivity, 0, ADU, darkSignal, false);
+
+	outFile << endl << "No dark signal" << endl;
+	run(outFile, xIn, yIn, xPixels, yPixels, sampling, exposureTime, diameter, QE, temperature, emissivity, readout, ADU, 0, false);
+
+	outFile.close();
 
 	time_t endTime  = time(nullptr);
 	cout << "End time: " << asctime(localtime(&endTime)) << endl;
@@ -55,7 +109,7 @@ int main() {
 // Look up Jansky units. Claudio's spreadsheet converts magnitude to flux, and then flux to photons. Make sure the flux is in W.m^-2.Hz^-1. 
 // Read some FGS literature to have a body of work that can be cited and referenced, with some problems already solved.
 //
-// Find out what noise is dominant. Photon Poisson noise, or dark current? Find the order of the noise. 
+// DONE - Find out what noise is dominant. Photon Poisson noise, or dark current? Find the order of the noise. 
 // DONE - Add emissivity of 0.01-0.03 for the temperature of the mirrors, where the mirror will also be emitting infrared photons. 
 // DONE - Add contribution to background signal from zodiacal light, depending on the output of the Sun. 
 // DONE - Introduce magnitude bands. Use J or K magnitudes for the Twinkle instrumentation. Possibly add multiple magnitude inputs for each band. 

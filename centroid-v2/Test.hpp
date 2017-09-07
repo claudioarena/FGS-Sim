@@ -14,7 +14,7 @@
  */
 class Test {
 	public:
-		Test(int nPhotons, float xIn, float yIn, float sdX, float sdY, int hPixels, int vPixels, int xPoints, int yPoints);
+		Test(int nPhotons, float xIn, float yIn, float sdX, float sdY, int hPixels, int vPixels, int xPoints, int yPoints, bool zodiac);
 		~Test();
 
 		float xCentre;
@@ -30,10 +30,11 @@ class Test {
 		std::vector<std::vector<int>> noiseAfterBin; 
 		float inX, inY, sigmaX, sigmaY;
 		int N, horizPixels, vertPixels, pointsX, pointsY;
+		bool zodiacal;
 
 		static std::vector<int> sumVert(std::vector<std::vector<int>> in, int i, int end);
 		static int mirrorThermalNoise(float area, float temperature);
-		std::vector<std::vector<int>> addNoise(float time, float area, float QE, float temperature, float emissivity, int readout, float ADU, float darkSignal, bool zodiacal);
+		std::vector<std::vector<int>> addNoise(float time, float area, float QE, float temperature, float emissivity, int readout, float ADU, float darkSignal);
 		void binData(std::vector<std::vector<int>> dataIn, int h, int v);
 		void findCentroid();
 };

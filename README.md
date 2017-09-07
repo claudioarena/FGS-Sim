@@ -84,3 +84,5 @@ Version number, Date in ISO 8601 format, Notes on changes
 	- Added background from zodiacal light into Test::addNoise(params). The FGS FOV is taken to be 3 arcminutes, hence the 180 arcseconds normalisation. 
 	Reference: Schmude R., "Photoelectric Magnitude Measurements of the Zodiacal Light", 
 	[International Amateur-Professional Photoelectric Photometry Communication, No. 75, p.24 (1999)](http://adsabs.harvard.edu/full/1999IAPPP..75...24S "Journal link")
+	- 2.2.1E 2017-09-07
+		- Branch to find the dominant source of uncertainty. Revert by uncommenting lines in MonteCarlo.cpp and MonteCarlo.hpp
