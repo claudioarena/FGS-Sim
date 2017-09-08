@@ -16,14 +16,14 @@
 
 using namespace std;
 
-/// Run iteratively for Monte Carlo determination of dominant error
+/// Run with the change of one input to find parametric dependence
 void run(ofstream& out, float xIn, float yIn, int xPixels, int yPixels, int sampling, float exposureTime, float diameter, float QE, float temperature, float emissivity, int readout, float ADU, float darkSignal, bool zodiacal) {
 	MonteCarlo* n = new MonteCarlo("results.csv", xIn, yIn, xPixels, yPixels, sampling, exposureTime, diameter, QE, temperature, emissivity, readout, ADU, darkSignal, zodiacal);
 	for (int mag = 7; mag <= 13; mag += 3) {
-		for (int i = 0; i < 10; i++) out << n->run(mag, mag, mag, 10) << ','; // Each Monte Carlo simulation uses the average of 10 runs
-		out << endl;
+		out << n->run(mag, mag, mag, 10) << ','; // Each Monte Carlo simulation uses the average of 10 runs
 	}
 	delete n; 
+	out << endl;
 }
 
 /// Main method. Runs tests with inputted parameters.
@@ -45,7 +45,7 @@ int main() {
 	int readout = 8;
 	float ADU = 1;
 	float darkSignal = 0.2;
-	bool zodiacal = true;
+	bool zodiacal = false;
 	
 //	MonteCarlo* m = new MonteCarlo("results.csv", xIn, yIn, xPixels, yPixels, sampling, exposureTime, diameter, 1, temperature, emissivity, readout, ADU, darkSignal, zodiacal);
 //	for (int mag = 7; mag <= 13; mag += 3) {
@@ -54,45 +54,27 @@ int main() {
 //	delete m; // Close output file
 	
 	ofstream outFile;
-	outFile.open("dominantError.csv");
+	outFile.open("parameters.csv");
 	
-	outFile << endl << "All present" << endl;
-	run(outFile, xIn, yIn, xPixels, yPixels, sampling, exposureTime, diameter, QE, temperature, emissivity, readout, ADU, darkSignal, zodiacal);
+	cout << "Time" << endl;
+	outFile << endl << "Varying time from 0.02 to 0.2 in 0.02 steps: " << endl;
+	for (float i = 0.02; i <= 0.2; i += 0.02) run(outFile, xIn, yIn, xPixels, yPixels, sampling, i, diameter, QE, temperature, emissivity, readout, ADU, darkSignal, zodiacal);
 
-	outFile << endl << "QE = 1" << endl;
-	run(outFile, xIn, yIn, xPixels, yPixels, sampling, exposureTime, diameter, 1, temperature, emissivity, readout, ADU, darkSignal, zodiacal);
+	cout << "Temperature" << endl;
+	outFile << endl << "Varying temperature from 20K to 200K in 20K steps: " << endl;
+	for (float i = 20; i <= 200; i += 20) run(outFile, xIn, yIn, xPixels, yPixels, sampling, exposureTime, diameter, QE, i, emissivity, readout, ADU, darkSignal, zodiacal);
 
-	outFile << endl << "Temperature = 1K" << endl;
-	run(outFile, xIn, yIn, xPixels, yPixels, sampling, exposureTime, diameter, QE, 1, emissivity, readout, ADU, darkSignal, zodiacal);
+	cout << "QE/emissivity" << endl;
+	outFile << endl << "Varying QE or emissivity from 0.1 to 1 in 0.1 steps: " << endl;
+	for (float i = 20; i <= 200; i += 20) run(outFile, xIn, yIn, xPixels, yPixels, sampling, exposureTime, diameter, i, temperature, emissivity, readout, ADU, darkSignal, zodiacal);
 
-	outFile << endl << "Emissivity = 1" << endl;
-	run(outFile, xIn, yIn, xPixels, yPixels, sampling, exposureTime, diameter, QE, temperature, 1, readout, ADU, darkSignal, zodiacal);
+	cout << "Readout noise" << endl;
+	outFile << endl << "Varying readout noise from 1 to 10 in 1 electron steps: " << endl;
+	for (float i = 1; i <= 10; i++) run(outFile, xIn, yIn, xPixels, yPixels, sampling, exposureTime, diameter, QE, temperature, emissivity, i, ADU, darkSignal, zodiacal);
 
-	outFile << endl << "No readout noise" << endl;
-	run(outFile, xIn, yIn, xPixels, yPixels, sampling, exposureTime, diameter, QE, temperature, emissivity, 0, ADU, darkSignal, zodiacal);
-
-	outFile << endl << "No dark signal" << endl;
-	run(outFile, xIn, yIn, xPixels, yPixels, sampling, exposureTime, diameter, QE, temperature, emissivity, readout, ADU, 0, zodiacal);
-
-	outFile << endl << "No zodiacal light" << endl;
-	run(outFile, xIn, yIn, xPixels, yPixels, sampling, exposureTime, diameter, QE, temperature, emissivity, readout, ADU, darkSignal, false);
-
-	outFile << endl << "With no zodiacal light:" << endl;
-
-	outFile << endl << "QE = 1" << endl;
-	run(outFile, xIn, yIn, xPixels, yPixels, sampling, exposureTime, diameter, 1, temperature, emissivity, readout, ADU, darkSignal, false);
-
-	outFile << endl << "Temperature = 1K" << endl;
-	run(outFile, xIn, yIn, xPixels, yPixels, sampling, exposureTime, diameter, QE, 1, emissivity, readout, ADU, darkSignal, false);
-
-	outFile << endl << "Emissivity = 1" << endl;
-	run(outFile, xIn, yIn, xPixels, yPixels, sampling, exposureTime, diameter, QE, temperature, 1, readout, ADU, darkSignal, false);
-
-	outFile << endl << "No readout noise" << endl;
-	run(outFile, xIn, yIn, xPixels, yPixels, sampling, exposureTime, diameter, QE, temperature, emissivity, 0, ADU, darkSignal, false);
-
-	outFile << endl << "No dark signal" << endl;
-	run(outFile, xIn, yIn, xPixels, yPixels, sampling, exposureTime, diameter, QE, temperature, emissivity, readout, ADU, 0, false);
+	cout << "Dark signal" << endl;
+	outFile << endl << "Varying dark signal from 0.1 to 1.0 in 0.1 electron steps: " << endl;
+	for (float i = 0.1; i <= 1; i += 0.1) run(outFile, xIn, yIn, xPixels, yPixels, sampling, exposureTime, diameter, QE, temperature, emissivity, readout, ADU, i, zodiacal);
 
 	outFile.close();
 
