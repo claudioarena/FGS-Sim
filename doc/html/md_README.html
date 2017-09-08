@@ -208,7 +208,12 @@ $(document).ready(function(){initNavTree('md_README.html','');});
 </li>
 <li>Magnitude bands introduced. B, V and R magnitudes can be inputted separately.</li>
 <li>Added thermal noise from infrared emission from the mirrors.</li>
-<li>Added background from zodiacal light into Test::addNoise(params). The FGS FOV is taken to be 3 arcminutes, hence the 180 arcseconds normalisation. Reference: Schmude R., "Photoelectric Magnitude Measurements of the Zodiacal Light", <a href="http://adsabs.harvard.edu/full/1999IAPPP..75...24S" title="Journal link">International Amateur-Professional Photoelectric Photometry Communication, No. 75, p.24 (1999)</a> </li>
+<li>Added background from zodiacal light into Test::addNoise(params). The FGS FOV is taken to be 3 arcminutes, hence the 180 arcseconds normalisation. Reference: Schmude R., "Photoelectric Magnitude Measurements of the Zodiacal Light", <a href="http://adsabs.harvard.edu/full/1999IAPPP..75...24S" title="Journal link">International Amateur-Professional Photoelectric Photometry Communication, No. 75, p.24 (1999)</a></li>
+<li>2.2.1E 2017-09-07<ul>
+<li>Branch to find the dominant source of uncertainty. Revert by uncommenting lines in <a class="el" href="_monte_carlo_8cpp.html" title="Monte Carlo simulation of centroid determination error. ">MonteCarlo.cpp</a> and <a class="el" href="_monte_carlo_8hpp.html" title="Header file for MonteCarlo class. ">MonteCarlo.hpp</a></li>
+<li><a href="https://imgur.com/a/rD9iN">Results here</a> as well as on Google Drive. </li>
+</ul>
+</li>
 </ul>
 </li>
 </ul>

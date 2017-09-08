@@ -14,14 +14,14 @@ class MonteCarlo {
 	public: 
 		MonteCarlo(std::string fileName, float inX, float inY, int horizPixels, int vertPixels, int samp, float t, float diameter, float qEff, float temp, float e, int readNoise, float analogueDigitalUnits, float darkCurrent, bool zodiac);
 		~MonteCarlo();
-		float run(float magB, float magV, float magR, int iterations);
+		void run(float magB, float magV, float magR, int iterations);
 
 	private:
 		float xIn, yIn, time, area, QE, temperature, emissivity, ADU, darkSignal;
 		int xPixels, yPixels, sampling, readout, xPoints, yPoints;
 		bool zodiacal;
-//		std::ofstream outFile;
+		std::ofstream outFile;
 		static int sumPhotons(std::vector<std::vector<int>>);
-		static float stdDev(std::vector<float>);
 		static float average(std::vector<float>);
+		static float stdDev(std::vector<float>);
 };

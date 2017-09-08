@@ -87,3 +87,4 @@ Version number, Date in ISO 8601 format, Notes on changes
 	- 2.2.1E 2017-09-07
 		- Branch to find the dominant source of uncertainty. Revert by uncommenting lines in MonteCarlo.cpp and MonteCarlo.hpp
 		- [Results here](https://imgur.com/a/rD9iN) as well as on Google Drive. 
+		- Dependence of error on various parameters was found. [Plots can be found here](http://imgur.com/a/9sSke) as well as on Google Drive. 

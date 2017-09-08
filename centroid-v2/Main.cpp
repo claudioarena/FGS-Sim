@@ -6,7 +6,7 @@
  * @file Main.cpp
  * @brief Main method to run centroid recovery simulation
  * @author Feiyu Fang
- * @version 2.2.1E 07-09-2017
+ * @version 2.2.1 07-09-2017
  */
 
 #include <chrono>
@@ -15,16 +15,6 @@
 #include "MonteCarlo.hpp"
 
 using namespace std;
-
-/// Run with the change of one input to find parametric dependence
-void run(ofstream& out, float xIn, float yIn, int xPixels, int yPixels, int sampling, float exposureTime, float diameter, float QE, float temperature, float emissivity, int readout, float ADU, float darkSignal, bool zodiacal) {
-	MonteCarlo* n = new MonteCarlo("results.csv", xIn, yIn, xPixels, yPixels, sampling, exposureTime, diameter, QE, temperature, emissivity, readout, ADU, darkSignal, zodiacal);
-	for (int mag = 7; mag <= 13; mag += 3) {
-		out << n->run(mag, mag, mag, 10) << ','; // Each Monte Carlo simulation uses the average of 10 runs
-	}
-	delete n; 
-	out << endl;
-}
 
 /// Main method. Runs tests with inputted parameters.
 int main() {
@@ -45,39 +35,14 @@ int main() {
 	int readout = 8;
 	float ADU = 1;
 	float darkSignal = 0.2;
-	bool zodiacal = false;
+	bool zodiacal = true;
 	
-//	MonteCarlo* m = new MonteCarlo("results.csv", xIn, yIn, xPixels, yPixels, sampling, exposureTime, diameter, 1, temperature, emissivity, readout, ADU, darkSignal, zodiacal);
-//	for (int mag = 7; mag <= 13; mag += 3) {
-//		m->run(mag, mag, mag, 10);
-//	}
-//	delete m; // Close output file
+	MonteCarlo* m = new MonteCarlo("results.csv", xIn, yIn, xPixels, yPixels, sampling, exposureTime, diameter, QE, temperature, emissivity, readout, ADU, darkSignal, zodiacal);
+	for (int mag = 7; mag <= 13; mag += 3) {
+		m->run(mag, mag, mag, 10);
+	}
+	delete m; // Close output file
 	
-	ofstream outFile;
-	outFile.open("parameters.csv");
-	
-	cout << "Time" << endl;
-	outFile << endl << "Varying time from 0.02 to 0.2 in 0.02 steps: " << endl;
-	for (float i = 0.02; i <= 0.2; i += 0.02) run(outFile, xIn, yIn, xPixels, yPixels, sampling, i, diameter, QE, temperature, emissivity, readout, ADU, darkSignal, zodiacal);
-
-	cout << "Temperature" << endl;
-	outFile << endl << "Varying temperature from 20K to 200K in 20K steps: " << endl;
-	for (float i = 20; i <= 200; i += 20) run(outFile, xIn, yIn, xPixels, yPixels, sampling, exposureTime, diameter, QE, i, emissivity, readout, ADU, darkSignal, zodiacal);
-
-	cout << "QE/emissivity" << endl;
-	outFile << endl << "Varying QE or emissivity from 0.1 to 1 in 0.1 steps: " << endl;
-	for (float i = 20; i <= 200; i += 20) run(outFile, xIn, yIn, xPixels, yPixels, sampling, exposureTime, diameter, i, temperature, emissivity, readout, ADU, darkSignal, zodiacal);
-
-	cout << "Readout noise" << endl;
-	outFile << endl << "Varying readout noise from 1 to 10 in 1 electron steps: " << endl;
-	for (float i = 1; i <= 10; i++) run(outFile, xIn, yIn, xPixels, yPixels, sampling, exposureTime, diameter, QE, temperature, emissivity, i, ADU, darkSignal, zodiacal);
-
-	cout << "Dark signal" << endl;
-	outFile << endl << "Varying dark signal from 0.1 to 1.0 in 0.1 electron steps: " << endl;
-	for (float i = 0.1; i <= 1; i += 0.1) run(outFile, xIn, yIn, xPixels, yPixels, sampling, exposureTime, diameter, QE, temperature, emissivity, readout, ADU, i, zodiacal);
-
-	outFile.close();
-
 	time_t endTime  = time(nullptr);
 	cout << "End time: " << asctime(localtime(&endTime)) << endl;
 	cout << "Duration: " << (endTime - startTime) << " s. " << endl << '\a';
