@@ -73,7 +73,7 @@ MonteCarlo::MonteCarlo(string fileName, float inX, float inY, int horizPixels, i
 /**
  * @brief Destructor for MonteCarlo object closes the current file
  */
-MonteCarlo::~MonteCarlo() {/*outFile.close();*/}
+MonteCarlo::~MonteCarlo() {outFile.close();}
 
 /**
  * Private static function to return the total number of photons in a pixel grid, either of pixels or simels.
@@ -129,7 +129,6 @@ void MonteCarlo::run(float magB, float magV, float magR, int iterations) {
 
 	outFile << endl << "B-magnitude: " << magB << "; V-magnitude: " << magV << "; R-magnitude: " << magR << endl;
 	for (float i = 1; i <= 10; i += 1) { // Run test varying sigma for each magnitude
-		
 		cout << "Calculating for B, V, R magnitudes = " << magB << ", " << magV << ", " << magR << ", sigma = " << i << " ..." << endl;
 		vector<float> errors; // Vector to hold the error from each Monte Carlo simulation
 		vector<float> photonsIn; 

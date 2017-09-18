@@ -1,9 +1,9 @@
 /**
  * Twinkle FGS-Sim: Centroid recovery simulation
- * Purpose: Class to generate a 2d vector Gaussian and add Gaussian noise. 
+ * Purpose: Class to generate a 2d vector Gaussian. 
  *
  * @file Gauss2d.cpp
- * @brief Generate a 2d Gaussian with noise
+ * @brief Generate a 2d Gaussian.
  * @author Feiyu Fang 
  * @version 2.1 28-07-2017
  */

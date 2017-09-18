@@ -9,6 +9,9 @@
 #include <iostream>
 #include <vector>
 
+/**
+ * @brief Generate a 2d Gaussian. 
+ */
 class Gauss2d {
 
 	public: 

@@ -10,6 +10,9 @@
 #include <fstream>
 #include "Test.hpp"
 
+/**
+ * @brief Class to run a Monte Carlo simulation of centroid determination error
+ */
 class MonteCarlo {
 	public: 
 		MonteCarlo(std::string fileName, float inX, float inY, int horizPixels, int vertPixels, int samp, float t, float diameter, float qEff, float temp, float e, int readNoise, float analogueDigitalUnits, float darkCurrent, bool zodiac);

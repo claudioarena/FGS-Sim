@@ -276,7 +276,7 @@ void Test::print2dVector(vector<vector<int>> data) {
 void Test::run(bool noise, float time, float area, float QE, float temperature, float emissivity, int readout, float ADU, float darkSignal) {
 
 	// Generate a 2D array of a Gaussian with noise. 
-	Gauss2d *g = new Gauss2d(N, pointsX, pointsY, inX, inY, sigmaX, sigmaY);
+	Gauss2d *g = new Gauss2d(N * time * area, pointsX, pointsY, inX, inY, sigmaX, sigmaY);
 	gaussianInput = g->generate();
 	this->binData(gaussianInput, horizPixels, vertPixels);
 	if (noise == true) noiseAfterBin = this->addNoise(time, area, QE, temperature, emissivity, readout, ADU, darkSignal);
