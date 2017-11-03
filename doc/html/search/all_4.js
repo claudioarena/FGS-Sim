@@ -1,6 +1,4 @@
 var searchData=
 [
-  ['test',['Test',['../class_test.html',1,'Test'],['../class_test.html#a0314a485d64892639af392ae6728eaa1',1,'Test::Test()']]],
-  ['test_2ecpp',['Test.cpp',['../_test_8cpp.html',1,'']]],
-  ['test_2ehpp',['Test.hpp',['../_test_8hpp.html',1,'']]]
+  ['run',['run',['../class_monte_carlo.html#aa6c533db4e8624c4453bfc0ce106d464',1,'MonteCarlo::run()'],['../class_test.html#a0903bc9d8ec324426c9445e40171c5a8',1,'Test::run()']]]
 ];

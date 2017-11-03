@@ -1,12 +1,12 @@
 /**
- * Procedural code to take a Zemax PSF .txt file and extract its data into a vector<vector<float>> matrix. 
+ * Twinkle FGS-Sim: Centroid recovery simulation
+ * Purpose: Take a Zemax PSF .txt file and extract its data into a vector<vector<int>> matrix. 
  * NOTE: The input .txt file must be converted from MS-DOS to Unix encoding; dos2unix is confirmed as working.
- * TODO: Turn this procedural code into a class and integrate it into the rest of the code. 
  *
  * @file PSF.cpp
  * @brief Imports a PSF from a Zemax .txt output
  * @author Feiyu Fang
- * @date 2017-11-02
+ * @version 3.0.0 2017-11-03
  */
 #include <fstream>
 #include <iostream>
@@ -18,6 +18,13 @@
 
 using namespace std;
 
+/**
+ * Constructor for PSF class. Imports the data from the file and normalises it according to the total photons.
+ *
+ * @brief Constructor imports and normalises data
+ * @param name Input file name
+ * @param N Number of photons to be distributed
+ */
 PSF::PSF(string name, int N) {
 	filename = name;
 	nPhotons = N;

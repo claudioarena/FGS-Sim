@@ -1,4 +1,4 @@
 var files =
 [
-    [ "centroid-v2", "dir_5fa3be115ba2ba65174b0ff3eaa1ef28.html", "dir_5fa3be115ba2ba65174b0ff3eaa1ef28" ]
+    [ "centroid-v3", "dir_ea86788203c736c1c884a329ba2abdd6.html", "dir_ea86788203c736c1c884a329ba2abdd6" ]
 ];

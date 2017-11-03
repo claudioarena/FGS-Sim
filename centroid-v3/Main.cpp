@@ -44,10 +44,11 @@ int main() {
 //	}
 //	delete m; // Close output file
 	
-	PSF* data = new PSF("PSF-FFT-1024.tsv");
-	vector<vector<float>> matrix = data->matrix;
-	cout << "Total rows: " << matrix.size() << ", sum = " << data->sum() << ". End. " << endl;
-	
+	PSF* data = new PSF("PSF-FFT-1024.tsv", Test::photonsInBand(10, 'B'));
+	vector<vector<int>> matrix = data->getMatrix();
+	int total = 0;
+	for (vector<int> v: matrix) for (int i: v) total += i;
+	cout << "Total detected = " << total << ", proportion detected: " << Test::photonsInBand(10, 'B')/(float)total << endl;
 
 	time_t endTime  = time(nullptr);
 	cout << "End time: " << asctime(localtime(&endTime)) << endl;
