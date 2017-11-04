@@ -23,12 +23,12 @@ using namespace std;
  * Constructor to create a new MonteCarlo object with the input parameters. Opens a results file and outputs the parameters to the file.
  * @brief Constructs a MonteCarlo object with input parameters and opens file
  * 
- * @param fileName Name of output file; "results.csv" preferred. 
+ * @param inFileName Name of input file; "PSF-FFT-1024.tsv" preferred. 
+ * @param outFileName Name of output file; "results.csv" preferred. 
  * @param inX x-coordinate of star
  * @param inY y-coordinate of star
  * @param horizPixels Number of pixels in the x-axis to bin the data into
  * @param vertPixels Number of pixels in the y-axis to bin the data into
- * @param samp Number of data points ("simels") per pixel
  * @param t Integration time /s
  * @param diameter Diameter of telescope input pupil /m
  * @param qEff Quantum efficiency. Ideal 1.
@@ -39,12 +39,11 @@ using namespace std;
  * @param darkCurrent Dark current for the sensor. Ideal 0. 
  * @param zodiac Whether to include zodiacal light as a background
  */
-MonteCarlo::MonteCarlo(string fileName, float inX, float inY, int horizPixels, int vertPixels, int samp, float t, float diameter, float qEff, float temp, float e, int readNoise, float analogueDigitalUnits, float darkCurrent, bool zodiac) {
+MonteCarlo::MonteCarlo(string inFileName, string outFileName, float inX, float inY, int horizPixels, int vertPixels, float t, float diameter, float qEff, float temp, float e, int readNoise, float analogueDigitalUnits, float darkCurrent, bool zodiac) {
 	xIn = inX;
 	yIn = inY;
 	xPixels = horizPixels;
 	yPixels = vertPixels;
-	sampling = samp;
 	time = t;
 	area = M_PI * pow((diameter / 2.), 2);
 	QE = qEff;
@@ -54,19 +53,17 @@ MonteCarlo::MonteCarlo(string fileName, float inX, float inY, int horizPixels, i
 	ADU = analogueDigitalUnits;
 	darkSignal = darkCurrent;
 	zodiacal = zodiac;
+	inputFile = inFileName;
 	
-	xPoints = xPixels * sampling;
-	yPoints = yPixels * sampling;
-
 	// Open file and output parameters
-	outFile.open(fileName);
-	outFile << "Test: Varying sigma. Input centre: (" << xIn << ';' << yIn << "). Pixels in each dimension: ("
-			<< xPixels << ';' << yPixels << "). Data points simulated in each dimension: (" << xPoints << "; "
-			<< yPoints << ")." << "Exposure time: " << time << " s" << endl;
+	outFile.open(outFileName);
+	outFile << "Test: Input centre: (" << xIn << ';' << yIn << "). Pixels in each dimension: ("
+			<< xPixels << ';' << yPixels << "). Exposure time: " << time << " s" << endl;
 	outFile << "Telescope pupil area: " << area << " m^2. QE: " << QE << ". Temperature: " << temperature 
 			<< " K. Emissivity of sensor: " << emissivity << ". Readout noise: " << readout << " electrons. " << endl;
 
-	outFile << endl << "Sigma in both dimensions, Average distance, Photons in, Photons detected, Monte Carlo standard deviation" << endl;
+//	outFile << endl << "Sigma in both dimensions, Average distance, Photons in, Photons detected, Monte Carlo standard deviation" << endl;
+	outFile << endl << "X-coordinate, Y-coordinate" << endl;
 }
 
 
@@ -119,39 +116,35 @@ float MonteCarlo::stdDev(vector<float> in) {
  * Run Monte Carlo simulation for star at a random position within a pixel with a given magnitude, running for n times
  * 
  * @brief Run Monte Carlo simulation
- * @param mag Magnitude of the star to be tested
- * @param n Number of times to run simulation for each sigma
+ * @param magB B-magnitude of the star to be tested
+ * @param magV V-magnitude of the star to be tested
+ * @param magR R-magnitude of the star to be tested
+ * @param iterations Number of times to run simulation
  */
 void MonteCarlo::run(float magB, float magV, float magR, int iterations) {
 
-	std::default_random_engine generator; // Initialise uniform distribution and add to inputted x and y
-	std::uniform_real_distribution<double> distribution(-0.5, 0.5);
-
 	outFile << endl << "B-magnitude: " << magB << "; V-magnitude: " << magV << "; R-magnitude: " << magR << endl;
-	for (float i = 1; i <= 10; i += 1) { // Run test varying sigma for each magnitude
-		cout << "Calculating for B, V, R magnitudes = " << magB << ", " << magV << ", " << magR << ", sigma = " << i << " ..." << endl;
-		vector<float> errors; // Vector to hold the error from each Monte Carlo simulation
-		vector<float> photonsIn; 
-		vector<float> photonsOut;
+	cout << "Calculating for B, V, R magnitudes = " << magB << ", " << magV << ", " << magR << " ..." << endl;
+	vector<float> errors; // Vector to hold the error from each Monte Carlo simulation
+	vector<float> photonsIn; 
+	vector<float> photonsOut;
 
-		for (int j = 0; j < iterations; j++) { /// Iterate each sigma x times at random star positions and find average
-			int photonsB = Test::photonsInBand(magB, 'B'); // Convert magnitude in each band to photons s^-1 m^-2.
-			int photonsV = Test::photonsInBand(magV, 'V');
-			int photonsR = Test::photonsInBand(magR, 'R');
-			int N = photonsB + photonsV + photonsR; // Total photons in all bands
+	int photonsB = Test::photonsInBand(magB, 'B'); // Convert magnitude in each band to photons s^-1 m^-2.
+	int photonsV = Test::photonsInBand(magV, 'V');
+	int photonsR = Test::photonsInBand(magR, 'R');
+	int N = photonsB + photonsV + photonsR; // Total photons in all bands
+	
+	for (int j = 0; j < iterations; j++) { /// Iterate x times at random star positions and find average
+		Test* t = new Test(N, xPixels, yPixels, zodiacal, inputFile);
+		t->run(true, time, area, QE, temperature, emissivity, readout, ADU, darkSignal); // Run with noise for input time and area 
 
-			float uniformX = xIn + distribution(generator);
-			float uniformY = yIn + distribution(generator);
-			Test* t = new Test(N, uniformX * sampling, uniformY * sampling, i, i, xPixels, yPixels, xPoints, yPoints, zodiacal);
-			t->run(true, time, area, QE, temperature, emissivity, readout, ADU, darkSignal); // Run with noise for input time and area 
-
-			float x = (t->xCentre * xPixels);
-			float y = (t->yCentre * yPixels);
-			errors.push_back(sqrt((x - uniformX)*(x - uniformX) + (y - uniformY)*(y - uniformY)));
-			photonsIn.push_back(sumPhotons(t->gaussianInput));
-			photonsOut.push_back(sumPhotons(t->pixelData));
-			delete t;
-		}
-		outFile << i << ',' << average(errors) << ',' << average(photonsIn) << ',' << average(photonsOut) << ',' << stdDev(errors) << endl;
+		float x = t->xCentre * xPixels;
+		float y = t->yCentre * yPixels;
+		errors.push_back(sqrt((x - xIn)*(x - xIn) + (y - yIn)*(y - yIn)));
+		photonsIn.push_back(sumPhotons(t->photonsIn));
+		photonsOut.push_back(sumPhotons(t->pixelData));
+		outFile << x << ',' << y << endl;
+		delete t;
 	}
+//	outFile << average(errors) << ',' << average(photonsIn) << ',' << average(photonsOut) << ',' << stdDev(errors) << endl;
 }

@@ -21,7 +21,8 @@ digraph "centroid-v3/MonteCarlo.cpp"
   Node8 -> Node9 [color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
   Node9 [label="Test.hpp",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$_test_8hpp.html",tooltip="Header file for Test class. "];
   Node9 -> Node10 [color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
-  Node10 [label="Gauss2d.hpp",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$_gauss2d_8hpp.html",tooltip="Header for Gauss2d class. "];
-  Node10 -> Node5 [color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node10 [label="PSF.hpp",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$_p_s_f_8hpp.html",tooltip="Header for PSF class. "];
+  Node10 -> Node11 [color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node11 [label="string",height=0.2,width=0.4,color="grey75", fillcolor="white", style="filled"];
   Node10 -> Node7 [color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
 }

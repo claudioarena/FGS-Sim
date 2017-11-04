@@ -123,8 +123,8 @@ $(document).ready(function(){initNavTree('class_test.html','');});
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
-<tr class="memitem:a0314a485d64892639af392ae6728eaa1"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_test.html#a0314a485d64892639af392ae6728eaa1">Test</a> (int nPhotons, float xIn, float yIn, float sdX, float sdY, int hPixels, int vPixels, int xPoints, int yPoints, bool zodiac)</td></tr>
-<tr class="separator:a0314a485d64892639af392ae6728eaa1"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a44e4285fe1802cc8d60b267c9bfb6bcc"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_test.html#a44e4285fe1802cc8d60b267c9bfb6bcc">Test</a> (int nPhotons, int hPixels, int vPixels, bool zodiac, std::string name)</td></tr>
+<tr class="separator:a44e4285fe1802cc8d60b267c9bfb6bcc"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a0903bc9d8ec324426c9445e40171c5a8"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_test.html#a0903bc9d8ec324426c9445e40171c5a8">run</a> (bool noise, float time, float area, float QE, float temperature, float emissivity, int readout, float ADU, float darkSignal)</td></tr>
 <tr class="memdesc:a0903bc9d8ec324426c9445e40171c5a8"><td class="mdescLeft">&#160;</td><td class="mdescRight">Run centroid determination simulation for input variables.  <a href="#a0903bc9d8ec324426c9445e40171c5a8">More...</a><br /></td></tr>
 <tr class="separator:a0903bc9d8ec324426c9445e40171c5a8"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -148,14 +148,14 @@ float&#160;</td><td class="memItemRight" valign="bottom"><b>yCentre</b></td></tr
 <tr class="memitem:aa88a602ff313e456e3765e9cf0dd72ac"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="aa88a602ff313e456e3765e9cf0dd72ac"></a>
 std::vector&lt; std::vector&lt; int &gt; &gt;&#160;</td><td class="memItemRight" valign="bottom"><b>pixelData</b></td></tr>
 <tr class="separator:aa88a602ff313e456e3765e9cf0dd72ac"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a068e6f8c189caac8070c0cfeb5ac6f39"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a068e6f8c189caac8070c0cfeb5ac6f39"></a>
-std::vector&lt; std::vector&lt; int &gt; &gt;&#160;</td><td class="memItemRight" valign="bottom"><b>gaussianInput</b></td></tr>
-<tr class="separator:a068e6f8c189caac8070c0cfeb5ac6f39"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ab4b9562552a411ee643ea444ca9b8b71"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="ab4b9562552a411ee643ea444ca9b8b71"></a>
+std::vector&lt; std::vector&lt; int &gt; &gt;&#160;</td><td class="memItemRight" valign="bottom"><b>photonsIn</b></td></tr>
+<tr class="separator:ab4b9562552a411ee643ea444ca9b8b71"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p>Class to bin an inputted Gaussian 2d array and find its centroid. </p>
 </div><h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
-<a class="anchor" id="a0314a485d64892639af392ae6728eaa1"></a>
+<a class="anchor" id="a44e4285fe1802cc8d60b267c9bfb6bcc"></a>
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
@@ -164,30 +164,6 @@ std::vector&lt; std::vector&lt; int &gt; &gt;&#160;</td><td class="memItemRight"
           <td>(</td>
           <td class="paramtype">int&#160;</td>
           <td class="paramname"><em>nPhotons</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">float&#160;</td>
-          <td class="paramname"><em>xIn</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">float&#160;</td>
-          <td class="paramname"><em>yIn</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">float&#160;</td>
-          <td class="paramname"><em>sdX</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">float&#160;</td>
-          <td class="paramname"><em>sdY</em>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
@@ -204,20 +180,14 @@ std::vector&lt; std::vector&lt; int &gt; &gt;&#160;</td><td class="memItemRight"
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype">int&#160;</td>
-          <td class="paramname"><em>xPoints</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">int&#160;</td>
-          <td class="paramname"><em>yPoints</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
           <td class="paramtype">bool&#160;</td>
-          <td class="paramname"><em>zodiac</em>&#160;</td>
+          <td class="paramname"><em>zodiac</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">std::string&#160;</td>
+          <td class="paramname"><em>name</em>&#160;</td>
         </tr>
         <tr>
           <td></td>
@@ -230,15 +200,10 @@ std::vector&lt; std::vector&lt; int &gt; &gt;&#160;</td><td class="memItemRight"
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramname">nPhotons</td><td>Number of photons to simulate </td></tr>
-    <tr><td class="paramname">xIn</td><td>X-coordinate of the Gaussian 2d vector to be generated </td></tr>
-    <tr><td class="paramname">yIn</td><td>Y-coordinate of the Gaussian 2d vector to be generated </td></tr>
-    <tr><td class="paramname">sdX</td><td>Standard deviation of the generated Gaussian 2d vector in the x-direction </td></tr>
-    <tr><td class="paramname">sdY</td><td>Standard deviation of the generated Gaussian 2d vector in the y-direction </td></tr>
     <tr><td class="paramname">hPixels</td><td>Number of bins in the x-direction to sort the data into </td></tr>
     <tr><td class="paramname">vPixels</td><td>Number of bins in the y-direction to sort the data into </td></tr>
-    <tr><td class="paramname">xPoints</td><td>Number of data points to simulate in the x-direction </td></tr>
-    <tr><td class="paramname">yPoints</td><td>Number of data points to simulate in the y-direction </td></tr>
     <tr><td class="paramname">zodiac</td><td>Whether to include zodiacal light as a background </td></tr>
+    <tr><td class="paramname">name</td><td>File name of the <a class="el" href="class_p_s_f.html" title="Import a PSF from a Zemax .txt file. ">PSF</a> data file to be imported </td></tr>
   </table>
   </dd>
 </dl>

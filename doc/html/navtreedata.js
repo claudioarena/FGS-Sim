@@ -2,6 +2,7 @@ var NAVTREE =
 [
   [ "FGS-Sim", "index.html", [
     [ "CHANGELOG-Summer", "md_CHANGELOG-Summer.html", null ],
+    [ "README", "md_README.html", null ],
     [ "Classes", "annotated.html", [
       [ "Class List", "annotated.html", "annotated_dup" ],
       [ "Class Index", "classes.html", null ],

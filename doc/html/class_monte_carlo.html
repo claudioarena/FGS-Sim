@@ -121,9 +121,9 @@ $(document).ready(function(){initNavTree('class_monte_carlo.html','');});
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
-<tr class="memitem:ab866a0776048224b00352e1ccfc1e44a"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_monte_carlo.html#ab866a0776048224b00352e1ccfc1e44a">MonteCarlo</a> (std::string fileName, float inX, float inY, int horizPixels, int vertPixels, int samp, float t, float diameter, float qEff, float temp, float e, int readNoise, float analogueDigitalUnits, float darkCurrent, bool zodiac)</td></tr>
-<tr class="memdesc:ab866a0776048224b00352e1ccfc1e44a"><td class="mdescLeft">&#160;</td><td class="mdescRight">Constructs a <a class="el" href="class_monte_carlo.html" title="Class to run a Monte Carlo simulation of centroid determination error. ">MonteCarlo</a> object with input parameters and opens file.  <a href="#ab866a0776048224b00352e1ccfc1e44a">More...</a><br /></td></tr>
-<tr class="separator:ab866a0776048224b00352e1ccfc1e44a"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ab3297804a22919515978758c33d25ffe"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_monte_carlo.html#ab3297804a22919515978758c33d25ffe">MonteCarlo</a> (std::string inFileName, std::string outFileName, float inX, float inY, int horizPixels, int vertPixels, float t, float diameter, float qEff, float temp, float e, int readNoise, float analogueDigitalUnits, float darkCurrent, bool zodiac)</td></tr>
+<tr class="memdesc:ab3297804a22919515978758c33d25ffe"><td class="mdescLeft">&#160;</td><td class="mdescRight">Constructs a <a class="el" href="class_monte_carlo.html" title="Class to run a Monte Carlo simulation of centroid determination error. ">MonteCarlo</a> object with input parameters and opens file.  <a href="#ab3297804a22919515978758c33d25ffe">More...</a><br /></td></tr>
+<tr class="separator:ab3297804a22919515978758c33d25ffe"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:af53fc3a679af18b51a3002b4c1f6b6c2"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="af53fc3a679af18b51a3002b4c1f6b6c2"></a>
 &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_monte_carlo.html#af53fc3a679af18b51a3002b4c1f6b6c2">~MonteCarlo</a> ()</td></tr>
 <tr class="memdesc:af53fc3a679af18b51a3002b4c1f6b6c2"><td class="mdescLeft">&#160;</td><td class="mdescRight">Destructor for <a class="el" href="class_monte_carlo.html" title="Class to run a Monte Carlo simulation of centroid determination error. ">MonteCarlo</a> object closes the current file. <br /></td></tr>
@@ -135,7 +135,7 @@ Public Member Functions</h2></td></tr>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p>Class to run a Monte Carlo simulation of centroid determination error. </p>
 </div><h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
-<a class="anchor" id="ab866a0776048224b00352e1ccfc1e44a"></a>
+<a class="anchor" id="ab3297804a22919515978758c33d25ffe"></a>
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
@@ -143,7 +143,13 @@ Public Member Functions</h2></td></tr>
           <td class="memname">MonteCarlo::MonteCarlo </td>
           <td>(</td>
           <td class="paramtype">std::string&#160;</td>
-          <td class="paramname"><em>fileName</em>, </td>
+          <td class="paramname"><em>inFileName</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">std::string&#160;</td>
+          <td class="paramname"><em>outFileName</em>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
@@ -168,12 +174,6 @@ Public Member Functions</h2></td></tr>
           <td></td>
           <td class="paramtype">int&#160;</td>
           <td class="paramname"><em>vertPixels</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">int&#160;</td>
-          <td class="paramname"><em>samp</em>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
@@ -240,12 +240,12 @@ Public Member Functions</h2></td></tr>
 <p>Constructs a <a class="el" href="class_monte_carlo.html" title="Class to run a Monte Carlo simulation of centroid determination error. ">MonteCarlo</a> object with input parameters and opens file. </p>
 <p>Constructor to create a new <a class="el" href="class_monte_carlo.html" title="Class to run a Monte Carlo simulation of centroid determination error. ">MonteCarlo</a> object with the input parameters. Opens a results file and outputs the parameters to the file. </p><dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
-    <tr><td class="paramname">fileName</td><td>Name of output file; "results.csv" preferred. </td></tr>
+    <tr><td class="paramname">inFileName</td><td>Name of input file; "PSF-FFT-1024.tsv" preferred. </td></tr>
+    <tr><td class="paramname">outFileName</td><td>Name of output file; "results.csv" preferred. </td></tr>
     <tr><td class="paramname">inX</td><td>x-coordinate of star </td></tr>
     <tr><td class="paramname">inY</td><td>y-coordinate of star </td></tr>
     <tr><td class="paramname">horizPixels</td><td>Number of pixels in the x-axis to bin the data into </td></tr>
     <tr><td class="paramname">vertPixels</td><td>Number of pixels in the y-axis to bin the data into </td></tr>
-    <tr><td class="paramname">samp</td><td>Number of data points ("simels") per pixel </td></tr>
     <tr><td class="paramname">t</td><td>Integration time /s </td></tr>
     <tr><td class="paramname">diameter</td><td>Diameter of telescope input pupil /m </td></tr>
     <tr><td class="paramname">qEff</td><td>Quantum efficiency. Ideal 1. </td></tr>
@@ -302,12 +302,14 @@ Public Member Functions</h2></td></tr>
 <p>Run Monte Carlo simulation for star at a random position within a pixel with a given magnitude, running for n times</p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
-    <tr><td class="paramname">mag</td><td>Magnitude of the star to be tested </td></tr>
-    <tr><td class="paramname">n</td><td>Number of times to run simulation for each sigma </td></tr>
+    <tr><td class="paramname">magB</td><td>B-magnitude of the star to be tested </td></tr>
+    <tr><td class="paramname">magV</td><td>V-magnitude of the star to be tested </td></tr>
+    <tr><td class="paramname">magR</td><td>R-magnitude of the star to be tested </td></tr>
+    <tr><td class="paramname">iterations</td><td>Number of times to run simulation </td></tr>
   </table>
   </dd>
 </dl>
-<p>Iterate each sigma x times at random star positions and find average </p>
+<p>Iterate x times at random star positions and find average </p>
 
 </div>
 </div>

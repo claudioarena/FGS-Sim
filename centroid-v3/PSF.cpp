@@ -24,10 +24,13 @@ using namespace std;
  * @brief Constructor imports and normalises data
  * @param name Input file name
  * @param N Number of photons to be distributed
+ * @param h Type of PSF. True for Huygens, false for FFT. 
  */
-PSF::PSF(string name, int N) {
+PSF::PSF(string name, int N, bool h) {
 	filename = name;
 	nPhotons = N;
+	if (h == true) headerLines = 21;
+	else headerLines = 18;
 	import();
 	normalise();
 }
@@ -42,7 +45,7 @@ void PSF::import() {
 	ifstream file(filename);
 	string line;
 
-	for (int i = 0; i < 18; i++) getline(file, line); // Ignore lines in header. 21 for Huygens, 18 for FFT. 
+	for (int i = 0; i < headerLines; i++) getline(file, line); // Ignore lines in header. 21 for Huygens, 18 for FFT. 
 	vector<vector<float>> out; // Output matrix for export
 	
 	while (getline(file, line)) { // Read each line into a stream

@@ -1,12 +1,12 @@
 /**
  * Twinkle FGS-Sim: Centroid recovery simulation
- * Purpose: Take a noisy 2d Gaussian and bin it into pixels, representing defocussing of a star. 
+ * Purpose: Take a noisy 2d PSF and bin it into pixels, representing the PSF of a star. 
  * Then calculate the centroid from the pixel data. 
  *
  * @file Test.cpp
- * @brief Bin an inputted Gaussian 2d array and find its centroid
+ * @brief Bin an inputted PSF 2d array and find its centroid
  * @author Feiyu Fang
- * @version 2.2.1 07-09-2017
+ * @version 3.0.0 2017-11-04
  */
 
 #include <chrono>
@@ -24,28 +24,18 @@ using namespace std;
  * Constructs a Test object to bin inputted data and find its centroid. 
  *
  * @param nPhotons Number of photons to simulate
- * @param xIn X-coordinate of the Gaussian 2d vector to be generated
- * @param yIn Y-coordinate of the Gaussian 2d vector to be generated
- * @param sdX Standard deviation of the generated Gaussian 2d vector in the x-direction
- * @param sdY Standard deviation of the generated Gaussian 2d vector in the y-direction
  * @param hPixels Number of bins in the x-direction to sort the data into
  * @param vPixels Number of bins in the y-direction to sort the data into
- * @param xPoints Number of data points to simulate in the x-direction
- * @param yPoints Number of data points to simulate in the y-direction
  * @param zodiac Whether to include zodiacal light as a background
+ * @param name File name of the PSF data file to be imported
  */
-Test::Test(int nPhotons, float xIn, float yIn, float sdX, float sdY, int hPixels, int vPixels, int xPoints, int yPoints, bool zodiac) {
+Test::Test(int nPhotons, int hPixels, int vPixels, bool zodiac, string name) {
 	
 	N = nPhotons;
-	inX = xIn;
-	inY = yIn;
-	sigmaX = sdX;
-	sigmaY = sdY;
 	horizPixels = hPixels;
 	vertPixels = vPixels;
-	pointsX = xPoints;
-	pointsY = yPoints;
 	zodiacal = zodiac;
+	filename = name;
 }
 
 Test::~Test() {}
@@ -193,12 +183,11 @@ void Test::binData(vector<vector<int>> dataIn, int h, int v) {
 		int i = 0;
 
 		while (i < inWidth) { // Bin each row of data
-			for (int j = 0; j < pixelWidth; j++) total += v.at(i+j);
+			for (int j = 0; j < pixelWidth; j++) {total += v.at(i+j);}
 			xTotals.push_back(total);
 			total = 0;
 			i += pixelWidth;
 		}
-		
 		xBinned.push_back(xTotals);
 	}
 	
@@ -275,12 +264,16 @@ void Test::print2dVector(vector<vector<int>> data) {
  */
 void Test::run(bool noise, float time, float area, float QE, float temperature, float emissivity, int readout, float ADU, float darkSignal) {
 
-	// Generate a 2D array of a Gaussian with noise. 
-	Gauss2d *g = new Gauss2d(N * time * area, pointsX, pointsY, inX, inY, sigmaX, sigmaY);
-	gaussianInput = g->generate();
-	this->binData(gaussianInput, horizPixels, vertPixels);
+//	// Generate a 2D array of a Gaussian with noise. 
+//	Gauss2d *g = new Gauss2d(N * time * area, pointsX, pointsY, inX, inY, sigmaX, sigmaY);
+//	photonsIn = g->generate();
+//	this->binData(photonsIn, horizPixels, vertPixels);
+	PSF* p = new PSF(filename, N * time * area, false); // Generate a new matrix of photon data from the inputted PSF
+	photonsIn = p->getMatrix();
+
+	this->binData(photonsIn, horizPixels, vertPixels);
 	if (noise == true) noiseAfterBin = this->addNoise(time, area, QE, temperature, emissivity, readout, ADU, darkSignal);
 	this->findCentroid();
 
-	delete g;
+	delete p;
 }

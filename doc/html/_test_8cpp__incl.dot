@@ -18,7 +18,8 @@ digraph "centroid-v3/Test.cpp"
   Node1 -> Node8 [color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
   Node8 [label="Test.hpp",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$_test_8hpp.html",tooltip="Header file for Test class. "];
   Node8 -> Node9 [color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
-  Node9 [label="Gauss2d.hpp",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$_gauss2d_8hpp.html",tooltip="Header for Gauss2d class. "];
-  Node9 -> Node5 [color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node9 [label="PSF.hpp",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$_p_s_f_8hpp.html",tooltip="Header for PSF class. "];
+  Node9 -> Node10 [color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node10 [label="string",height=0.2,width=0.4,color="grey75", fillcolor="white", style="filled"];
   Node9 -> Node7 [color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
 }

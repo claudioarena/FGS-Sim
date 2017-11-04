@@ -10,5 +10,5 @@ digraph "centroid-v3/Test.hpp"
   Node2 -> Node4 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
   Node4 [label="centroid-v3/MonteCarlo.cpp",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$_monte_carlo_8cpp.html",tooltip="Monte Carlo simulation of centroid determination error. "];
   Node1 -> Node5 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
-  Node5 [label="centroid-v3/Test.cpp",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$_test_8cpp.html",tooltip="Bin an inputted Gaussian 2d array and find its centroid. "];
+  Node5 [label="centroid-v3/Test.cpp",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$_test_8cpp.html",tooltip="Bin an inputted PSF 2d array and find its centroid. "];
 }

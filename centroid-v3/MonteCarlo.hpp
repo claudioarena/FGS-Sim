@@ -4,7 +4,7 @@
  * @file MonteCarlo.hpp
  * @brief Header file for MonteCarlo class
  * @author Feiyu Fang
- * @version 2.2 26-08-2017
+ * @version 3.0.0 2017-11-04
  */
 
 #include <fstream>
@@ -15,14 +15,15 @@
  */
 class MonteCarlo {
 	public: 
-		MonteCarlo(std::string fileName, float inX, float inY, int horizPixels, int vertPixels, int samp, float t, float diameter, float qEff, float temp, float e, int readNoise, float analogueDigitalUnits, float darkCurrent, bool zodiac);
+		MonteCarlo(std::string inFileName, std::string outFileName, float inX, float inY, int horizPixels, int vertPixels, float t, float diameter, float qEff, float temp, float e, int readNoise, float analogueDigitalUnits, float darkCurrent, bool zodiac);
 		~MonteCarlo();
 		void run(float magB, float magV, float magR, int iterations);
 
 	private:
 		float xIn, yIn, time, area, QE, temperature, emissivity, ADU, darkSignal;
-		int xPixels, yPixels, sampling, readout, xPoints, yPoints;
+		int xPixels, yPixels, readout;
 		bool zodiacal;
+		std::string inputFile;
 		std::ofstream outFile;
 		static int sumPhotons(std::vector<std::vector<int>>);
 		static float average(std::vector<float>);

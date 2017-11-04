@@ -15,7 +15,7 @@
 class PSF {
 	
 	public:
-		PSF(std::string name, int N);
+		PSF(std::string name, int N, bool h);
 		~PSF();
 		std::vector<std::vector<int>> getMatrix();
 		
@@ -28,4 +28,5 @@ class PSF {
 		std::vector<std::vector<int>> matrixOut;
 		std::string filename;
 		int nPhotons;
+		int headerLines;
 };
