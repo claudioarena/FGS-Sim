@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['test',['Test',['../class_test.html#a44e4285fe1802cc8d60b267c9bfb6bcc',1,'Test']]]
+  ['samplephotons',['samplePhotons',['../class_p_s_f.html#a4d7ac888df92d6b05030931823d11dce',1,'PSF']]]
 ];

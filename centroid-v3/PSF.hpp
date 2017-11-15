@@ -17,15 +17,16 @@ class PSF {
 	public:
 		PSF(std::string name, int N, bool h);
 		~PSF();
-		std::vector<std::vector<int>> getMatrix();
+		std::vector<std::vector<int>> samplePhotons(int xCentre, int yCentre);
 		
 	private: 
 		void import();
 		float sum();
 		void normalise();
+		static std::vector<int> shiftRow(int shift, std::vector<int> row);
 
 		std::vector<std::vector<float>> matrixIn;
-		std::vector<std::vector<int>> matrixOut;
+		std::vector<std::vector<int>> matrixNormalised;
 		std::string filename;
 		int nPhotons;
 		int headerLines;

@@ -135,7 +135,7 @@ void MonteCarlo::run(float magB, float magV, float magR, int iterations) {
 	int N = photonsB + photonsV + photonsR; // Total photons in all bands
 	
 	for (int j = 0; j < iterations; j++) { /// Iterate x times at random star positions and find average
-		Test* t = new Test(N, xPixels, yPixels, zodiacal, inputFile);
+		Test* t = new Test(N, xIn, yIn, xPixels, yPixels, zodiacal, inputFile);
 		t->run(true, time, area, QE, temperature, emissivity, readout, ADU, darkSignal); // Run with noise for input time and area 
 
 		float x = t->xCentre * xPixels;

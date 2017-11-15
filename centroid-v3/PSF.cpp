@@ -59,6 +59,8 @@ void PSF::import() {
 	matrixIn = out;
 }
 
+
+
 /**
  * Private function to calculate the sum of all the unnormalised points in the Zemax matrix
  * 
@@ -82,13 +84,63 @@ void PSF::normalise() {
 	for (vector<float> v: matrixIn) {
 		vector<int> row;
 		for (float f: v) row.push_back(f * factor);
-		matrixOut.push_back(row);
+		matrixNormalised.push_back(row);
 	}
 }
 
 /**
- * @brief Getter function for outputting the matrix
+ * Private static function to shift a vector of integers left or right, replacing the vacated spaces with 0, for moving the PSF around. 
+ * Positive shift is to the right; negative shift is to the left. 
  *
- * @return Matrix of photons
+ * @brief Shift integers left or right within a vector
+ *
+ * @param shift Amount to shift the numbers by
+ * @param row Vector to be shifted
+ * @return Shifted 1d vector
  */
-vector<vector<int>> PSF::getMatrix() {return matrixOut;}
+vector<int> PSF::shiftRow(int shift, vector<int> row) {
+	vector<int> out;
+
+	if (shift < 0) { // Shift to the left if negative shift
+		for (unsigned i = 0; i < (row.size() + shift); i++) out.push_back(row.at(i - shift));
+		while (out.size() != row.size()) out.push_back(0);
+	}
+	else { // Shift to the right if positive shift
+		while (out.size() != (unsigned)shift) out.push_back(0);
+		for (unsigned i = shift; i < row.size(); i++) out.push_back(row.at(i - shift));
+	}
+	
+	return out;
+}
+
+/**
+ * The normalised matrix of photons is always centred, so this function samples from it to output a PSF matrix centred at the given coordinates. 
+ * Some photons are not detected to one side, and some simels are empty on the other side and have 0 values. 
+ *
+ * @brief Sample the PSF with given centre coordinates.
+ *
+ * @param xCentre Simel x-coordinate of PSF centre
+ * @param yCentre Simel y-coordinate of PSF centre
+ * @return Matrix of photons with the PSF centred at the given coordinates. 
+ */
+vector<vector<int>> PSF::samplePhotons(int xCentre, int yCentre) {
+
+	unsigned width = matrixNormalised.at(0).size(); // Height and width of the simel matrix
+	unsigned height = matrixNormalised.size();
+
+	int shiftX = xCentre - (width / 2); // Number of simels to move the data horizontally and vertically across
+	int shiftY = yCentre - (height / 2);
+	vector<int> zeroRow; // Row of zeros to replace rows that have been moved but not replaced
+	while (zeroRow.size() != width) zeroRow.push_back(0);
+
+	vector<vector<int>> out;
+	if (shiftY < 0) { // Shift matrix upwards for negative shift
+		for (unsigned i = 0; i < (height + shiftY); i++) out.push_back(shiftRow(shiftX, matrixNormalised.at(i)));
+		while (out.size() != height) out.push_back(zeroRow);
+	}
+	else { // Shift matrix downwards for positive shift
+		while (out.size() != (unsigned)shiftY) out.push_back(zeroRow);
+		for (unsigned i = shiftY; i < width; i++) out.push_back(shiftRow(shiftX, matrixNormalised.at(i)));
+	}
+	return out;
+}

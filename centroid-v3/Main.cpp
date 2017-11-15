@@ -22,8 +22,8 @@ int main() {
 	time_t startTime = time(nullptr);
 	cout << '\a' << endl << "Start time: " << asctime(localtime(&startTime)) << endl;
 
-	float xIn = 512; // Input coordinates of defined centre in terms of pixels. 
-	float yIn = 512;
+	float xIn = 52; // Input coordinates of defined centre in terms of pixels. 
+	float yIn = 52;
 	int xPixels = 128;
 	int yPixels = 128;
 	float exposureTime = 0.1; // Time /s

@@ -124,9 +124,9 @@ Public Member Functions</h2></td></tr>
 <tr class="memitem:aa1d6a3b13ef42df8084322f43dd55b5a"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_p_s_f.html#aa1d6a3b13ef42df8084322f43dd55b5a">PSF</a> (std::string name, int N, bool h)</td></tr>
 <tr class="memdesc:aa1d6a3b13ef42df8084322f43dd55b5a"><td class="mdescLeft">&#160;</td><td class="mdescRight">Constructor imports and normalises data.  <a href="#aa1d6a3b13ef42df8084322f43dd55b5a">More...</a><br /></td></tr>
 <tr class="separator:aa1d6a3b13ef42df8084322f43dd55b5a"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a0ecf94b09cc0b3c38c428652d3a43840"><td class="memItemLeft" align="right" valign="top">std::vector&lt; std::vector&lt; int &gt; &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_p_s_f.html#a0ecf94b09cc0b3c38c428652d3a43840">getMatrix</a> ()</td></tr>
-<tr class="memdesc:a0ecf94b09cc0b3c38c428652d3a43840"><td class="mdescLeft">&#160;</td><td class="mdescRight">Getter function for outputting the matrix.  <a href="#a0ecf94b09cc0b3c38c428652d3a43840">More...</a><br /></td></tr>
-<tr class="separator:a0ecf94b09cc0b3c38c428652d3a43840"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a4d7ac888df92d6b05030931823d11dce"><td class="memItemLeft" align="right" valign="top">std::vector&lt; std::vector&lt; int &gt; &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_p_s_f.html#a4d7ac888df92d6b05030931823d11dce">samplePhotons</a> (int xCentre, int yCentre)</td></tr>
+<tr class="memdesc:a4d7ac888df92d6b05030931823d11dce"><td class="mdescLeft">&#160;</td><td class="mdescRight">Sample the <a class="el" href="class_p_s_f.html" title="Import a PSF from a Zemax .txt file. ">PSF</a> with given centre coordinates.  <a href="#a4d7ac888df92d6b05030931823d11dce">More...</a><br /></td></tr>
+<tr class="separator:a4d7ac888df92d6b05030931823d11dce"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p>Import a <a class="el" href="class_p_s_f.html" title="Import a PSF from a Zemax .txt file. ">PSF</a> from a Zemax .txt file. </p>
@@ -175,21 +175,40 @@ Public Member Functions</h2></td></tr>
 </div>
 </div>
 <h2 class="groupheader">Member Function Documentation</h2>
-<a class="anchor" id="a0ecf94b09cc0b3c38c428652d3a43840"></a>
+<a class="anchor" id="a4d7ac888df92d6b05030931823d11dce"></a>
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">vector&lt; vector&lt; int &gt; &gt; PSF::getMatrix </td>
+          <td class="memname">vector&lt; vector&lt; int &gt; &gt; PSF::samplePhotons </td>
           <td>(</td>
-          <td class="paramname"></td><td>)</td>
+          <td class="paramtype">int&#160;</td>
+          <td class="paramname"><em>xCentre</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
           <td></td>
+          <td class="paramtype">int&#160;</td>
+          <td class="paramname"><em>yCentre</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
         </tr>
       </table>
 </div><div class="memdoc">
 
-<p>Getter function for outputting the matrix. </p>
-<dl class="section return"><dt>Returns</dt><dd>Matrix of photons </dd></dl>
+<p>Sample the <a class="el" href="class_p_s_f.html" title="Import a PSF from a Zemax .txt file. ">PSF</a> with given centre coordinates. </p>
+<p>The normalised matrix of photons is always centred, so this function samples from it to output a <a class="el" href="class_p_s_f.html" title="Import a PSF from a Zemax .txt file. ">PSF</a> matrix centred at the given coordinates. Some photons are not detected to one side, and some simels are empty on the other side and have 0 values.</p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">xCentre</td><td>Simel x-coordinate of <a class="el" href="class_p_s_f.html" title="Import a PSF from a Zemax .txt file. ">PSF</a> centre </td></tr>
+    <tr><td class="paramname">yCentre</td><td>Simel y-coordinate of <a class="el" href="class_p_s_f.html" title="Import a PSF from a Zemax .txt file. ">PSF</a> centre </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>Matrix of photons with the <a class="el" href="class_p_s_f.html" title="Import a PSF from a Zemax .txt file. ">PSF</a> centred at the given coordinates. </dd></dl>
 
 </div>
 </div>

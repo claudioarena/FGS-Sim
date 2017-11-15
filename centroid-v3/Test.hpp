@@ -16,7 +16,7 @@
 class Test {
 	public:
 		//Test(int nPhotons, float xIn, float yIn, float sdX, float sdY, int hPixels, int vPixels, int xPoints, int yPoints, bool zodiac);
-		Test(int nPhotons, int hPixels, int vPixels, bool zodiac, std::string name);
+		Test(int nPhotons, int inX, int inY, int hPixels, int vPixels, bool zodiac, std::string name);
 		~Test();
 
 		float xCentre;
@@ -30,7 +30,7 @@ class Test {
 
 	private:
 		std::vector<std::vector<int>> noiseAfterBin; 
-		//float inX, inY, sigmaX, sigmaY;
+		int xIn, yIn; //, sigmaX, sigmaY;
 		int N, horizPixels, vertPixels; //, pointsX, pointsY;
 		bool zodiacal;
 		std::string filename;

@@ -24,14 +24,18 @@ using namespace std;
  * Constructs a Test object to bin inputted data and find its centroid. 
  *
  * @param nPhotons Number of photons to simulate
+ * @param inX Input star centre x-coordinate
+ * @param inY Input star centre y-coordinate
  * @param hPixels Number of bins in the x-direction to sort the data into
  * @param vPixels Number of bins in the y-direction to sort the data into
  * @param zodiac Whether to include zodiacal light as a background
  * @param name File name of the PSF data file to be imported
  */
-Test::Test(int nPhotons, int hPixels, int vPixels, bool zodiac, string name) {
+Test::Test(int nPhotons, int inX, int inY, int hPixels, int vPixels, bool zodiac, string name) {
 	
 	N = nPhotons;
+	xIn = inX;
+	yIn = inY;
 	horizPixels = hPixels;
 	vertPixels = vPixels;
 	zodiacal = zodiac;
@@ -269,7 +273,7 @@ void Test::run(bool noise, float time, float area, float QE, float temperature, 
 //	photonsIn = g->generate();
 //	this->binData(photonsIn, horizPixels, vertPixels);
 	PSF* p = new PSF(filename, N * time * area, false); // Generate a new matrix of photon data from the inputted PSF
-	photonsIn = p->getMatrix();
+	photonsIn = p->samplePhotons(xIn, yIn);
 
 	this->binData(photonsIn, horizPixels, vertPixels);
 	if (noise == true) noiseAfterBin = this->addNoise(time, area, QE, temperature, emissivity, readout, ADU, darkSignal);
