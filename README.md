@@ -18,3 +18,7 @@ Version number, Date in ISO 8601 format, Notes on changes
 	- NB: Input file must be converted from MS-DOS to Unix encoding. 
 	- Rewrote Read.cpp into a PSF class which imports data from Zemax output into a vector<vector<int>> of photons.
 	- Main.cpp now works by taking in a .tsv and calculates the coordinates of the centroid. 
+- 3.0.1 2017-11-15
+	- Added functions to PSF class so that the coordinates of the PSF centre can be specified, for future PSF movement use.
+	- This is by taking the original normalised centroid PSF and shifting its centre, replacing empty simels with 0 values.
+	- Confirmed working, with the Main.cpp correctly working out the centroid location with no Zodiacal light or readout noise, but these parameters ruin things very quickly.

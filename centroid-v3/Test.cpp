@@ -257,6 +257,7 @@ void Test::print2dVector(vector<vector<int>> data) {
  * @brief Run centroid determination simulation for input variables
  * 
  * @param noise Boolean whether to add Poisson noise to the pixel data
+ * @param huygens Whether the PSF is Huygens or FFT. True for Huygens, false for FFT. 
  * @param time Integration time, as more time means more photons collected
  * @param area Area of telescope aperture, as more area means more photons
  * @param QE Quantum efficiency of the CCD. Ideal 1
@@ -266,18 +267,19 @@ void Test::print2dVector(vector<vector<int>> data) {
  * @param ADU Analogue-to-digital units. Electrons per count; ideal 1. 
  * @param darkSignal Dark signal /electrons
  */
-void Test::run(bool noise, float time, float area, float QE, float temperature, float emissivity, int readout, float ADU, float darkSignal) {
+void Test::run(bool noise, bool huygens, float time, float area, float QE, float temperature, float emissivity, int readout, float ADU, float darkSignal) {
 
 //	// Generate a 2D array of a Gaussian with noise. 
 //	Gauss2d *g = new Gauss2d(N * time * area, pointsX, pointsY, inX, inY, sigmaX, sigmaY);
 //	photonsIn = g->generate();
 //	this->binData(photonsIn, horizPixels, vertPixels);
-	PSF* p = new PSF(filename, N * time * area, false); // Generate a new matrix of photon data from the inputted PSF
+	PSF* p = new PSF(filename, N * time * area, huygens); // Generate a new matrix of photon data from the inputted PSF
 	photonsIn = p->samplePhotons(xIn, yIn);
 
 	this->binData(photonsIn, horizPixels, vertPixels);
 	if (noise == true) noiseAfterBin = this->addNoise(time, area, QE, temperature, emissivity, readout, ADU, darkSignal);
 	this->findCentroid();
+	//print2dVector(pixelData);
 
 	delete p;
 }

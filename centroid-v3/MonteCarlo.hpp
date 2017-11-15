@@ -17,7 +17,7 @@ class MonteCarlo {
 	public: 
 		MonteCarlo(std::string inFileName, std::string outFileName, float inX, float inY, int horizPixels, int vertPixels, float t, float diameter, float qEff, float temp, float e, int readNoise, float analogueDigitalUnits, float darkCurrent, bool zodiac);
 		~MonteCarlo();
-		void run(float magB, float magV, float magR, int iterations);
+		void run(float magB, float magV, float magR, int iterations, bool huygens);
 
 	private:
 		float xIn, yIn, time, area, QE, temperature, emissivity, ADU, darkSignal;

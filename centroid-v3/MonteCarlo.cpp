@@ -1,11 +1,11 @@
 /**
  * Twinkle FGS-Sim: Centroid recovery simulation
- * Purpose: Run Monte Carlo simulation of centroid determination error with input star at a position determined according to a uniform distribution
+ * Purpose: Run Monte Carlo simulation of centroid determination error
  *
  * @file MonteCarlo.cpp
  * @brief Monte Carlo simulation of centroid determination error
  * @author Feiyu Fang
- * @version 2.2.1 07-09-2017
+ * @version 3.0.0 2017-11-04
  */
 
 #include <algorithm>
@@ -121,7 +121,7 @@ float MonteCarlo::stdDev(vector<float> in) {
  * @param magR R-magnitude of the star to be tested
  * @param iterations Number of times to run simulation
  */
-void MonteCarlo::run(float magB, float magV, float magR, int iterations) {
+void MonteCarlo::run(float magB, float magV, float magR, int iterations, bool huygens) {
 
 	outFile << endl << "B-magnitude: " << magB << "; V-magnitude: " << magV << "; R-magnitude: " << magR << endl;
 	cout << "Calculating for B, V, R magnitudes = " << magB << ", " << magV << ", " << magR << " ..." << endl;
@@ -136,7 +136,7 @@ void MonteCarlo::run(float magB, float magV, float magR, int iterations) {
 	
 	for (int j = 0; j < iterations; j++) { /// Iterate x times at random star positions and find average
 		Test* t = new Test(N, xIn, yIn, xPixels, yPixels, zodiacal, inputFile);
-		t->run(true, time, area, QE, temperature, emissivity, readout, ADU, darkSignal); // Run with noise for input time and area 
+		t->run(true, huygens, time, area, QE, temperature, emissivity, readout, ADU, darkSignal); // Run with noise for input time and area 
 
 		float x = t->xCentre * xPixels;
 		float y = t->yCentre * yPixels;

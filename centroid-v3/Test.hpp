@@ -24,7 +24,7 @@ class Test {
 		std::vector<std::vector<int>> pixelData;
 		std::vector<std::vector<int>> photonsIn; 
 		
-		void run(bool noise, float time, float area, float QE, float temperature, float emissivity, int readout, float ADU, float darkSignal);
+		void run(bool noise, bool huygens, float time, float area, float QE, float temperature, float emissivity, int readout, float ADU, float darkSignal);
 		static void print2dVector(std::vector<std::vector<int>> data); 
 		static int photonsInBand(float mag, char band);
 

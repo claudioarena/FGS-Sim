@@ -18,6 +18,7 @@ class PSF {
 		PSF(std::string name, int N, bool h);
 		~PSF();
 		std::vector<std::vector<int>> samplePhotons(int xCentre, int yCentre);
+		std::vector<std::vector<int>> matrixNormalised; // Public for debug only
 		
 	private: 
 		void import();
@@ -26,7 +27,6 @@ class PSF {
 		static std::vector<int> shiftRow(int shift, std::vector<int> row);
 
 		std::vector<std::vector<float>> matrixIn;
-		std::vector<std::vector<int>> matrixNormalised;
 		std::string filename;
 		int nPhotons;
 		int headerLines;

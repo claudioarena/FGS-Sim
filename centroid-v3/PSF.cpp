@@ -59,8 +59,6 @@ void PSF::import() {
 	matrixIn = out;
 }
 
-
-
 /**
  * Private function to calculate the sum of all the unnormalised points in the Zemax matrix
  * 
@@ -135,12 +133,12 @@ vector<vector<int>> PSF::samplePhotons(int xCentre, int yCentre) {
 
 	vector<vector<int>> out;
 	if (shiftY < 0) { // Shift matrix upwards for negative shift
-		for (unsigned i = 0; i < (height + shiftY); i++) out.push_back(shiftRow(shiftX, matrixNormalised.at(i)));
+		for (unsigned i = (-1 * shiftY); i < height; i++) out.push_back(shiftRow(shiftX, matrixNormalised.at(i)));
 		while (out.size() != height) out.push_back(zeroRow);
 	}
 	else { // Shift matrix downwards for positive shift
 		while (out.size() != (unsigned)shiftY) out.push_back(zeroRow);
-		for (unsigned i = shiftY; i < width; i++) out.push_back(shiftRow(shiftX, matrixNormalised.at(i)));
+		for (unsigned i = shiftY; i < height; i++) out.push_back(shiftRow(shiftX, matrixNormalised.at(i - shiftY)));
 	}
 	return out;
 }

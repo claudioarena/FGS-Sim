@@ -1,12 +1,12 @@
 /**
  * Twinkle FGS-Sim: Centroid recovery simulation
- * Purpose: Run a Monte Carlo simulation to generate a 2d Gaussian with noise, bin it into "pixels" and find 
- * the centroid of the binned data.
+ * Purpose: Run a Monte Carlo simulation to generate a 2d PSF with noise, bin it into "pixels" and find the
+ * centroid of the binned data.
  *
  * @file Main.cpp
  * @brief Main method to run centroid recovery simulation
  * @author Feiyu Fang
- * @version 2.2.1 07-09-2017
+ * @version 3.0.1 15-11-2017
  */
 
 #include <chrono>
@@ -21,9 +21,10 @@ int main() {
 	
 	time_t startTime = time(nullptr);
 	cout << '\a' << endl << "Start time: " << asctime(localtime(&startTime)) << endl;
+	cout << "NOTE: If out-of-bounds errors come up, make sure that the the input file is Unix format. " << endl;
 
-	float xIn = 52; // Input coordinates of defined centre in terms of pixels. 
-	float yIn = 52;
+	float xIn = 256; // Input coordinates of defined centre in terms of simels for now. TODO: Change this into pixels input.
+	float yIn = 128;
 	int xPixels = 128;
 	int yPixels = 128;
 	float exposureTime = 0.1; // Time /s
@@ -34,11 +35,11 @@ int main() {
 	int readout = 8;
 	float ADU = 1;
 	float darkSignal = 0.2;
-	bool zodiacal = true;
+	bool zodiacal = false;
 	
 	MonteCarlo* m = new MonteCarlo("PSF-FFT-1024.tsv", "results.csv", xIn, yIn, xPixels, yPixels, exposureTime, diameter, QE, temperature, emissivity, readout, ADU, darkSignal, zodiacal);
-	for (int mag = 7; mag <= 13; mag += 3) {
-		m->run(mag, mag, mag, 10);
+	for (int mag = 7; mag <= 13; mag += 1) {
+		m->run(mag, mag, mag, 1, false);
 	}
 	delete m; // Close output file
 	

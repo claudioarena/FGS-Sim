@@ -1,40 +1,25 @@
-Test: Input centre: (52;52). Pixels in each dimension: (128;128). Exposure time: 0.1 s
-Telescope pupil area: 0.159043 m^2. QE: 0.8. Temperature: 72 K. Emissivity of sensor: 0.3. Readout noise: 8 electrons. 
+Test: Input centre: (256;128). Pixels in each dimension: (128;128). Exposure time: 0.1 s
+Telescope pupil area: 0.159043 m^2. QE: 0.8. Temperature: 72 K. Emissivity of sensor: 0.3. Readout noise: 0 electrons. 
 
 X-coordinate, Y-coordinate
 
 B-magnitude: 7; V-magnitude: 7; R-magnitude: 7
-39.2405,63.9719
-39.2267,64.0109
-39.2211,64.0112
-39.2108,63.9966
-39.2225,63.9994
-39.2465,63.9965
-39.2112,64.0421
-39.2807,64.025
-39.2339,63.9922
-39.2453,64.0179
+49.1199,41.7249
+
+B-magnitude: 8; V-magnitude: 8; R-magnitude: 8
+55.8788,51.8887
+
+B-magnitude: 9; V-magnitude: 9; R-magnitude: 9
+60.2388,58.4156
 
 B-magnitude: 10; V-magnitude: 10; R-magnitude: 10
-61.5278,64.0061
-61.5586,64.0491
-61.5487,64.0251
-61.5569,63.983
-61.6012,64.0158
-61.5005,63.9823
-61.5156,64.0196
-61.499,64.0081
-61.607,64.0115
-61.5785,64.0344
+62.4579,61.6906
+
+B-magnitude: 11; V-magnitude: 11; R-magnitude: 11
+63.3693,63.0678
+
+B-magnitude: 12; V-magnitude: 12; R-magnitude: 12
+63.7744,63.6508
 
 B-magnitude: 13; V-magnitude: 13; R-magnitude: 13
-63.8591,63.9741
-63.898,64.0246
-63.8477,63.9666
-63.8635,63.9202
-63.8739,63.9472
-63.8831,64.0055
-63.8862,63.9262
-63.8614,63.9999
-63.9425,64.0475
-63.8931,64.0709
+63.9752,63.8681
