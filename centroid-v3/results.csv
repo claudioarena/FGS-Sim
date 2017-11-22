@@ -1,25 +1,25 @@
 Test: Input centre: (256;128). Pixels in each dimension: (128;128). Exposure time: 0.1 s
-Telescope pupil area: 0.159043 m^2. QE: 0.8. Temperature: 72 K. Emissivity of sensor: 0.3. Readout noise: 0 electrons. 
+Telescope pupil area: 0.159043 m^2. QE: 0.8. Temperature: 72 K. Emissivity of sensor: 0.3. Readout noise: 8 electrons. 
 
 X-coordinate, Y-coordinate
 
 B-magnitude: 7; V-magnitude: 7; R-magnitude: 7
-49.1199,41.7249
+35.2847,21.0801
 
 B-magnitude: 8; V-magnitude: 8; R-magnitude: 8
-55.8788,51.8887
+39.2884,26.9946
 
 B-magnitude: 9; V-magnitude: 9; R-magnitude: 9
-60.2388,58.4156
+45.6602,36.7392
 
 B-magnitude: 10; V-magnitude: 10; R-magnitude: 10
-62.4579,61.6906
+53.3514,47.9011
 
 B-magnitude: 11; V-magnitude: 11; R-magnitude: 11
-63.3693,63.0678
+58.9975,56.3768
 
 B-magnitude: 12; V-magnitude: 12; R-magnitude: 12
-63.7744,63.6508
+62.0163,60.9869
 
 B-magnitude: 13; V-magnitude: 13; R-magnitude: 13
-63.9752,63.8681
+63.4812,62.977

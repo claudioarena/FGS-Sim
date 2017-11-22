@@ -9,6 +9,7 @@
  */
 
 #include <algorithm>
+#include <chrono>
 #include <cmath>
 #include <fstream>
 #include <iostream>
@@ -110,6 +111,34 @@ float MonteCarlo::stdDev(vector<float> in) {
 	for_each (begin(in), end(in), [&](const float d) {accum += (d - mean) * (d - mean);});
 
 	return sqrt(accum / (in.size()-1));
+}
+
+/**
+ * Private function to simulate a star moving in the field of view. This changes the location of the star with
+ * a Brownian movement and with a movement bias. 
+ * @brief Move the star with Brownian motion with a bias
+ *
+ * @param biasDistance Bias distance for the star movement /arcsec
+ * @param biasAngle Bias angle for star movement /deg
+ * @param brownianRMS RMS of Brownian motion distance /arcsec
+ */
+void MonteCarlo::brownian(int biasDistance, int biasAngle, float brownianRMS) {
+
+	// TODO: Scale the generated random variablesto their correct arcsec units.
+
+	// Seed the generation of uniform-distributed random variable with the current time
+	unsigned seed = std::chrono::system_clock::now().time_since_epoch().count();
+	default_random_engine generator(seed);
+
+	uniform_int_distribution<int> uniformAngle(1, 180); // Uniform distribution of Brownian motion angle
+	normal_distribution<double> brownianDistance(0, brownianRMS); // Normal distribution mean at 0, RMS 0.1", 1" or 10".
+	float distance = brownianDistance(generator);
+	float angle = uniformAngle(generator) * 180. / M_PI;
+	xIn += distance * cos(angle); // Update the centre location after Brownian motion
+	yIn += distance * sin(angle);
+
+	xIn += biasDistance * cos(biasAngle * 180. / M_PI); // Update the centre location after star movement bias
+	yIn += biasDistance * sin(biasAngle * 180. / M_PI);
 }
 
 /**
