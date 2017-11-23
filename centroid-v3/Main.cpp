@@ -21,10 +21,10 @@ int main() {
 	
 	time_t startTime = time(nullptr);
 	cout << '\a' << endl << "Start time: " << asctime(localtime(&startTime)) << endl;
-	cout << "NOTE: If out-of-bounds errors come up, make sure that the the input file is Unix format. " << endl;
+	cout << "NOTE: If out-of-bounds errors come up, make sure that the the input file is Unix format. " << endl << endl;
 
-	float xIn = 256; // Input coordinates of defined centre in terms of simels for now. TODO: Change this into pixels input.
-	float yIn = 128;
+	float xIn = 64; // Input coordinates of defined centre in terms of pixel coordinates.
+	float yIn = 64;
 	int xPixels = 128;
 	int yPixels = 128;
 	float exposureTime = 0.1; // Time /s
@@ -37,9 +37,9 @@ int main() {
 	float darkSignal = 0.2;
 	bool zodiacal = false;
 	
-	MonteCarlo* m = new MonteCarlo("PSF-FFT-1024.tsv", "results.csv", xIn, yIn, xPixels, yPixels, exposureTime, diameter, QE, temperature, emissivity, readout, ADU, darkSignal, zodiacal);
-	for (int mag = 7; mag <= 13; mag += 1) {
-		m->run(mag, mag, mag, 1, false);
+	MonteCarlo* m = new MonteCarlo("PSF-FFT-1024.tsv", "results.csv", xIn * 1024 / xPixels, yIn * 1024 / yPixels, xPixels, yPixels, exposureTime, diameter, QE, temperature, emissivity, readout, ADU, darkSignal, zodiacal);
+	for (int mag = 7; mag <= 13; mag += 3) {
+		m->run(mag, mag, mag, 10, false);
 	}
 	delete m; // Close output file
 	

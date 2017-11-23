@@ -22,3 +22,8 @@ Version number, Date in ISO 8601 format, Notes on changes
 	- Added functions to PSF class so that the coordinates of the PSF centre can be specified, for future PSF movement use.
 	- This is by taking the original normalised centroid PSF and shifting its centre, replacing empty simels with 0 values.
 	- Confirmed working, with the Main.cpp correctly working out the centroid location with no Zodiacal light or readout noise, but these parameters ruin things very quickly.
+- 3.0.2 2017-11-23
+	- Added functions to generate Brownian motion with a given bias distance and direction in the field of view. 
+	- MonteCarlo class modified to iterate over this Brownian motion, giving a path of a moving star. 
+	- NB: This is only while assuming that the PSF stays the same when the star moves around the FOV. 
+	- Example of Brownian motion simulation: ![Simulation of Brownian motion](https://i.imgur.com/DHzxBsl.png "True centre moves around with a bias")

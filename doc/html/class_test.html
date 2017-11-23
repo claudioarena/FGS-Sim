@@ -125,9 +125,9 @@ $(document).ready(function(){initNavTree('class_test.html','');});
 Public Member Functions</h2></td></tr>
 <tr class="memitem:a577eac5def8c1cb9d6327bfbdd14e454"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_test.html#a577eac5def8c1cb9d6327bfbdd14e454">Test</a> (int nPhotons, int inX, int inY, int hPixels, int vPixels, bool zodiac, std::string name)</td></tr>
 <tr class="separator:a577eac5def8c1cb9d6327bfbdd14e454"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a0903bc9d8ec324426c9445e40171c5a8"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_test.html#a0903bc9d8ec324426c9445e40171c5a8">run</a> (bool noise, float time, float area, float QE, float temperature, float emissivity, int readout, float ADU, float darkSignal)</td></tr>
-<tr class="memdesc:a0903bc9d8ec324426c9445e40171c5a8"><td class="mdescLeft">&#160;</td><td class="mdescRight">Run centroid determination simulation for input variables.  <a href="#a0903bc9d8ec324426c9445e40171c5a8">More...</a><br /></td></tr>
-<tr class="separator:a0903bc9d8ec324426c9445e40171c5a8"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a3559e0b499b04939238c8fb5f246cc72"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_test.html#a3559e0b499b04939238c8fb5f246cc72">run</a> (bool noise, bool huygens, float time, float area, float QE, float temperature, float emissivity, int readout, float ADU, float darkSignal)</td></tr>
+<tr class="memdesc:a3559e0b499b04939238c8fb5f246cc72"><td class="mdescLeft">&#160;</td><td class="mdescRight">Run centroid determination simulation for input variables.  <a href="#a3559e0b499b04939238c8fb5f246cc72">More...</a><br /></td></tr>
+<tr class="separator:a3559e0b499b04939238c8fb5f246cc72"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-static-methods"></a>
 Static Public Member Functions</h2></td></tr>
@@ -299,7 +299,7 @@ std::vector&lt; std::vector&lt; int &gt; &gt;&#160;</td><td class="memItemRight"
 
 </div>
 </div>
-<a class="anchor" id="a0903bc9d8ec324426c9445e40171c5a8"></a>
+<a class="anchor" id="a3559e0b499b04939238c8fb5f246cc72"></a>
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
@@ -308,6 +308,12 @@ std::vector&lt; std::vector&lt; int &gt; &gt;&#160;</td><td class="memItemRight"
           <td>(</td>
           <td class="paramtype">bool&#160;</td>
           <td class="paramname"><em>noise</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">bool&#160;</td>
+          <td class="paramname"><em>huygens</em>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
@@ -370,6 +376,7 @@ std::vector&lt; std::vector&lt; int &gt; &gt;&#160;</td><td class="memItemRight"
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramname">noise</td><td>Boolean whether to add Poisson noise to the pixel data </td></tr>
+    <tr><td class="paramname">huygens</td><td>Whether the <a class="el" href="class_p_s_f.html" title="Import a PSF from a Zemax .txt file. ">PSF</a> is Huygens or FFT. True for Huygens, false for FFT. </td></tr>
     <tr><td class="paramname">time</td><td>Integration time, as more time means more photons collected </td></tr>
     <tr><td class="paramname">area</td><td>Area of telescope aperture, as more area means more photons </td></tr>
     <tr><td class="paramname">QE</td><td>Quantum efficiency of the CCD. Ideal 1 </td></tr>

@@ -118,7 +118,13 @@ $(document).ready(function(){initNavTree('md_README.html','');});
 <li>Wrote a preliminarily procedural Read.cpp to read <a class="el" href="class_p_s_f.html" title="Import a PSF from a Zemax .txt file. ">PSF</a> data from a Zemax-generated .txt file. Output is a vector&lt;vector&lt;float&gt;&gt;.</li>
 <li>NB: Input file must be converted from MS-DOS to Unix encoding.</li>
 <li>Rewrote Read.cpp into a <a class="el" href="class_p_s_f.html" title="Import a PSF from a Zemax .txt file. ">PSF</a> class which imports data from Zemax output into a vector&lt;vector&lt;int&gt;&gt; of photons.</li>
-<li><a class="el" href="_main_8cpp.html" title="Main method to run centroid recovery simulation. ">Main.cpp</a> now works by taking in a .tsv and calculates the coordinates of the centroid. </li>
+<li><a class="el" href="_main_8cpp.html" title="Main method to run centroid recovery simulation. ">Main.cpp</a> now works by taking in a .tsv and calculates the coordinates of the centroid.</li>
+</ul>
+</li>
+<li>3.0.1 2017-11-15<ul>
+<li>Added functions to <a class="el" href="class_p_s_f.html" title="Import a PSF from a Zemax .txt file. ">PSF</a> class so that the coordinates of the <a class="el" href="class_p_s_f.html" title="Import a PSF from a Zemax .txt file. ">PSF</a> centre can be specified, for future <a class="el" href="class_p_s_f.html" title="Import a PSF from a Zemax .txt file. ">PSF</a> movement use.</li>
+<li>This is by taking the original normalised centroid <a class="el" href="class_p_s_f.html" title="Import a PSF from a Zemax .txt file. ">PSF</a> and shifting its centre, replacing empty simels with 0 values.</li>
+<li>Confirmed working, with the <a class="el" href="_main_8cpp.html" title="Main method to run centroid recovery simulation. ">Main.cpp</a> correctly working out the centroid location with no Zodiacal light or readout noise, but these parameters ruin things very quickly. </li>
 </ul>
 </li>
 </ul>

@@ -20,7 +20,7 @@ class MonteCarlo {
 		void run(float magB, float magV, float magR, int iterations, bool huygens);
 
 	private:
-		float xIn, yIn, time, area, QE, temperature, emissivity, ADU, darkSignal;
+		float xIn, yIn, time, area, QE, temperature, emissivity, ADU, darkSignal, brownianDx, brownianDy;
 		int xPixels, yPixels, readout;
 		bool zodiacal;
 		std::string inputFile;
@@ -28,5 +28,5 @@ class MonteCarlo {
 		static int sumPhotons(std::vector<std::vector<int>>);
 		static float average(std::vector<float>);
 		static float stdDev(std::vector<float>);
-		void brownian(int biasDistance, int biasAngle, float brownianRMS);
+		void brownian(float biasDistance, int biasAngle, float brownianRMS);
 };
