@@ -28,5 +28,5 @@ class MonteCarlo {
 		static int sumPhotons(std::vector<std::vector<int>>);
 		static float average(std::vector<float>);
 		static float stdDev(std::vector<float>);
-		void brownian(float biasDistance, int biasAngle, float brownianRMS);
+		void brownian(float biasDistance, int biasAngle, float brownianRMS, bool typeHuygens);
 };

@@ -5,7 +5,7 @@
  * @file MonteCarlo.cpp
  * @brief Monte Carlo simulation of centroid determination error
  * @author Feiyu Fang
- * @version 3.0.0 2017-11-04
+ * @version 3.0.2 2017-11-23
  */
 
 #include <algorithm>
@@ -64,7 +64,7 @@ MonteCarlo::MonteCarlo(string inFileName, string outFileName, float inX, float i
 			<< " K, Emissivity of sensor: " << emissivity << ". Readout noise: " << readout << " electrons. " << endl;
 
 //	outFile << endl << "Sigma in both dimensions, Average distance, Photons in, Photons detected, Monte Carlo standard deviation" << endl;
-	outFile << endl << "True X-coordinate, True Y-coordinate, Calculated X-centre, Calculated Y-centre" << endl;
+	outFile << endl << "Error /pixels, Photons in, Photons detected, True X-coordinate, True Y-coordinate, Calculated X-centre, Calculated Y-centre" << endl;
 }
 
 
@@ -121,22 +121,26 @@ float MonteCarlo::stdDev(vector<float> in) {
  * @param biasDistance Bias distance for the star movement /arcsec
  * @param biasAngle Bias angle for star movement /deg
  * @param brownianRMS RMS of Brownian motion distance /arcsec
+ * @param typeHuygens Whether the data source is Huygens PSF. True for Huygens, false for FFT.
  */
-void MonteCarlo::brownian(float biasDistance, int biasAngle, float brownianRMS) {
+void MonteCarlo::brownian(float biasDistance, int biasAngle, float brownianRMS, bool typeHuygens) {
 
 	// Seed the generation of uniform-distributed random variable with the current time
 	unsigned seed = std::chrono::system_clock::now().time_since_epoch().count();
 	default_random_engine generator(seed);
 
+	float simPerDegree = -1;
+	if (typeHuygens == true) simPerDegree = 5.33;
+	else simPerDegree = 170.67;
 	uniform_int_distribution<int> uniformAngle(1, 180); // Uniform distribution of Brownian motion angle
-	normal_distribution<double> brownianDistance(0, brownianRMS * 171); // Normal distribution mean at 0, RMS 0.1", 1" or 10".
+	normal_distribution<double> brownianDistance(0, brownianRMS * simPerDegree); // Normal distribution mean at 0, RMS 0.1", 1" or 10".
 	float distance = brownianDistance(generator);
 	float angle = uniformAngle(generator) * M_PI / 180.;
 	brownianDx = distance * cos(angle); // Update the centre location after Brownian motion
 	brownianDy = distance * sin(angle);
-	cout << "Brownian distance: " << distance << ", angle: " << angle << endl;
+	//cout << "Brownian distance: " << distance << ", angle: " << angle << endl;
 
-	biasDistance *= 170.7; // For a 6"x6" FOV and 1024x1024 simels, each degree is 170.67 simels
+	biasDistance *= simPerDegree; // For a 6"x6" FOV and 1024x1024 simels, each degree is 170.67 simels
 	brownianDx += biasDistance * cos(biasAngle * M_PI / 180.); // Update the centre location after star movement bias
 	brownianDy += biasDistance * sin(biasAngle * M_PI / 180.);
 }
@@ -155,9 +159,10 @@ void MonteCarlo::run(float magB, float magV, float magR, int iterations, bool hu
 
 	outFile << endl << "B-magnitude: " << magB << "; V-magnitude: " << magV << "; R-magnitude: " << magR << endl;
 	cout << "Calculating for B, V, R magnitudes = " << magB << ", " << magV << ", " << magR << " ..." << endl;
-	vector<float> errors; // Vector to hold the error from each Monte Carlo simulation
-	vector<float> photonsIn; 
-	vector<float> photonsOut;
+	float xInOriginal = xIn;
+	float yInOriginal = yIn;
+	float error;
+	int photonsIn, photonsOut;
 
 	int photonsB = Test::photonsInBand(magB, 'B'); // Convert magnitude in each band to photons s^-1 m^-2.
 	int photonsV = Test::photonsInBand(magV, 'V');
@@ -165,21 +170,30 @@ void MonteCarlo::run(float magB, float magV, float magR, int iterations, bool hu
 	int N = photonsB + photonsV + photonsR; // Total photons in all bands
 	
 	for (int j = 0; j < iterations; j++) { /// Iterate x times at random star positions and find average
-		brownian(0.1, 45, 0.1);
+		brownian(0.1, 45, 0.1, huygens);
 		Test* t = new Test(N, xIn + brownianDx, yIn + brownianDy, xPixels, yPixels, zodiacal, inputFile);
 		t->run(true, huygens, time, area, QE, temperature, emissivity, readout, ADU, darkSignal); // Run with noise for input time and area 
 
 		xIn += brownianDx;
 		yIn += brownianDy;
-		float xCentre = xIn * (xPixels / 1024.);
-		float yCentre = yIn * (yPixels / 1024.);
+		float xCentre, yCentre;
+		if (huygens == true) {
+			xCentre = xIn * (xPixels / 32.);
+			yCentre = yIn * (yPixels / 32.);
+		}
+		else {
+			xCentre = xIn * (xPixels / 1024.);
+			yCentre = yIn * (yPixels / 1024.);
+		}
 		float x = t->xCentre * xPixels;
 		float y = t->yCentre * yPixels;
-		errors.push_back(sqrt((x - xCentre)*(x - xCentre) + (y - yIn)*(y - yIn)));
-		photonsIn.push_back(sumPhotons(t->photonsIn));
-		photonsOut.push_back(sumPhotons(t->pixelData));
-		outFile << xCentre << ',' << yCentre << ',' << x << ',' << y << endl;
+		error = (sqrt((x - xCentre)*(x - xCentre) + (y - yCentre)*(y - yCentre)));
+		photonsIn = (sumPhotons(t->photonsIn));
+		photonsOut = (sumPhotons(t->pixelData));
+		outFile << error << ',' << photonsIn << ',' << photonsOut << ',' << xCentre << ',' << yCentre << ',' << x << ',' << y << endl;
 		delete t;
 	}
+	xIn = xInOriginal;
+	yIn = yInOriginal;
 //	outFile << average(errors) << ',' << average(photonsIn) << ',' << average(photonsOut) << ',' << stdDev(errors) << endl;
 }

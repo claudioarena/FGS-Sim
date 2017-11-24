@@ -266,6 +266,7 @@ void Test::print2dVector(vector<vector<int>> data) {
  * @param readout Readout noise /electrons. Ideal 0. 
  * @param ADU Analogue-to-digital units. Electrons per count; ideal 1. 
  * @param darkSignal Dark signal /electrons
+ * @param display Whether to print the pixel data to the console
  */
 void Test::run(bool noise, bool huygens, float time, float area, float QE, float temperature, float emissivity, int readout, float ADU, float darkSignal) {
 
@@ -273,13 +274,15 @@ void Test::run(bool noise, bool huygens, float time, float area, float QE, float
 //	Gauss2d *g = new Gauss2d(N * time * area, pointsX, pointsY, inX, inY, sigmaX, sigmaY);
 //	photonsIn = g->generate();
 //	this->binData(photonsIn, horizPixels, vertPixels);
-	PSF* p = new PSF(filename, N * time * area, huygens); // Generate a new matrix of photon data from the inputted PSF
+	int nPhotons = N * time * area;
+	PSF* p = new PSF(filename, nPhotons, huygens); // Generate a new matrix of photon data from the inputted PSF
 	photonsIn = p->samplePhotons(xIn, yIn);
 
 	this->binData(photonsIn, horizPixels, vertPixels);
 	if (noise == true) noiseAfterBin = this->addNoise(time, area, QE, temperature, emissivity, readout, ADU, darkSignal);
 	this->findCentroid();
-	//print2dVector(pixelData);
+	if (huygens == true) print2dVector(pixelData);
+	cout << "Photons detected: " << PSF::sum(pixelData) << ", total photons " << nPhotons << '.' << endl;
 
 	delete p;
 }

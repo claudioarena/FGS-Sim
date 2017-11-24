@@ -6,7 +6,7 @@
  * @file Main.cpp
  * @brief Main method to run centroid recovery simulation
  * @author Feiyu Fang
- * @version 3.0.1 15-11-2017
+ * @version 3.0.2 2017-11-23
  */
 
 #include <chrono>
@@ -23,8 +23,8 @@ int main() {
 	cout << '\a' << endl << "Start time: " << asctime(localtime(&startTime)) << endl;
 	cout << "NOTE: If out-of-bounds errors come up, make sure that the the input file is Unix format. " << endl << endl;
 
-	float xIn = 64; // Input coordinates of defined centre in terms of pixel coordinates.
-	float yIn = 64;
+	float xIn = 32; // Input coordinates of defined centre in terms of pixel coordinates.
+	float yIn = 96;
 	int xPixels = 128;
 	int yPixels = 128;
 	float exposureTime = 0.1; // Time /s

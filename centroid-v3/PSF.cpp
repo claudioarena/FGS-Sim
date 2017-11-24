@@ -60,14 +60,20 @@ void PSF::import() {
 }
 
 /**
- * Private function to calculate the sum of all the unnormalised points in the Zemax matrix
+ * Public static function to calculate the sum of all the elements in a matrix. 
+ * Overloaded to use floats for unnormalised points in the Zemax matrix, or integers for counting photons. 
  * 
  * @brief Sums all the points of the matrix in this object
  * @return Total sum
  */
-float PSF::sum() {
+float PSF::sum(vector<vector<float>> in) {
 	float out = 0;
-	for (vector<float> v: matrixIn) for (float f: v) out += f;
+	for (vector<float> v: in) for (float f: v) out += f;
+	return out;
+}
+int PSF::sum(vector<vector<int>> in) {
+	int out = 0;
+	for (vector<int> v: in) for (int f: v) out += f;
 	return out;
 }
 
@@ -77,7 +83,7 @@ float PSF::sum() {
  * @brief Normalise the matrix for output
  */
 void PSF::normalise() {
-	float factor = nPhotons / sum(); // Normalising factor: Divide by unnormalised sum, multiply by number of photons. 
+	float factor = nPhotons / sum(matrixIn); // Normalising factor: Divide by unnormalised sum, multiply by number of photons. 
 
 	for (vector<float> v: matrixIn) {
 		vector<int> row;
