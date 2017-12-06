@@ -136,6 +136,9 @@ Static Public Member Functions</h2></td></tr>
 <tr class="memitem:a1e325f51545a32fa5bfb25b542bb3a13"><td class="memItemLeft" align="right" valign="top">static int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_test.html#a1e325f51545a32fa5bfb25b542bb3a13">photonsInBand</a> (float mag, char band)</td></tr>
 <tr class="memdesc:a1e325f51545a32fa5bfb25b542bb3a13"><td class="mdescLeft">&#160;</td><td class="mdescRight">Finds the number of photons per second for a given band and magnitude.  <a href="#a1e325f51545a32fa5bfb25b542bb3a13">More...</a><br /></td></tr>
 <tr class="separator:a1e325f51545a32fa5bfb25b542bb3a13"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ad51ad0ed3af2c2221740f416d7cd7d54"><td class="memItemLeft" align="right" valign="top">static std::vector&lt; std::vector&lt; int &gt; &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_test.html#ad51ad0ed3af2c2221740f416d7cd7d54">addMatrices</a> (std::vector&lt; std::vector&lt; int &gt;&gt; a, std::vector&lt; std::vector&lt; int &gt;&gt; b)</td></tr>
+<tr class="memdesc:ad51ad0ed3af2c2221740f416d7cd7d54"><td class="mdescLeft">&#160;</td><td class="mdescRight">Add two matrices.  <a href="#ad51ad0ed3af2c2221740f416d7cd7d54">More...</a><br /></td></tr>
+<tr class="separator:ad51ad0ed3af2c2221740f416d7cd7d54"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-attribs"></a>
 Public Attributes</h2></td></tr>
@@ -225,6 +228,51 @@ std::vector&lt; std::vector&lt; int &gt; &gt;&#160;</td><td class="memItemRight"
 </div>
 </div>
 <h2 class="groupheader">Member Function Documentation</h2>
+<a class="anchor" id="ad51ad0ed3af2c2221740f416d7cd7d54"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">vector&lt; vector&lt; int &gt; &gt; Test::addMatrices </td>
+          <td>(</td>
+          <td class="paramtype">std::vector&lt; std::vector&lt; int &gt;&gt;&#160;</td>
+          <td class="paramname"><em>a</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">std::vector&lt; std::vector&lt; int &gt;&gt;&#160;</td>
+          <td class="paramname"><em>b</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Add two matrices. </p>
+<p>Public static function to add together two matrices element-wise.</p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">a</td><td>First matrix to be added </td></tr>
+    <tr><td class="paramname">b</td><td>Second matrix to be added </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>Output matrix </dd></dl>
+
+</div>
+</div>
 <a class="anchor" id="a1e325f51545a32fa5bfb25b542bb3a13"></a>
 <div class="memitem">
 <div class="memproto">
@@ -375,7 +423,7 @@ std::vector&lt; std::vector&lt; int &gt; &gt;&#160;</td><td class="memItemRight"
 <p>Public method to run the centroid determination simulation and return a <a class="el" href="class_test.html" title="Class to bin an inputted Gaussian 2d array and find its centroid. ">Test</a> object containing the results.</p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
-    <tr><td class="paramname">noise</td><td>Boolean whether to add Poisson noise to the pixel data </td></tr>
+    <tr><td class="paramname">noise</td><td>Boolean whether to add noise and non-ideal conditions to the pixel data </td></tr>
     <tr><td class="paramname">huygens</td><td>Whether the <a class="el" href="class_p_s_f.html" title="Import a PSF from a Zemax .txt file. ">PSF</a> is Huygens or FFT. True for Huygens, false for FFT. </td></tr>
     <tr><td class="paramname">time</td><td>Integration time, as more time means more photons collected </td></tr>
     <tr><td class="paramname">area</td><td>Area of telescope aperture, as more area means more photons </td></tr>

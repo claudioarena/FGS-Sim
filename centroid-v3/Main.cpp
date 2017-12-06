@@ -24,7 +24,7 @@ int main() {
 	cout << "NOTE: If out-of-bounds errors come up, make sure that the the input file is Unix format. " << endl << endl;
 
 	float xIn = 32; // Input coordinates of defined centre in terms of pixel coordinates.
-	float yIn = 96;
+	float yIn = 72;
 	int xPixels = 128;
 	int yPixels = 128;
 	float exposureTime = 0.1; // Time /s

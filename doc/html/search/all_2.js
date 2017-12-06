@@ -1,8 +1,7 @@
 var searchData=
 [
-  ['main',['main',['../_main_8cpp.html#ae66f6b31b5ad750f1fe042a706a4e3d4',1,'Main.cpp']]],
-  ['main_2ecpp',['Main.cpp',['../_main_8cpp.html',1,'']]],
-  ['montecarlo',['MonteCarlo',['../class_monte_carlo.html',1,'MonteCarlo'],['../class_monte_carlo.html#ab3297804a22919515978758c33d25ffe',1,'MonteCarlo::MonteCarlo()']]],
-  ['montecarlo_2ecpp',['MonteCarlo.cpp',['../_monte_carlo_8cpp.html',1,'']]],
-  ['montecarlo_2ehpp',['MonteCarlo.hpp',['../_monte_carlo_8hpp.html',1,'']]]
+  ['gauss2d',['Gauss2d',['../class_gauss2d.html',1,'Gauss2d'],['../class_gauss2d.html#ab4ffbaeba822effd1340f30c9ede8283',1,'Gauss2d::Gauss2d()']]],
+  ['gauss2d_2ecpp',['Gauss2d.cpp',['../_gauss2d_8cpp.html',1,'']]],
+  ['gauss2d_2ehpp',['Gauss2d.hpp',['../_gauss2d_8hpp.html',1,'']]],
+  ['generate',['generate',['../class_gauss2d.html#a31819ba1394c73197dfcd37f0fc49f8f',1,'Gauss2d']]]
 ];

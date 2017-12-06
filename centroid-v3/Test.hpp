@@ -27,6 +27,7 @@ class Test {
 		void run(bool noise, bool huygens, float time, float area, float QE, float temperature, float emissivity, int readout, float ADU, float darkSignal);
 		static void print2dVector(std::vector<std::vector<int>> data); 
 		static int photonsInBand(float mag, char band);
+		static std::vector<std::vector<int>> addMatrices(std::vector<std::vector<int>> a, std::vector<std::vector<int>> b);
 
 	private:
 		std::vector<std::vector<int>> noiseAfterBin; 

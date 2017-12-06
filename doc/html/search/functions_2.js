@@ -1,6 +1,5 @@
 var searchData=
 [
-  ['photonsinband',['photonsInBand',['../class_test.html#a1e325f51545a32fa5bfb25b542bb3a13',1,'Test']]],
-  ['print2dvector',['print2dVector',['../class_test.html#afa6d70bacdacd39273cd5a569e6d5581',1,'Test']]],
-  ['psf',['PSF',['../class_p_s_f.html#aa1d6a3b13ef42df8084322f43dd55b5a',1,'PSF']]]
+  ['main',['main',['../_main_8cpp.html#ae66f6b31b5ad750f1fe042a706a4e3d4',1,'Main.cpp']]],
+  ['montecarlo',['MonteCarlo',['../class_monte_carlo.html#ab3297804a22919515978758c33d25ffe',1,'MonteCarlo']]]
 ];

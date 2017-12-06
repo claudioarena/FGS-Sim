@@ -9,6 +9,7 @@
  * @version 3.0.0 2017-11-04
  */
 
+#include <algorithm>
 #include <chrono>
 #include <cmath>
 #include <iomanip>
@@ -252,11 +253,30 @@ void Test::print2dVector(vector<vector<int>> data) {
 }
 
 /**
+ * Public static function to add together two matrices element-wise. 
+ *
+ * @brief Add two matrices
+ * @param a First matrix to be added
+ * @param b Second matrix to be added
+ * @return Output matrix
+ */
+vector<vector<int>> Test::addMatrices(vector<vector<int>> a, vector<vector<int>> b) {
+	
+	vector<vector<int>> out;
+	vector<int> rowOut = a.at(0); // Output row needs to be initialised to the right dimensions for std::transform to work
+	for (unsigned i = 0; i < a.size(); i++) {
+		transform(a.at(i).begin(), a.at(i).end(), b.at(i).begin(), rowOut.begin(), std::plus<int>()); // Add each row element-wise
+		out.push_back(rowOut);
+	}
+	return out;
+}
+
+/**
  * Public method to run the centroid determination simulation and return a Test object containing the results. 
  *
  * @brief Run centroid determination simulation for input variables
  * 
- * @param noise Boolean whether to add Poisson noise to the pixel data
+ * @param noise Boolean whether to add noise and non-ideal conditions to the pixel data
  * @param huygens Whether the PSF is Huygens or FFT. True for Huygens, false for FFT. 
  * @param time Integration time, as more time means more photons collected
  * @param area Area of telescope aperture, as more area means more photons
