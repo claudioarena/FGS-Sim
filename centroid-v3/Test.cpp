@@ -272,7 +272,7 @@ vector<vector<int>> Test::addMatrices(vector<vector<int>> a, vector<vector<int>>
 }
 
 /**
- * Public method to run the centroid determination simulation and return a Test object containing the results. 
+ * Public method to run the centroid determination simulation and put the results into the member variables of this class. 
  *
  * @brief Run centroid determination simulation for input variables
  * 
