@@ -128,13 +128,17 @@ $(document).ready(function(){initNavTree('md_README.html','');});
 </ul>
 </li>
 <li>3.0.2 2017-11-23<ul>
-<li>Added functions to generate Brownian motion with a given bias distance and direction in the field of view.</li>
-<li><a class="el" href="class_monte_carlo.html" title="Class to run a Monte Carlo simulation of centroid determination error. ">MonteCarlo</a> class modified to iterate over this Brownian motion, giving a path of a moving star.</li>
+<li>Added functions to generate <a class="el" href="class_brownian.html">Brownian</a> motion with a given bias distance and direction in the field of view.</li>
+<li><a class="el" href="class_monte_carlo.html" title="Class to run a Monte Carlo simulation of centroid determination error. ">MonteCarlo</a> class modified to iterate over this <a class="el" href="class_brownian.html">Brownian</a> motion, giving a path of a moving star.</li>
 <li>NB: This is only while assuming that the <a class="el" href="class_p_s_f.html" title="Import a PSF from a Zemax .txt file. ">PSF</a> stays the same when the star moves around the FOV.</li>
-<li>Example of Brownian motion simulation: <div class="image">
+<li>Example of <a class="el" href="class_brownian.html">Brownian</a> motion simulation: <div class="image">
 <img src="https://i.imgur.com/DHzxBsl.png"  alt="Simulation of Brownian motion" title="True centre moves around with a bias"/>
 </div>
- </li>
+</li>
+</ul>
+</li>
+<li>3.1.0 2017-12-13<ul>
+<li><a class="el" href="class_brownian.html">Brownian</a> motion code moved to separate class to allow star movement within a single camera exposure </li>
 </ul>
 </li>
 </ul>

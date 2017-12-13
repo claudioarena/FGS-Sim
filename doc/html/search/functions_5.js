@@ -1,4 +1,5 @@
 var searchData=
 [
-  ['samplephotons',['samplePhotons',['../class_p_s_f.html#a4d7ac888df92d6b05030931823d11dce',1,'PSF']]]
+  ['reset',['reset',['../class_brownian.html#a6de30c4b2f97d4839273427faf0a68c6',1,'Brownian']]],
+  ['run',['run',['../class_monte_carlo.html#a4b20a9ef529cb28315e0fd57e62485cf',1,'MonteCarlo::run()'],['../class_test.html#afd1ccd05d2a386a01b58f0b504084da3',1,'Test::run()']]]
 ];

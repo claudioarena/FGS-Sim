@@ -23,7 +23,7 @@ var NAVTREE =
 
 var NAVTREEINDEX =
 [
-"_gauss2d_8cpp.html"
+"_brownian_8hpp.html"
 ];
 
 var SYNCONMSG = 'click to disable panel synchronisation';

@@ -4,7 +4,7 @@
 <meta http-equiv="Content-Type" content="text/xhtml;charset=UTF-8"/>
 <meta http-equiv="X-UA-Compatible" content="IE=9"/>
 <meta name="generator" content="Doxygen 1.8.11"/>
-<title>FGS-Sim: centroid-v3/Test.hpp File Reference</title>
+<title>FGS-Sim: centroid-v3/Brownian.hpp Source File</title>
 <link href="tabs.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="jquery.js"></script>
 <script type="text/javascript" src="dynsections.js"></script>
@@ -87,7 +87,7 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
   </div>
 </div>
 <script type="text/javascript">
-$(document).ready(function(){initNavTree('_test_8hpp.html','');});
+$(document).ready(function(){initNavTree('_brownian_8hpp_source.html','');});
 </script>
 <div id="doc-content">
 <!-- window showing the filter options -->
@@ -105,51 +105,20 @@ $(document).ready(function(){initNavTree('_test_8hpp.html','');});
 </div>
 
 <div class="header">
-  <div class="summary">
-<a href="#nested-classes">Classes</a>  </div>
   <div class="headertitle">
-<div class="title">Test.hpp File Reference</div>  </div>
+<div class="title">Brownian.hpp</div>  </div>
 </div><!--header-->
 <div class="contents">
-
-<p>Header file for <a class="el" href="class_test.html" title="Class to bin an inputted Gaussian 2d array and find its centroid. ">Test</a> class.  
-<a href="#details">More...</a></p>
-<div class="textblock"><code>#include &quot;<a class="el" href="_brownian_8hpp_source.html">Brownian.hpp</a>&quot;</code><br />
-<code>#include &quot;<a class="el" href="_p_s_f_8hpp_source.html">PSF.hpp</a>&quot;</code><br />
-</div><div class="textblock"><div class="dynheader">
-Include dependency graph for Test.hpp:</div>
-<div class="dyncontent">
-<div class="center"><img src="_test_8hpp__incl.png" border="0" usemap="#centroid-v3_2_test_8hpp" alt=""/></div>
-<map name="centroid-v3_2_test_8hpp" id="centroid-v3_2_test_8hpp">
-</map>
-</div>
-</div><div class="textblock"><div class="dynheader">
-This graph shows which files directly or indirectly include this file:</div>
-<div class="dyncontent">
-<div class="center"><img src="_test_8hpp__dep__incl.png" border="0" usemap="#centroid-v3_2_test_8hppdep" alt=""/></div>
-<map name="centroid-v3_2_test_8hppdep" id="centroid-v3_2_test_8hppdep">
-</map>
-</div>
-</div>
-<p><a href="_test_8hpp_source.html">Go to the source code of this file.</a></p>
-<table class="memberdecls">
-<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="nested-classes"></a>
-Classes</h2></td></tr>
-<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_test.html">Test</a></td></tr>
-<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Class to bin an inputted Gaussian 2d array and find its centroid.  <a href="class_test.html#details">More...</a><br /></td></tr>
-<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
-</table>
-<a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
-<div class="textblock"><p>Header file for <a class="el" href="class_test.html" title="Class to bin an inputted Gaussian 2d array and find its centroid. ">Test</a> class. </p>
-<p>Twinkle FGS-Sim: Centroid recovery simulation</p>
-<dl class="section author"><dt>Author</dt><dd>Feiyu Fang </dd></dl>
-<dl class="section version"><dt>Version</dt><dd>2.1.3 24-08-2017 </dd></dl>
-</div></div><!-- contents -->
+<a href="_brownian_8hpp.html">Go to the documentation of this file.</a><div class="fragment"><div class="line"><a name="l00001"></a><span class="lineno">    1</span>&#160;</div><div class="line"><a name="l00010"></a><span class="lineno"><a class="line" href="class_brownian.html">   10</a></span>&#160;<span class="keyword">class </span><a class="code" href="class_brownian.html">Brownian</a> {</div><div class="line"><a name="l00011"></a><span class="lineno">   11</span>&#160;    <span class="keyword">public</span>:</div><div class="line"><a name="l00012"></a><span class="lineno">   12</span>&#160;        <a class="code" href="class_brownian.html#a7c59446e49027d96724b01b42894c136">Brownian</a>(<span class="keywordtype">float</span> dist, <span class="keywordtype">int</span> angle, <span class="keywordtype">float</span> rms, <span class="keywordtype">bool</span> type);</div><div class="line"><a name="l00013"></a><span class="lineno">   13</span>&#160;        ~<a class="code" href="class_brownian.html">Brownian</a>();</div><div class="line"><a name="l00014"></a><span class="lineno">   14</span>&#160;        <span class="keywordtype">void</span> <a class="code" href="class_brownian.html#a2c9143af5ee03bd72346e95d32c53996">generate</a>();</div><div class="line"><a name="l00015"></a><span class="lineno">   15</span>&#160;        <span class="keywordtype">void</span> <a class="code" href="class_brownian.html#a6de30c4b2f97d4839273427faf0a68c6">reset</a>();</div><div class="line"><a name="l00016"></a><span class="lineno">   16</span>&#160;        <span class="keywordtype">float</span> brownianDx, brownianDy; </div><div class="line"><a name="l00017"></a><span class="lineno">   17</span>&#160;</div><div class="line"><a name="l00018"></a><span class="lineno">   18</span>&#160;    <span class="keyword">private</span>:</div><div class="line"><a name="l00019"></a><span class="lineno">   19</span>&#160;        <span class="keywordtype">float</span> biasDistance, brownianRMS, distance, angle;</div><div class="line"><a name="l00020"></a><span class="lineno">   20</span>&#160;        <span class="keywordtype">int</span> biasAngle;</div><div class="line"><a name="l00021"></a><span class="lineno">   21</span>&#160;        <span class="keywordtype">bool</span> typeHuygens;</div><div class="line"><a name="l00022"></a><span class="lineno">   22</span>&#160;</div><div class="line"><a name="l00023"></a><span class="lineno">   23</span>&#160;};</div><div class="ttc" id="class_brownian_html_a7c59446e49027d96724b01b42894c136"><div class="ttname"><a href="class_brownian.html#a7c59446e49027d96724b01b42894c136">Brownian::Brownian</a></div><div class="ttdeci">Brownian(float dist, int angle, float rms, bool type)</div><div class="ttdoc">Constructs a new Brownian object. </div><div class="ttdef"><b>Definition:</b> Brownian.cpp:19</div></div>
+<div class="ttc" id="class_brownian_html_a2c9143af5ee03bd72346e95d32c53996"><div class="ttname"><a href="class_brownian.html#a2c9143af5ee03bd72346e95d32c53996">Brownian::generate</a></div><div class="ttdeci">void generate()</div><div class="ttdoc">Generate star movement increments in x and y directions. </div><div class="ttdef"><b>Definition:</b> Brownian.cpp:33</div></div>
+<div class="ttc" id="class_brownian_html_a6de30c4b2f97d4839273427faf0a68c6"><div class="ttname"><a href="class_brownian.html#a6de30c4b2f97d4839273427faf0a68c6">Brownian::reset</a></div><div class="ttdeci">void reset()</div><div class="ttdoc">Resets the Brownian offsets. </div><div class="ttdef"><b>Definition:</b> Brownian.cpp:58</div></div>
+<div class="ttc" id="class_brownian_html"><div class="ttname"><a href="class_brownian.html">Brownian</a></div><div class="ttdef"><b>Definition:</b> Brownian.hpp:10</div></div>
+</div><!-- fragment --></div><!-- contents -->
 </div><!-- doc-content -->
 <!-- start footer part -->
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>
-    <li class="navelem"><a class="el" href="dir_ea86788203c736c1c884a329ba2abdd6.html">centroid-v3</a></li><li class="navelem"><a class="el" href="_test_8hpp.html">Test.hpp</a></li>
+    <li class="navelem"><a class="el" href="dir_ea86788203c736c1c884a329ba2abdd6.html">centroid-v3</a></li><li class="navelem"><a class="el" href="_brownian_8hpp.html">Brownian.hpp</a></li>
     <li class="footer">Generated by
     <a href="http://www.doxygen.org/index.html">
     <img class="footer" src="doxygen.png" alt="doxygen"/></a> 1.8.11 </li>

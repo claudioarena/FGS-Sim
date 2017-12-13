@@ -5,7 +5,7 @@
  * @file MonteCarlo.cpp
  * @brief Monte Carlo simulation of centroid determination error
  * @author Feiyu Fang
- * @version 3.0.2 2017-11-23
+ * @version 3.1.0 2017-12-13
  */
 
 #include <algorithm>

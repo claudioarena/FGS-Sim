@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['gauss2d',['Gauss2d',['../class_gauss2d.html',1,'']]]
+  ['brownian',['Brownian',['../class_brownian.html',1,'']]]
 ];

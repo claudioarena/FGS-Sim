@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['montecarlo',['MonteCarlo',['../class_monte_carlo.html',1,'']]]
+  ['gauss2d',['Gauss2d',['../class_gauss2d.html',1,'']]]
 ];

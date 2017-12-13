@@ -1,3 +1,13 @@
+/**
+ * Twinkle FGS-Sim: Centroid recovery simulation
+ * Purpose: Generate increments in x and y to simulate Brownian motion with a given bias angle and distance
+ *
+ * @file Brownian.cpp
+ * @brief Class to simulate Brownian motion of a star
+ * @author Feiyu Fang
+ * @version 3.1.0 2017-12-13
+ */
+
 #include <chrono>
 #include <cmath>
 #include <random>
@@ -21,6 +31,7 @@ Brownian::Brownian(float dist, int angle, float rms, bool type) {
 	biasAngle = angle;
 	brownianRMS = rms;
 	typeHuygens = type;
+	this->reset();
 }
 Brownian::~Brownian() {}
 

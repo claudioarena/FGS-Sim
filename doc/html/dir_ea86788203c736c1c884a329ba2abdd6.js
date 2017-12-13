@@ -1,5 +1,8 @@
 var dir_ea86788203c736c1c884a329ba2abdd6 =
 [
+    [ "Brownian.hpp", "_brownian_8hpp.html", [
+      [ "Brownian", "class_brownian.html", "class_brownian" ]
+    ] ],
     [ "Gauss2d.cpp", "_gauss2d_8cpp.html", null ],
     [ "Gauss2d.hpp", "_gauss2d_8hpp.html", [
       [ "Gauss2d", "class_gauss2d.html", "class_gauss2d" ]

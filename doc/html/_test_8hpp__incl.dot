@@ -4,9 +4,11 @@ digraph "centroid-v3/Test.hpp"
   node [fontname="Helvetica",fontsize="10",shape=record];
   Node1 [label="centroid-v3/Test.hpp",height=0.2,width=0.4,color="black", fillcolor="grey75", style="filled", fontcolor="black"];
   Node1 -> Node2 [color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
-  Node2 [label="PSF.hpp",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$_p_s_f_8hpp.html",tooltip="Header for PSF class. "];
-  Node2 -> Node3 [color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
-  Node3 [label="string",height=0.2,width=0.4,color="grey75", fillcolor="white", style="filled"];
-  Node2 -> Node4 [color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
-  Node4 [label="vector",height=0.2,width=0.4,color="grey75", fillcolor="white", style="filled"];
+  Node2 [label="Brownian.hpp",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$_brownian_8hpp.html",tooltip="Header file for Brownian class. "];
+  Node1 -> Node3 [color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node3 [label="PSF.hpp",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$_p_s_f_8hpp.html",tooltip="Header for PSF class. "];
+  Node3 -> Node4 [color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node4 [label="string",height=0.2,width=0.4,color="grey75", fillcolor="white", style="filled"];
+  Node3 -> Node5 [color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node5 [label="vector",height=0.2,width=0.4,color="grey75", fillcolor="white", style="filled"];
 }

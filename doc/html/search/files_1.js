@@ -1,6 +1,5 @@
 var searchData=
 [
-  ['main_2ecpp',['Main.cpp',['../_main_8cpp.html',1,'']]],
-  ['montecarlo_2ecpp',['MonteCarlo.cpp',['../_monte_carlo_8cpp.html',1,'']]],
-  ['montecarlo_2ehpp',['MonteCarlo.hpp',['../_monte_carlo_8hpp.html',1,'']]]
+  ['gauss2d_2ecpp',['Gauss2d.cpp',['../_gauss2d_8cpp.html',1,'']]],
+  ['gauss2d_2ehpp',['Gauss2d.hpp',['../_gauss2d_8hpp.html',1,'']]]
 ];

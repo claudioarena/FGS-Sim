@@ -27,3 +27,5 @@ Version number, Date in ISO 8601 format, Notes on changes
 	- MonteCarlo class modified to iterate over this Brownian motion, giving a path of a moving star. 
 	- NB: This is only while assuming that the PSF stays the same when the star moves around the FOV. 
 	- Example of Brownian motion simulation: ![Simulation of Brownian motion](https://i.imgur.com/DHzxBsl.png "True centre moves around with a bias")
+- 3.1.0 2017-12-13
+	- Brownian motion code moved to separate class to allow star movement within a single camera exposure

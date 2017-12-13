@@ -6,7 +6,7 @@
  * @file Test.cpp
  * @brief Bin an inputted PSF 2d array and find its centroid
  * @author Feiyu Fang
- * @version 3.0.0 2017-11-04
+ * @version 3.1.0 2017-12-13
  */
 
 #include <algorithm>
@@ -286,12 +286,14 @@ vector<vector<int>> Test::addMatrices(vector<vector<int>> a, vector<vector<int>>
  * @param readout Readout noise /electrons. Ideal 0. 
  * @param ADU Analogue-to-digital units. Electrons per count; ideal 1. 
  * @param darkSignal Dark signal /electrons
+ * @param motion Pointer to Brownian object containing the parameters for generating Brownian motion
  */
 void Test::run(bool noise, bool huygens, float time, float area, float QE, float temperature, float emissivity, int readout, float ADU, float darkSignal, Brownian* motion) {
 
 	int nPhotons = N * time * area;
 	PSF* p = new PSF(filename, nPhotons, huygens); // Generate a new matrix of photon data from the inputted PSF
 	photonsIn = p->samplePhotons(xIn + motion->brownianDx, yIn + motion->brownianDy);
+	motion->generate();
 
 	this->binData(photonsIn, horizPixels, vertPixels);
 	if (noise == true) noiseAfterBin = this->addNoise(time, area, QE, temperature, emissivity, readout, ADU, darkSignal);
