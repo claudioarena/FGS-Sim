@@ -9,11 +9,9 @@
  */
 
 #include <algorithm>
-#include <chrono>
 #include <cmath>
 #include <fstream>
 #include <iostream>
-#include <random>
 #include <vector>
 
 #include "MonteCarlo.hpp"
@@ -114,38 +112,6 @@ float MonteCarlo::stdDev(vector<float> in) {
 }
 
 /**
- * Private function to simulate a star moving in the field of view. This changes the location of the star with
- * a Brownian movement and with a movement bias. 
- * @brief Move the star with Brownian motion with a bias
- *
- * @param biasDistance Bias distance for the star movement /arcsec
- * @param biasAngle Bias angle for star movement /deg
- * @param brownianRMS RMS of Brownian motion distance /arcsec
- * @param typeHuygens Whether the data source is Huygens PSF. True for Huygens, false for FFT.
- */
-vector<float> MonteCarlo::brownian(float biasDistance, int biasAngle, float brownianRMS, bool typeHuygens) {
-
-	// Seed the generation of uniform-distributed random variable with the current time
-	unsigned seed = std::chrono::system_clock::now().time_since_epoch().count();
-	default_random_engine generator(seed);
-
-	float simPerDegree = -1; // Scale arcseconds into simels
-	if (typeHuygens == true) simPerDegree = 5.33;
-	else simPerDegree = 170.67;
-	uniform_int_distribution<int> uniformAngle(1, 180); // Uniform distribution of Brownian motion angle
-	normal_distribution<double> brownianDistance(0, brownianRMS * simPerDegree); // Normal distribution mean at 0, RMS 0.1", 1" or 10".
-	float distance = brownianDistance(generator);
-	float angle = uniformAngle(generator) * M_PI / 180.;
-	float brownianDx = distance * cos(angle); // Update the centre location after Brownian motion
-	float brownianDy = distance * sin(angle);
-
-	biasDistance *= simPerDegree; // For a 6"x6" FOV and 1024x1024 simels, each degree is 170.67 simels
-	brownianDx += biasDistance * cos(biasAngle * M_PI / 180.); // Update the centre location after star movement bias
-	brownianDy += biasDistance * sin(biasAngle * M_PI / 180.);
-	return {brownianDx,brownianDy};
-}
-
-/**
  * Run Monte Carlo simulation for star at a random position within a pixel with a given magnitude, running for n times
  * 
  * @brief Run Monte Carlo simulation
@@ -170,12 +136,12 @@ void MonteCarlo::run(float magB, float magV, float magR, int iterations, bool hu
 	int N = photonsB + photonsV + photonsR; // Total photons in all bands
 	
 	for (int j = 0; j < iterations; j++) { /// Iterate x times at random star positions and find average
-		vector<float> motion = brownian(0.1, 45, 0.1, huygens);
-		Test* t = new Test(N, xIn + motion.at(0), yIn + motion.at(1), xPixels, yPixels, zodiacal, inputFile);
-		t->run(true, huygens, time, area, QE, temperature, emissivity, readout, ADU, darkSignal); // Run with noise for input time and area
+		Brownian* motion = new Brownian(0.1, 45, 0.1, huygens);
+		Test* t = new Test(N, xIn, yIn, xPixels, yPixels, zodiacal, inputFile);
+		t->run(true, huygens, time, area, QE, temperature, emissivity, readout, ADU, darkSignal, motion); // Run with noise for input time and area
 
-		xIn += motion.at(0);
-		yIn += motion.at(1);
+		xIn += motion->brownianDx;
+		yIn += motion->brownianDy;
 		float xCentre, yCentre;
 		if (huygens == true) { // Scale centre coordinates with the pixel grid dimensions
 			xCentre = xIn * (xPixels / 32.);

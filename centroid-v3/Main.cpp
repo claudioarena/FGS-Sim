@@ -6,7 +6,7 @@
  * @file Main.cpp
  * @brief Main method to run centroid recovery simulation
  * @author Feiyu Fang
- * @version 3.0.2 2017-11-23
+ * @version 3.0.3 2017-12-13
  */
 
 #include <chrono>

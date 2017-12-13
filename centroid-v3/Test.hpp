@@ -7,7 +7,7 @@
  * @version 2.1.3 24-08-2017
  */
 
-//#include "Gauss2d.hpp"
+#include "Brownian.hpp"
 #include "PSF.hpp"
 
 /**
@@ -24,7 +24,7 @@ class Test {
 		std::vector<std::vector<int>> pixelData;
 		std::vector<std::vector<int>> photonsIn; 
 		
-		void run(bool noise, bool huygens, float time, float area, float QE, float temperature, float emissivity, int readout, float ADU, float darkSignal);
+		void run(bool noise, bool huygens, float time, float area, float QE, float temperature, float emissivity, int readout, float ADU, float darkSignal, Brownian* motion);
 		static void print2dVector(std::vector<std::vector<int>> data); 
 		static int photonsInBand(float mag, char band);
 		static std::vector<std::vector<int>> addMatrices(std::vector<std::vector<int>> a, std::vector<std::vector<int>> b);
@@ -35,6 +35,7 @@ class Test {
 		int N, horizPixels, vertPixels; //, pointsX, pointsY;
 		bool zodiacal;
 		std::string filename;
+		Brownian* motion;
 
 		static std::vector<int> sumVert(std::vector<std::vector<int>> in, int i, int end);
 		static int mirrorThermalNoise(float area, float temperature);
