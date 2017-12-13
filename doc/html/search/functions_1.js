@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['brownian',['Brownian',['../class_brownian.html#a7c59446e49027d96724b01b42894c136',1,'Brownian']]]
+  ['brownian',['Brownian',['../class_brownian.html#a4e2b8dc1c708852df19362cc65c43955',1,'Brownian']]]
 ];

@@ -1,5 +1,6 @@
 var dir_ea86788203c736c1c884a329ba2abdd6 =
 [
+    [ "Brownian.cpp", "_brownian_8cpp.html", null ],
     [ "Brownian.hpp", "_brownian_8hpp.html", [
       [ "Brownian", "class_brownian.html", "class_brownian" ]
     ] ],

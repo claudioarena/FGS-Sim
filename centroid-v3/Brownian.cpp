@@ -10,6 +10,7 @@
 
 #include <chrono>
 #include <cmath>
+#include <iostream>
 #include <random>
 
 #include "Brownian.hpp"
@@ -26,9 +27,9 @@ using namespace std;
  * @param rms RMS of Brownian motion distance /arcsec
  * @param type Whether the data source is a Huygens PSF. True for Huygens, false for FFT.
  */
-Brownian::Brownian(float dist, int angle, float rms, bool type) {
+Brownian::Brownian(float dist, int theta, float rms, bool type) {
 	biasDistance = dist;
-	biasAngle = angle;
+	biasAngle = theta;
 	brownianRMS = rms;
 	typeHuygens = type;
 	this->reset();
@@ -41,6 +42,7 @@ Brownian::~Brownian() {}
  * @brief Generate star movement increments in x and y directions
  */
 void Brownian::generate() {
+	this->reset();
 
 	// Seed the generation of uniform-distributed random variable with the current time
 	unsigned seed = std::chrono::system_clock::now().time_since_epoch().count();
@@ -56,9 +58,9 @@ void Brownian::generate() {
 	brownianDx = distance * cos(angle); // Update the centre location after Brownian motion
 	brownianDy = distance * sin(angle);
 
-	biasDistance *= simPerDegree; // For a 6"x6" FOV and 1024x1024 simels, each degree is 170.67 simels
-	brownianDx += biasDistance * cos(biasAngle * M_PI / 180.); // Update the centre location after star movement bias
-	brownianDy += biasDistance * sin(biasAngle * M_PI / 180.);
+	float brownianRadius = biasDistance * simPerDegree; // For a 6"x6" FOV and 1024x1024 simels, each degree is 170.67 simels
+	brownianDx += brownianRadius * cos(biasAngle * M_PI / 180.); // Update the centre location after star movement bias
+	brownianDy += brownianRadius * sin(biasAngle * M_PI / 180.);
 }
 
 /**
@@ -68,4 +70,6 @@ void Brownian::generate() {
 void Brownian::reset() {
 	brownianDx = 0;
 	brownianDy = 0;
+	distance = 0;
+	angle = 0;
 }

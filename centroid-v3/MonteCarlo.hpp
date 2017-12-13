@@ -17,7 +17,7 @@ class MonteCarlo {
 	public: 
 		MonteCarlo(std::string inFileName, std::string outFileName, float inX, float inY, int horizPixels, int vertPixels, float t, float diameter, float qEff, float temp, float e, int readNoise, float analogueDigitalUnits, float darkCurrent, bool zodiac);
 		~MonteCarlo();
-		void run(float magB, float magV, float magR, int iterations, bool huygens);
+		void run(float magB, float magV, float magR, int iterations, int brownianRuns, bool huygens);
 		static std::vector<float> brownian(float biasDistance, int biasAngle, float brownianRMS, bool typeHuygens);
 
 	private:

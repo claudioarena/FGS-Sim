@@ -287,15 +287,21 @@ vector<vector<int>> Test::addMatrices(vector<vector<int>> a, vector<vector<int>>
  * @param ADU Analogue-to-digital units. Electrons per count; ideal 1. 
  * @param darkSignal Dark signal /electrons
  * @param motion Pointer to Brownian object containing the parameters for generating Brownian motion
+ * @param brownianRuns Number of Brownian motion updates to do within a single camera exposure. TODO: Change this to link to sampling frequency, or something
  */
-void Test::run(bool noise, bool huygens, float time, float area, float QE, float temperature, float emissivity, int readout, float ADU, float darkSignal, Brownian* motion) {
+void Test::run(bool noise, bool huygens, float time, float area, float QE, float temperature, float emissivity, int readout, float ADU, float darkSignal, Brownian* motion, int brownianRuns) {
 
-	int nPhotons = N * time * area;
+	int nPhotons = N * time * area / brownianRuns;
 	PSF* p = new PSF(filename, nPhotons, huygens); // Generate a new matrix of photon data from the inputted PSF
-	photonsIn = p->samplePhotons(xIn + motion->brownianDx, yIn + motion->brownianDy);
-	motion->generate();
 
-	this->binData(photonsIn, horizPixels, vertPixels);
+	// Initialise the vector<vector<int>> first, then add the simel matrices for a star moving within an exposure
+	for (int i = 0; i < brownianRuns; i++) {
+		motion->generate();
+		if (i == 0) simelsIn = p->samplePhotons(xIn + motion->brownianDx, yIn + motion->brownianDy); 
+		else simelsIn = addMatrices(simelsIn, p->samplePhotons(xIn + motion->brownianDx, yIn + motion->brownianDy));
+	}
+
+	this->binData(simelsIn, horizPixels, vertPixels);
 	if (noise == true) noiseAfterBin = this->addNoise(time, area, QE, temperature, emissivity, readout, ADU, darkSignal);
 	this->findCentroid();
 	if (huygens == true) print2dVector(pixelData);

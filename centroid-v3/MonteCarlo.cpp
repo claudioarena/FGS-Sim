@@ -119,9 +119,10 @@ float MonteCarlo::stdDev(vector<float> in) {
  * @param magV V-magnitude of the star to be tested
  * @param magR R-magnitude of the star to be tested
  * @param iterations Number of times to run simulation
+ * @param brownianRuns Number of Brownian movements to do within a single exposure
  * @param huygens Type of Zemax PSF: True for Huygens, false for FFT. 
  */
-void MonteCarlo::run(float magB, float magV, float magR, int iterations, bool huygens) {
+void MonteCarlo::run(float magB, float magV, float magR, int iterations, int brownianRuns, bool huygens) {
 
 	outFile << endl << "B-magnitude: " << magB << "; V-magnitude: " << magV << "; R-magnitude: " << magR << endl;
 	cout << "Calculating for B, V, R magnitudes = " << magB << ", " << magV << ", " << magR << " ..." << endl;
@@ -135,30 +136,32 @@ void MonteCarlo::run(float magB, float magV, float magR, int iterations, bool hu
 	int photonsR = Test::photonsInBand(magR, 'R');
 	int N = photonsB + photonsV + photonsR; // Total photons in all bands
 	
+	Brownian* motion = new Brownian(0.1, 45, 0.1, huygens);
 	for (int j = 0; j < iterations; j++) { /// Iterate x times at random star positions and find average
-		Brownian* motion = new Brownian(0.1, 45, 0.1, huygens);
 		Test* t = new Test(N, xIn, yIn, xPixels, yPixels, zodiacal, inputFile);
-		t->run(true, huygens, time, area, QE, temperature, emissivity, readout, ADU, darkSignal, motion); // Run with noise for input time and area
-
+		
+		// Run with noise for input time and area
+		t->run(true, huygens, time, area, QE, temperature, emissivity, readout, ADU, darkSignal, motion, brownianRuns);
 		xIn += motion->brownianDx;
 		yIn += motion->brownianDy;
 		float xCentre, yCentre;
-		if (huygens == true) { // Scale centre coordinates with the pixel grid dimensions
-			xCentre = xIn * (xPixels / 32.);
-			yCentre = yIn * (yPixels / 32.);
-		}
-		else {
-			xCentre = xIn * (xPixels / 1024.);
-			yCentre = yIn * (yPixels / 1024.);
-		}
-		float x = t->xCentre * xPixels;
+		
+		// Scale centre coordinates with the pixel grid dimensions
+		int dimension = -1;
+		if (huygens == true) dimension = 32;
+		else dimension = 1024;
+		xCentre = xIn * (xPixels / (float)dimension);
+		yCentre = yIn * (yPixels / (float)dimension);
+
+		float x = t->xCentre * xPixels; // Prepare values for output to file
 		float y = t->yCentre * yPixels;
 		error = (sqrt((x - xCentre)*(x - xCentre) + (y - yCentre)*(y - yCentre)));
-		photonsIn = (sumPhotons(t->photonsIn)); // This figure is different from nPhotons in Test.cpp as this is after normalisation errors
+		photonsIn = (sumPhotons(t->simelsIn)); // This figure is different from nPhotons in Test.cpp as this is after normalisation errors
 		photonsOut = (sumPhotons(t->pixelData));
 		outFile << error << ',' << photonsIn << ',' << photonsOut << ',' << xCentre << ',' << yCentre << ',' << x << ',' << y << endl;
 		delete t;
 	}
+	delete motion;
 	xIn = xInOriginal;
 	yIn = yInOriginal;
 }

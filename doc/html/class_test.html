@@ -125,9 +125,9 @@ $(document).ready(function(){initNavTree('class_test.html','');});
 Public Member Functions</h2></td></tr>
 <tr class="memitem:a577eac5def8c1cb9d6327bfbdd14e454"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_test.html#a577eac5def8c1cb9d6327bfbdd14e454">Test</a> (int nPhotons, int inX, int inY, int hPixels, int vPixels, bool zodiac, std::string name)</td></tr>
 <tr class="separator:a577eac5def8c1cb9d6327bfbdd14e454"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:afd1ccd05d2a386a01b58f0b504084da3"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_test.html#afd1ccd05d2a386a01b58f0b504084da3">run</a> (bool noise, bool huygens, float time, float area, float QE, float temperature, float emissivity, int readout, float ADU, float darkSignal, <a class="el" href="class_brownian.html">Brownian</a> *motion)</td></tr>
-<tr class="memdesc:afd1ccd05d2a386a01b58f0b504084da3"><td class="mdescLeft">&#160;</td><td class="mdescRight">Run centroid determination simulation for input variables.  <a href="#afd1ccd05d2a386a01b58f0b504084da3">More...</a><br /></td></tr>
-<tr class="separator:afd1ccd05d2a386a01b58f0b504084da3"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a43c762b101cd7751d33b590449068cd8"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_test.html#a43c762b101cd7751d33b590449068cd8">run</a> (bool noise, bool huygens, float time, float area, float QE, float temperature, float emissivity, int readout, float ADU, float darkSignal, <a class="el" href="class_brownian.html">Brownian</a> *motion, int brownianRuns)</td></tr>
+<tr class="memdesc:a43c762b101cd7751d33b590449068cd8"><td class="mdescLeft">&#160;</td><td class="mdescRight">Run centroid determination simulation for input variables.  <a href="#a43c762b101cd7751d33b590449068cd8">More...</a><br /></td></tr>
+<tr class="separator:a43c762b101cd7751d33b590449068cd8"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-static-methods"></a>
 Static Public Member Functions</h2></td></tr>
@@ -151,9 +151,9 @@ float&#160;</td><td class="memItemRight" valign="bottom"><b>yCentre</b></td></tr
 <tr class="memitem:aa88a602ff313e456e3765e9cf0dd72ac"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="aa88a602ff313e456e3765e9cf0dd72ac"></a>
 std::vector&lt; std::vector&lt; int &gt; &gt;&#160;</td><td class="memItemRight" valign="bottom"><b>pixelData</b></td></tr>
 <tr class="separator:aa88a602ff313e456e3765e9cf0dd72ac"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ab4b9562552a411ee643ea444ca9b8b71"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="ab4b9562552a411ee643ea444ca9b8b71"></a>
-std::vector&lt; std::vector&lt; int &gt; &gt;&#160;</td><td class="memItemRight" valign="bottom"><b>photonsIn</b></td></tr>
-<tr class="separator:ab4b9562552a411ee643ea444ca9b8b71"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a2525e6676e512e5f77656c831d88f20a"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a2525e6676e512e5f77656c831d88f20a"></a>
+std::vector&lt; std::vector&lt; int &gt; &gt;&#160;</td><td class="memItemRight" valign="bottom"><b>simelsIn</b></td></tr>
+<tr class="separator:a2525e6676e512e5f77656c831d88f20a"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p>Class to bin an inputted Gaussian 2d array and find its centroid. </p>
@@ -347,7 +347,7 @@ std::vector&lt; std::vector&lt; int &gt; &gt;&#160;</td><td class="memItemRight"
 
 </div>
 </div>
-<a class="anchor" id="afd1ccd05d2a386a01b58f0b504084da3"></a>
+<a class="anchor" id="a43c762b101cd7751d33b590449068cd8"></a>
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
@@ -415,7 +415,13 @@ std::vector&lt; std::vector&lt; int &gt; &gt;&#160;</td><td class="memItemRight"
           <td class="paramkey"></td>
           <td></td>
           <td class="paramtype"><a class="el" href="class_brownian.html">Brownian</a> *&#160;</td>
-          <td class="paramname"><em>motion</em>&#160;</td>
+          <td class="paramname"><em>motion</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">int&#160;</td>
+          <td class="paramname"><em>brownianRuns</em>&#160;</td>
         </tr>
         <tr>
           <td></td>
@@ -440,6 +446,7 @@ std::vector&lt; std::vector&lt; int &gt; &gt;&#160;</td><td class="memItemRight"
     <tr><td class="paramname">ADU</td><td>Analogue-to-digital units. Electrons per count; ideal 1. </td></tr>
     <tr><td class="paramname">darkSignal</td><td>Dark signal /electrons </td></tr>
     <tr><td class="paramname">motion</td><td>Pointer to <a class="el" href="class_brownian.html">Brownian</a> object containing the parameters for generating <a class="el" href="class_brownian.html">Brownian</a> motion </td></tr>
+    <tr><td class="paramname">brownianRuns</td><td>Number of <a class="el" href="class_brownian.html">Brownian</a> motion updates to do within a single camera exposure. TODO: Change this to link to sampling frequency, or something </td></tr>
   </table>
   </dd>
 </dl>

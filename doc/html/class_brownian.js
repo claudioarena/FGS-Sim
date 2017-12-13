@@ -1,6 +1,6 @@
 var class_brownian =
 [
-    [ "Brownian", "class_brownian.html#a7c59446e49027d96724b01b42894c136", null ],
+    [ "Brownian", "class_brownian.html#a4e2b8dc1c708852df19362cc65c43955", null ],
     [ "~Brownian", "class_brownian.html#a59183a5a79888a6cb182fe47eff0a535", null ],
     [ "generate", "class_brownian.html#a2c9143af5ee03bd72346e95d32c53996", null ],
     [ "reset", "class_brownian.html#a6de30c4b2f97d4839273427faf0a68c6", null ],

@@ -24,7 +24,7 @@ int main() {
 	cout << "NOTE: If out-of-bounds errors come up, make sure that the the input file is Unix format. " << endl << endl;
 
 	float xIn = 32; // Input coordinates of defined centre in terms of pixel coordinates.
-	float yIn = 72;
+	float yIn = 32;
 	int xPixels = 128;
 	int yPixels = 128;
 	float exposureTime = 0.1; // Time /s
@@ -39,7 +39,7 @@ int main() {
 	
 	MonteCarlo* m = new MonteCarlo("PSF-FFT-1024.tsv", "results.csv", xIn * 1024 / xPixels, yIn * 1024 / yPixels, xPixels, yPixels, exposureTime, diameter, QE, temperature, emissivity, readout, ADU, darkSignal, zodiacal);
 	for (int mag = 7; mag <= 13; mag += 3) {
-		m->run(mag, mag, mag, 10, false);
+		m->run(mag, mag, mag, 10, 2, false);
 	}
 	delete m; // Close output file
 	

@@ -22,9 +22,9 @@ class Test {
 		float xCentre;
 		float yCentre;
 		std::vector<std::vector<int>> pixelData;
-		std::vector<std::vector<int>> photonsIn; 
+		std::vector<std::vector<int>> simelsIn; 
 		
-		void run(bool noise, bool huygens, float time, float area, float QE, float temperature, float emissivity, int readout, float ADU, float darkSignal, Brownian* motion);
+		void run(bool noise, bool huygens, float time, float area, float QE, float temperature, float emissivity, int readout, float ADU, float darkSignal, Brownian* motion, int brownianRuns);
 		static void print2dVector(std::vector<std::vector<int>> data); 
 		static int photonsInBand(float mag, char band);
 		static std::vector<std::vector<int>> addMatrices(std::vector<std::vector<int>> a, std::vector<std::vector<int>> b);

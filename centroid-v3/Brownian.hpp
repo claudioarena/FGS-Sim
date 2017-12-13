@@ -9,7 +9,7 @@
 
 class Brownian {
 	public:
-		Brownian(float dist, int angle, float rms, bool type);
+		Brownian(float dist, int theta, float rms, bool type);
 		~Brownian();
 		void generate();
 		void reset();
