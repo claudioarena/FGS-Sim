@@ -32,14 +32,14 @@ int main() {
 	float QE = 0.8;
 	float temperature = 72;
 	float emissivity = 0.3; // Proportion of input photons sent to FGS; parameter for dichroic. 
-	int readout = 8;
+	int readout = 1;
 	float ADU = 1;
 	float darkSignal = 0.2;
 	bool zodiacal = false;
 	
 	MonteCarlo* m = new MonteCarlo("PSF-FFT-1024.tsv", "results.csv", xIn * 1024 / xPixels, yIn * 1024 / yPixels, xPixels, yPixels, exposureTime, diameter, QE, temperature, emissivity, readout, ADU, darkSignal, zodiacal);
 	for (int mag = 7; mag <= 13; mag += 3) {
-		m->run(mag, mag, mag, 10, 2, false);
+		m->run(mag, mag, mag, 10, 1, false);
 	}
 	delete m; // Close output file
 	
