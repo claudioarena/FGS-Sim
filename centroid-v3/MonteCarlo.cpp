@@ -148,7 +148,7 @@ void MonteCarlo::run(float magB, float magV, float magR, int iterations, int bro
 		
 		// Scale centre coordinates with the pixel grid dimensions
 		int dimension = -1;
-		if (huygens == true) dimension = 32;
+		if (huygens == true) dimension = 512;
 		else dimension = 1024;
 		xCentre = xIn * (xPixels / (float)dimension);
 		yCentre = yIn * (yPixels / (float)dimension);

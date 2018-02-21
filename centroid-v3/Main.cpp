@@ -35,11 +35,11 @@ int main() {
 	int readout = 1;
 	float ADU = 1;
 	float darkSignal = 0.2;
-	bool zodiacal = false;
+	bool zodiacal = true;
 	
-	MonteCarlo* m = new MonteCarlo("PSF-FFT-1024.tsv", "results.csv", xIn * 1024 / xPixels, yIn * 1024 / yPixels, xPixels, yPixels, exposureTime, diameter, QE, temperature, emissivity, readout, ADU, darkSignal, zodiacal);
+	MonteCarlo* m = new MonteCarlo("Field1.tsv", "results.csv", xIn * 512 / xPixels, yIn * 512 / yPixels, xPixels, yPixels, exposureTime, diameter, QE, temperature, emissivity, readout, ADU, darkSignal, zodiacal);
 	for (int mag = 7; mag <= 13; mag += 3) {
-		m->run(mag, mag, mag, 10, 1, false);
+		m->run(mag, mag, mag, 10, 1, true); // TODO: Remove/comment-out pixel data display for Huygens PSFs
 	}
 	delete m; // Close output file
 	
