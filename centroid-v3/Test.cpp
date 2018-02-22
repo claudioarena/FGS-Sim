@@ -304,7 +304,7 @@ void Test::run(bool noise, bool huygens, float time, float area, float QE, float
 	this->binData(simelsIn, horizPixels, vertPixels);
 	if (noise == true) noiseAfterBin = this->addNoise(time, area, QE, temperature, emissivity, readout, ADU, darkSignal);
 	this->findCentroid();
-	if (huygens == true) print2dVector(pixelData);
+	//if (huygens == true) print2dVector(pixelData);
 	cout << "Photons detected: " << PSF::sum(pixelData) << ", total photons " << nPhotons << '.' << endl;
 
 	delete p;
