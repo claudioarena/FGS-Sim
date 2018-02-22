@@ -4,7 +4,7 @@
  * @file MonteCarlo.hpp
  * @brief Header file for MonteCarlo class
  * @author Feiyu Fang
- * @version 3.0.0 2017-11-04
+ * @version 3.2.0 2018-02-22
  */
 
 #include <fstream>
@@ -15,9 +15,9 @@
  */
 class MonteCarlo {
 	public: 
-		MonteCarlo(std::string inFileName, std::string outFileName, float inX, float inY, int horizPixels, int vertPixels, float t, float diameter, float qEff, float temp, float e, int readNoise, float analogueDigitalUnits, float darkCurrent, bool zodiac);
+		MonteCarlo(std::string inFileName, float inX, float inY, int horizPixels, int vertPixels, float t, float diameter, float qEff, float temp, float e, int readNoise, float analogueDigitalUnits, float darkCurrent, bool zodiac);
 		~MonteCarlo();
-		void run(float magB, float magV, float magR, int iterations, int brownianRuns, bool huygens);
+		float run(float magB, float magV, float magR, int iterations, int brownianRuns, bool huygens);
 		static std::vector<float> brownian(float biasDistance, int biasAngle, float brownianRMS, bool typeHuygens);
 
 	private:

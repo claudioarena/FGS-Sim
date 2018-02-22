@@ -5,7 +5,7 @@
  * @file MonteCarlo.cpp
  * @brief Monte Carlo simulation of centroid determination error
  * @author Feiyu Fang
- * @version 3.1.0 2017-12-13
+ * @version 3.2.0 2018-02-22
  */
 
 #include <algorithm>
@@ -20,6 +20,7 @@ using namespace std;
 
 /**
  * Constructor to create a new MonteCarlo object with the input parameters. Opens a results file and outputs the parameters to the file.
+ * Initialises file output if block at end is uncommented. 
  * @brief Constructs a MonteCarlo object with input parameters and opens file
  * 
  * @param inFileName Name of input file; "PSF-FFT-1024.tsv" preferred. 
@@ -38,7 +39,7 @@ using namespace std;
  * @param darkCurrent Dark current for the sensor. Ideal 0. 
  * @param zodiac Whether to include zodiacal light as a background
  */
-MonteCarlo::MonteCarlo(string inFileName, string outFileName, float inX, float inY, int horizPixels, int vertPixels, float t, float diameter, float qEff, float temp, float e, int readNoise, float analogueDigitalUnits, float darkCurrent, bool zodiac) {
+MonteCarlo::MonteCarlo(string inFileName, float inX, float inY, int horizPixels, int vertPixels, float t, float diameter, float qEff, float temp, float e, int readNoise, float analogueDigitalUnits, float darkCurrent, bool zodiac) {
 	xIn = inX;
 	yIn = inY;
 	xPixels = horizPixels;
@@ -54,7 +55,7 @@ MonteCarlo::MonteCarlo(string inFileName, string outFileName, float inX, float i
 	zodiacal = zodiac;
 	inputFile = inFileName;
 	
-	// Open file and output parameters
+/*	// Open file and output parameters
 	outFile.open(outFileName);
 	outFile << "Test:, Input centre: (" << xIn << ';' << yIn << "), Pixels in each dimension: ("
 			<< xPixels << ';' << yPixels << "), Exposure time: " << time << " s" << endl;
@@ -63,13 +64,14 @@ MonteCarlo::MonteCarlo(string inFileName, string outFileName, float inX, float i
 
 //	outFile << endl << "Sigma in both dimensions, Average distance, Photons in, Photons detected, Monte Carlo standard deviation" << endl;
 	outFile << endl << "Error /pixels, Photons in, Photons detected, True X-coordinate, True Y-coordinate, Calculated X-centre, Calculated Y-centre" << endl;
+*/
 }
 
 
 /**
- * @brief Destructor for MonteCarlo object closes the current file
+ * @brief Destructor for MonteCarlo object closes the current file if uncommented
  */
-MonteCarlo::~MonteCarlo() {outFile.close();}
+MonteCarlo::~MonteCarlo() {/*outFile.close();*/}
 
 /**
  * Private static function to return the total number of photons in a pixel grid, either of pixels or simels.
@@ -112,7 +114,7 @@ float MonteCarlo::stdDev(vector<float> in) {
 }
 
 /**
- * Run Monte Carlo simulation for star at a random position within a pixel with a given magnitude, running for n times
+ * Run Monte Carlo simulation for star at a given position within a pixel with a given magnitude, running for n times
  * 
  * @brief Run Monte Carlo simulation
  * @param magB B-magnitude of the star to be tested
@@ -121,15 +123,17 @@ float MonteCarlo::stdDev(vector<float> in) {
  * @param iterations Number of times to run simulation
  * @param brownianRuns Number of Brownian movements to do within a single exposure
  * @param huygens Type of Zemax PSF: True for Huygens, false for FFT. 
+ * @return averageError Mean of the overall centroid recovery errors over all the iterations tested
  */
-void MonteCarlo::run(float magB, float magV, float magR, int iterations, int brownianRuns, bool huygens) {
+float MonteCarlo::run(float magB, float magV, float magR, int iterations, int brownianRuns, bool huygens) {
 
-	outFile << endl << "B-magnitude: " << magB << "; V-magnitude: " << magV << "; R-magnitude: " << magR << endl;
+//	outFile << endl << "B-magnitude: " << magB << "; V-magnitude: " << magV << "; R-magnitude: " << magR << endl;
 	cout << "Calculating for B, V, R magnitudes = " << magB << ", " << magV << ", " << magR << " ..." << endl;
 	float xInOriginal = xIn;
 	float yInOriginal = yIn;
 	float error;
-	int photonsIn, photonsOut;
+	vector<float> vectorOfErrors;
+	//int photonsIn, photonsOut;
 
 	int photonsB = Test::photonsInBand(magB, 'B'); // Convert magnitude in each band to photons s^-1 m^-2.
 	int photonsV = Test::photonsInBand(magV, 'V');
@@ -153,15 +157,18 @@ void MonteCarlo::run(float magB, float magV, float magR, int iterations, int bro
 		xCentre = xIn * (xPixels / (float)dimension);
 		yCentre = yIn * (yPixels / (float)dimension);
 
-		float x = t->xCentre * xPixels; // Prepare values for output to file
+		float x = t->xCentre * xPixels; // Prepare values for output
 		float y = t->yCentre * yPixels;
 		error = (sqrt((x - xCentre)*(x - xCentre) + (y - yCentre)*(y - yCentre)));
-		photonsIn = (sumPhotons(t->simelsIn)); // This figure is different from nPhotons in Test.cpp as this is after normalisation errors
-		photonsOut = (sumPhotons(t->pixelData));
-		outFile << error << ',' << photonsIn << ',' << photonsOut << ',' << xCentre << ',' << yCentre << ',' << x << ',' << y << endl;
+		vectorOfErrors.push_back(error);
+		//photonsIn = (sumPhotons(t->simelsIn)); // This figure is different from nPhotons in Test.cpp as this is after normalisation errors
+		//photonsOut = (sumPhotons(t->pixelData));
+		//outFile << error << ',' << photonsIn << ',' << photonsOut << ',' << xCentre << ',' << yCentre << ',' << x << ',' << y << endl;
 		delete t;
 	}
 	delete motion;
 	xIn = xInOriginal;
 	yIn = yInOriginal;
+	
+	return average(vectorOfErrors);
 }

@@ -29,3 +29,5 @@ Version number, Date in ISO 8601 format, Notes on changes
 	- Example of Brownian motion simulation: ![Simulation of Brownian motion](https://i.imgur.com/DHzxBsl.png "True centre moves around with a bias")
 - 3.1.0 2017-12-13
 	- Brownian motion code moved to separate class to allow star movement within a single camera exposure
+- 3.2.0 2018-02-22
+	- Changed run() in MonteCarlo class to put errors into a vector to be outputted, instead of outputting directly into a CSV. This allows iterations of many Zemax PSFs. 

@@ -1,16 +1,17 @@
 /**
  * Twinkle FGS-Sim: Centroid recovery simulation
- * Purpose: Run a Monte Carlo simulation to generate a 2d PSF with noise, bin it into "pixels" and find the
- * centroid of the binned data.
+ * Purpose: Run a Monte Carlo simulation to take a 2d PSF from Zemax, add noise, bin it into "pixels" and find
+ * the centroid of the binned data.
  *
  * @file Main.cpp
  * @brief Main method to run centroid recovery simulation
  * @author Feiyu Fang
- * @version 3.1.0 2017-12-13
+ * @version 3.2.0 2018-02-22
  */
 
 #include <chrono>
 #include <iostream>
+#include <vector>
 
 #include "MonteCarlo.hpp"
 
@@ -35,11 +36,12 @@ int main() {
 	int readout = 1;
 	float ADU = 1;
 	float darkSignal = 0.2;
-	bool zodiacal = true;
+	bool zodiacal = false;
 	
-	MonteCarlo* m = new MonteCarlo("Zemax/Field1.tsv", "results.csv", xIn * 512 / xPixels, yIn * 512 / yPixels, xPixels, yPixels, exposureTime, diameter, QE, temperature, emissivity, readout, ADU, darkSignal, zodiacal);
+	MonteCarlo* m = new MonteCarlo("Zemax/Field1.tsv", xIn * 512 / xPixels, yIn * 512 / yPixels, xPixels, yPixels, exposureTime, diameter, QE, temperature, emissivity, readout, ADU, darkSignal, zodiacal);
+	vector<float> errors;
 	for (int mag = 7; mag <= 13; mag += 3) {
-		m->run(mag, mag, mag, 10, 1, true); 
+		errors.push_back(m->run(mag, mag, mag, 10, 1, true));
 	}
 	delete m; // Close output file
 	
