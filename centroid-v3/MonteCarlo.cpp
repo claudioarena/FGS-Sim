@@ -10,7 +10,6 @@
 
 #include <algorithm>
 #include <cmath>
-#include <fstream>
 #include <iostream>
 #include <vector>
 
@@ -24,7 +23,6 @@ using namespace std;
  * @brief Constructs a MonteCarlo object with input parameters and opens file
  * 
  * @param inFileName Name of input file; "PSF-FFT-1024.tsv" preferred. 
- * @param outFileName Name of output file; "results.csv" preferred. 
  * @param inX x-coordinate of star
  * @param inY y-coordinate of star
  * @param horizPixels Number of pixels in the x-axis to bin the data into

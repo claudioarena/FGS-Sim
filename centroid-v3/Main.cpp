@@ -10,19 +10,15 @@
  */
 
 #include <chrono>
+#include <fstream>
 #include <iostream>
-#include <vector>
 
 #include "MonteCarlo.hpp"
 
 using namespace std;
 
-/// Main method. Runs tests with inputted parameters.
-int main() {
-	
-	time_t startTime = time(nullptr);
-	cout << '\a' << endl << "Start time: " << asctime(localtime(&startTime)) << endl;
-	cout << "NOTE: If out-of-bounds errors come up, make sure that the the input file is Unix format. " << endl << endl;
+/// Run the algorithm for a given file over the given magnitudes, outputting the average errors to file
+void runFromTSV(ofstream &outputFile, string inFileName) {
 
 	float xIn = 32; // Input coordinates of defined centre in terms of pixel coordinates.
 	float yIn = 32;
@@ -37,14 +33,47 @@ int main() {
 	float ADU = 1;
 	float darkSignal = 0.2;
 	bool zodiacal = false;
-	
-	MonteCarlo* m = new MonteCarlo("Zemax/Field1.tsv", xIn * 512 / xPixels, yIn * 512 / yPixels, xPixels, yPixels, exposureTime, diameter, QE, temperature, emissivity, readout, ADU, darkSignal, zodiacal);
-	vector<float> errors;
+
+	outputFile << inFileName << ',';
+	MonteCarlo* m = new MonteCarlo(inFileName, xIn * 512 / xPixels, yIn * 512 / yPixels, xPixels, yPixels, exposureTime, diameter, QE, temperature, emissivity, readout, ADU, darkSignal, zodiacal);
 	for (int mag = 7; mag <= 13; mag += 3) {
-		errors.push_back(m->run(mag, mag, mag, 10, 1, true));
+		outputFile << m->run(mag, mag, mag, 10, 1, true) << ',';
 	}
-	delete m; // Close output file
+	delete m; // Close input file
+	outputFile << endl;
+}
+
+/// Main method. Runs tests with inputted parameters.
+int main() {
 	
+	time_t startTime = time(nullptr);
+	cout << '\a' << endl << "Start time: " << asctime(localtime(&startTime)) << endl;
+	cout << "NOTE: If out-of-bounds errors come up, make sure that the the input file is Unix format. " << endl << endl;
+	
+	ofstream outFile;
+	outFile.open("results.csv");
+	outFile << "Field number,Magnitude 7,Magnitude 10,Magnitude 13" << endl;
+
+	runFromTSV(outFile, "Zemax/Field1.tsv");
+	runFromTSV(outFile, "Zemax/Field2.tsv");
+	runFromTSV(outFile, "Zemax/Field3.tsv");
+	runFromTSV(outFile, "Zemax/Field4.tsv");
+	runFromTSV(outFile, "Zemax/Field5.tsv");
+	runFromTSV(outFile, "Zemax/Field6.tsv");
+	runFromTSV(outFile, "Zemax/Field7.tsv");
+	runFromTSV(outFile, "Zemax/Field8.tsv");
+	runFromTSV(outFile, "Zemax/Field9.tsv");
+	runFromTSV(outFile, "Zemax/Field10.tsv");
+	runFromTSV(outFile, "Zemax/Field11.tsv");
+	runFromTSV(outFile, "Zemax/Field12.tsv");
+	runFromTSV(outFile, "Zemax/Field13.tsv");
+	runFromTSV(outFile, "Zemax/Field14.tsv");
+	runFromTSV(outFile, "Zemax/Field15.tsv");
+	runFromTSV(outFile, "Zemax/Field16.tsv");
+	runFromTSV(outFile, "Zemax/Field17.tsv");
+	
+	outFile.close();
+
 	time_t endTime  = time(nullptr);
 	cout << "End time: " << asctime(localtime(&endTime)) << endl;
 	cout << "Duration: " << (endTime - startTime) << " s. " << endl << '\a';

@@ -30,4 +30,7 @@ Version number, Date in ISO 8601 format, Notes on changes
 - 3.1.0 2017-12-13
 	- Brownian motion code moved to separate class to allow star movement within a single camera exposure
 - 3.2.0 2018-02-22
-	- Changed run() in MonteCarlo class to put errors into a vector to be outputted, instead of outputting directly into a CSV. This allows iterations of many Zemax PSFs. 
+	- Extracted the needed Zemax PSFs for each field on 2018-02-12. PSF TSVs and images of these PSFs are on Dropbox. [Location of fields are shown here](https://i.imgur.com/bmhXheP.png).  
+	- Changed run() in MonteCarlo class to output average errors, instead of outputting directly into a CSV. This allows iterations of many Zemax PSFs. 
+	- File handling moved from MonteCarlo to Main. 
+	- Some fields perform better than others: ![Average centroid recovery error](https://i.imgur.com/M3HC4bv.png "Some fields are better than others")

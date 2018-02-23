@@ -7,7 +7,6 @@
  * @version 3.2.0 2018-02-22
  */
 
-#include <fstream>
 #include "Test.hpp"
 
 /**
@@ -25,7 +24,7 @@ class MonteCarlo {
 		int xPixels, yPixels, readout;
 		bool zodiacal;
 		std::string inputFile;
-		std::ofstream outFile;
+		//std::ofstream outFile;
 		static int sumPhotons(std::vector<std::vector<int>>);
 		static float average(std::vector<float>);
 		static float stdDev(std::vector<float>);
