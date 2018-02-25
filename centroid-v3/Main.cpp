@@ -12,6 +12,7 @@
 #include <chrono>
 #include <fstream>
 #include <iostream>
+#include <vector>
 
 #include "MonteCarlo.hpp"
 
@@ -36,9 +37,12 @@ void runFromTSV(ofstream &outputFile, string inFileName) {
 
 	outputFile << inFileName << ',';
 	MonteCarlo* m = new MonteCarlo(inFileName, xIn * 512 / xPixels, yIn * 512 / yPixels, xPixels, yPixels, exposureTime, diameter, QE, temperature, emissivity, readout, ADU, darkSignal, zodiacal);
+	vector<float> uncertainty;
 	for (int mag = 7; mag <= 13; mag += 3) {
 		outputFile << m->run(mag, mag, mag, 10, 1, true) << ',';
+		uncertainty.push_back(m->uncertainty);
 	}
+	for (float f: uncertainty) outputFile << f << ',';
 	delete m; // Close input file
 	outputFile << endl;
 }
@@ -52,7 +56,7 @@ int main() {
 	
 	ofstream outFile;
 	outFile.open("results.csv");
-	outFile << "Field number,Magnitude 7,Magnitude 10,Magnitude 13" << endl;
+	outFile << "Field number,Magnitude 7,Magnitude 10,Magnitude 13,SD 7,SD 10,SD 13" << endl;
 
 	runFromTSV(outFile, "Zemax/Field1.tsv");
 	runFromTSV(outFile, "Zemax/Field2.tsv");

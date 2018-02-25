@@ -18,13 +18,13 @@ class MonteCarlo {
 		~MonteCarlo();
 		float run(float magB, float magV, float magR, int iterations, int brownianRuns, bool huygens);
 		static std::vector<float> brownian(float biasDistance, int biasAngle, float brownianRMS, bool typeHuygens);
+		float uncertainty;
 
 	private:
 		float xIn, yIn, time, area, QE, temperature, emissivity, ADU, darkSignal;
 		int xPixels, yPixels, readout;
 		bool zodiacal;
 		std::string inputFile;
-		//std::ofstream outFile;
 		static int sumPhotons(std::vector<std::vector<int>>);
 		static float average(std::vector<float>);
 		static float stdDev(std::vector<float>);

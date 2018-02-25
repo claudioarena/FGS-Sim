@@ -168,5 +168,6 @@ float MonteCarlo::run(float magB, float magV, float magR, int iterations, int br
 	xIn = xInOriginal;
 	yIn = yInOriginal;
 	
+	this->uncertainty = stdDev(vectorOfErrors);
 	return average(vectorOfErrors);
 }
