@@ -39,3 +39,8 @@ Version number, Date in ISO 8601 format, Notes on changes
 		- Added a public member variable for standard deviation of the errors over a set of iterations, for access and output in Main
 	- File handling moved from MonteCarlo to Main. 
 	- Some fields perform better than others: ![Average centroid recovery error](https://i.imgur.com/hpTLTNW.png "Some fields are better than others")
+	- More Zemax work done. 
+		- [Lens data taken.](https://i.imgur.com/4CSUPG5.png)
+		- [Diffraction test done](https://imgur.com/a/egwEA), showing that the PSFs are generated properly. 
+		- Effect of defocus on PSFs found. FWHMs change significantly once the defocus coordinate break is changed by ~0.5mm. 
+		- The focal plane has a certain natural defocus due to the off-axis tilt, so [the focal plane can be re-tilted](https://i.imgur.com/RUm4rD4.png) to partially cancel this. 

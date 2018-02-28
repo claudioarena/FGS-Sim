@@ -67,7 +67,7 @@ int main() {
 	runFromTSV(outFile, "Zemax/Field7.tsv");
 	runFromTSV(outFile, "Zemax/Field8.tsv");
 	runFromTSV(outFile, "Zemax/Field9.tsv");
-	runFromTSV(outFile, "Zemax/Field10.tsv");
+	runFromTSV(outFile, "Zemax/Field10-2.tsv");
 	runFromTSV(outFile, "Zemax/Field11.tsv");
 	runFromTSV(outFile, "Zemax/Field12.tsv");
 	runFromTSV(outFile, "Zemax/Field13.tsv");
