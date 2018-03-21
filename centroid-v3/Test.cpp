@@ -1,12 +1,12 @@
 /**
  * Twinkle FGS-Sim: Centroid recovery simulation
- * Purpose: Take a noisy 2d PSF and bin it into pixels, representing the PSF of a star. 
+ * Purpose: Take a 2d PSF, add noise and bin it into pixels, representing the PSF of a star. 
  * Then calculate the centroid from the pixel data. 
  *
  * @file Test.cpp
  * @brief Bin an inputted PSF 2d array and find its centroid
  * @author Feiyu Fang
- * @version 3.1.0 2017-12-13
+ * @version 3.2.1 2018-03-21
  */
 
 #include <algorithm>
@@ -70,6 +70,7 @@ vector<int> Test::sumVert(vector<vector<int>> in, int i, int end) {
 /**
  * Public static function to find the number of photons per second for a given band-magnitude. Defaults to 
  * combination of B, V and R bands. 
+ *
  * @brief Finds the number of photons per second for a given band and magnitude. 
  * @param mag Band-magnitude of the star
  * @param band Spectral band: B, V, R. 
@@ -97,6 +98,7 @@ int Test::photonsInBand(float mag, char band) {
 
 /**
  * Private static function to calculate the number of infrared photons emitted by the mirrors through thermal emission. 
+ *
  * @brief Calculates noise from mirror infrared emission
  * @param area Area of mirror
  * @param temperature Temperature of mirror
@@ -115,7 +117,9 @@ int Test::mirrorThermalNoise(float area, float temperature) {
 }
 
 /**
- * Private function to take the current Test object and add Poisson noise to the pixelData. 
+ * Private function to take the current Test object and add Poisson noise, dark noise, readout noise, mirror 
+ * thermal emission and zodiacal light to the pixelData. Currently returns a 2d vector of just the generated noise for 
+ * debugging purposes, but this function can be changed to private void if necessary. 
  *
  * @param time Exposure time /s
  * @param area Telescope aperture area /ms^-2
@@ -123,10 +127,9 @@ int Test::mirrorThermalNoise(float area, float temperature) {
  * @param temperature Temperature of the sensor. Ideal -> 0.
  * @param emissivity Emissivity of the sensor. Ideal blackbody 1. 
  * @param readout Readout noise /electrons, quoted as variance. Ideal 0.
- * @return outNoise A 2d vector of just the generated noise
  * @param ADU Analogue-to-digital units. Electrons per count; ideal 1. 
  * @param darkSignal Dark current /electrons. 
- * @param zodiacal Boolean specifying whether to add background photons from zodiacal light
+ * @return outNoise A 2d vector of just the generated noise. 
  */
 vector<vector<int>> Test::addNoise(float time, float area, float QE, float temperature, float emissivity, int readout, float ADU, float darkSignal) {
 
@@ -136,8 +139,8 @@ vector<vector<int>> Test::addNoise(float time, float area, float QE, float tempe
 
 	int zodiacalPhotons = 0;
 	if (zodiacal == true) zodiacalPhotons += (180. / this->horizPixels) * (180. / this->vertPixels) * (photonsInBand(22.37, 'B') + photonsInBand(21.89, 'V')); // Background photons from zodiacal light. See line 84 of ../README.md. 
-	float dark = darkSignal * exp(5E-7 * 6.63E-34 * ((1./248)-(1./temperature)) / 1.38E-23); // Dark current variance for 500nm
-
+	//float dark = darkSignal * exp(5E-7 * 6.63E-34 * ((1./248)-(1./temperature)) / 1.38E-23); // Dark current variance for 500nm from Meyer-Neidel
+	float dark = darkSignal * 122 * pow(temperature, 3) * exp(-6400. / temperature); // Dark current variation with temperature from E2V CCD230-42 datasheet
 	poisson_distribution<int> darkCurrentDist(dark); // Noise from dark current
 	poisson_distribution<int> readNoiseDist(readout); // Read noise
 	poisson_distribution<int> mirrorThermalEmission(mirrorThermalNoise(area, temperature));
@@ -207,7 +210,8 @@ void Test::binData(vector<vector<int>> dataIn, int h, int v) {
 }
 
 /**
- * Private method to find the centroid of the pixel data and put its co-ordinates into this object
+ * Private method to find the centroid of the pixel data and put its co-ordinates into this object. Calculates
+ * centroid by summing the pixel matrix in each dimension and calculating a weighted mean for both dimension.
  */
 void Test::findCentroid() { 
 
@@ -240,7 +244,7 @@ void Test::findCentroid() {
 }
 
 /**
- * Public static function to print a 2d vector to the console
+ * Public static function to print a 2d vector to the console for debugging.
  * @param data Data to be printed
  */
 void Test::print2dVector(vector<vector<int>> data) {

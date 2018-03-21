@@ -157,6 +157,7 @@ std::vector&lt; std::vector&lt; int &gt; &gt;&#160;</td><td class="memItemRight"
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p>Class to bin an inputted Gaussian 2d array and find its centroid. </p>
+<p>Header file for <a class="el" href="class_test.html" title="Class to bin an inputted Gaussian 2d array and find its centroid. ">Test</a> class. Takes a photon matrix, bins it into pixels and calculates its centroid. Currently set up to handle PSFs; comment <a class="el" href="class_p_s_f.html" title="Import a PSF from a Zemax .txt file. ">PSF</a> lines and uncomment Gaussian lines as marked here to use simulated Gaussian matrices instead of PSFs. </p>
 </div><h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
 <a class="anchor" id="a577eac5def8c1cb9d6327bfbdd14e454"></a>
 <div class="memitem">
@@ -306,7 +307,8 @@ std::vector&lt; std::vector&lt; int &gt; &gt;&#160;</td><td class="memItemRight"
 </div><div class="memdoc">
 
 <p>Finds the number of photons per second for a given band and magnitude. </p>
-<p>Public static function to find the number of photons per second for a given band-magnitude. Defaults to combination of B, V and R bands. </p><dl class="params"><dt>Parameters</dt><dd>
+<p>Public static function to find the number of photons per second for a given band-magnitude. Defaults to combination of B, V and R bands.</p>
+<dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramname">mag</td><td>Band-magnitude of the star </td></tr>
     <tr><td class="paramname">band</td><td>Spectral band: B, V, R. </td></tr>
@@ -338,7 +340,7 @@ std::vector&lt; std::vector&lt; int &gt; &gt;&#160;</td><td class="memItemRight"
   </tr>
 </table>
 </div><div class="memdoc">
-<p>Public static function to print a 2d vector to the console </p><dl class="params"><dt>Parameters</dt><dd>
+<p>Public static function to print a 2d vector to the console for debugging. </p><dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramname">data</td><td>Data to be printed </td></tr>
   </table>

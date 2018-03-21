@@ -6,14 +6,14 @@ digraph "centroid-v3/Main.cpp"
   Node1 -> Node2 [color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
   Node2 [label="chrono",height=0.2,width=0.4,color="grey75", fillcolor="white", style="filled"];
   Node1 -> Node3 [color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
-  Node3 [label="iostream",height=0.2,width=0.4,color="grey75", fillcolor="white", style="filled"];
+  Node3 [label="fstream",height=0.2,width=0.4,color="grey75", fillcolor="white", style="filled"];
   Node1 -> Node4 [color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
-  Node4 [label="vector",height=0.2,width=0.4,color="grey75", fillcolor="white", style="filled"];
+  Node4 [label="iostream",height=0.2,width=0.4,color="grey75", fillcolor="white", style="filled"];
   Node1 -> Node5 [color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
-  Node5 [label="MonteCarlo.hpp",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$_monte_carlo_8hpp.html",tooltip="Header file for MonteCarlo class. "];
-  Node5 -> Node6 [color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
-  Node6 [label="fstream",height=0.2,width=0.4,color="grey75", fillcolor="white", style="filled"];
-  Node5 -> Node7 [color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node5 [label="vector",height=0.2,width=0.4,color="grey75", fillcolor="white", style="filled"];
+  Node1 -> Node6 [color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node6 [label="MonteCarlo.hpp",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$_monte_carlo_8hpp.html",tooltip="Header file for MonteCarlo class. "];
+  Node6 -> Node7 [color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
   Node7 [label="Test.hpp",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$_test_8hpp.html",tooltip="Header file for Test class. "];
   Node7 -> Node8 [color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
   Node8 [label="Brownian.hpp",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$_brownian_8hpp.html",tooltip="Header file for Brownian class. "];
@@ -21,5 +21,5 @@ digraph "centroid-v3/Main.cpp"
   Node9 [label="PSF.hpp",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$_p_s_f_8hpp.html",tooltip="Header for PSF class. "];
   Node9 -> Node10 [color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
   Node10 [label="string",height=0.2,width=0.4,color="grey75", fillcolor="white", style="filled"];
-  Node9 -> Node4 [color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node9 -> Node5 [color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
 }

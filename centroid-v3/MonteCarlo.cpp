@@ -18,7 +18,7 @@
 using namespace std;
 
 /**
- * Constructor to create a new MonteCarlo object with the input parameters. Opens a results file and outputs the parameters to the file.
+ * Constructor to create a new MonteCarlo object with the input parameters. Opens a file containing a PSF.
  * Initialises file output if block at end is uncommented. 
  * @brief Constructs a MonteCarlo object with input parameters and opens file
  * 
@@ -80,12 +80,12 @@ MonteCarlo::~MonteCarlo() {/*outFile.close();*/}
 int MonteCarlo::sumPhotons(vector<vector<int>> matrix) {
 	
 	int sum = 0;
-	for (vector<int> v: matrix) {for (int i: v) sum += i;}
+	for (vector<int> v: matrix) {for (int i: v) sum += i;} // Could use std::accumulate or std::for_each instead
 	return sum;
 }
 
 /**
- * Private static function to calculate averages
+ * Private static function to calculate average of the elements in a vector<float>
  * @brief Calculates the average of numbers held in a vector
  * @param in A vector<float> containing the integers whose average is to be found
  * @return Average number

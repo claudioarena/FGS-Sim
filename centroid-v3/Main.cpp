@@ -2,11 +2,13 @@
  * Twinkle FGS-Sim: Centroid recovery simulation
  * Purpose: Run a Monte Carlo simulation to take a 2d PSF from Zemax, add noise, bin it into "pixels" and find
  * the centroid of the binned data.
+ * NOTE: A TSV saved from Zemax has MS-DOS line endings and will need to be converted to Unix format. On Unix, 
+ * the dos2unix utility is confirmed as working. 
  *
  * @file Main.cpp
  * @brief Main method to run centroid recovery simulation
  * @author Feiyu Fang
- * @version 3.2.0 2018-02-22
+ * @version 3.2.1 2018-03-21
  */
 
 #include <chrono>
@@ -21,8 +23,8 @@ using namespace std;
 /// Run the algorithm for a given file over the given magnitudes, outputting the average errors to file
 void runFromTSV(ofstream &outputFile, string inFileName) {
 
-	float xIn = 32; // Input coordinates of defined centre in terms of pixel coordinates.
-	float yIn = 32;
+	float xIn = 64; // Input coordinates of defined centre in terms of pixel coordinates.
+	float yIn = 64;
 	int xPixels = 128;
 	int yPixels = 128;
 	float exposureTime = 0.1; // Time /s
@@ -32,27 +34,28 @@ void runFromTSV(ofstream &outputFile, string inFileName) {
 	float emissivity = 0.3; // Proportion of input photons sent to FGS; parameter for dichroic. 
 	int readout = 1;
 	float ADU = 1;
-	float darkSignal = 0.2;
+	float darkSignal = 0.2; // Dark signal at 293 K. Scaling of dark signal is with the equation in the E2V CCD230-42 datasheet.
 	bool zodiacal = false;
 
-	outputFile << inFileName << ',';
+	outputFile << inFileName << ','; // This line is helpful for making the output CSV make more sense when testing multiple files at once. 
+	// TODO: Remove hard-coded 512 in line below. The 512 factors are to scale by the 512x512 pixel sampling from Zemax.
 	MonteCarlo* m = new MonteCarlo(inFileName, xIn * 512 / xPixels, yIn * 512 / yPixels, xPixels, yPixels, exposureTime, diameter, QE, temperature, emissivity, readout, ADU, darkSignal, zodiacal);
 	vector<float> uncertainty;
 	for (int mag = 7; mag <= 13; mag += 3) {
-		outputFile << m->run(mag, mag, mag, 10, 1, true) << ',';
+		outputFile << m->run(mag, mag, mag, 10, 1, true) << ','; // Output values for each magnitude
 		uncertainty.push_back(m->uncertainty);
 	}
-	for (float f: uncertainty) outputFile << f << ',';
-	delete m; // Close input file
+	for (float f: uncertainty) outputFile << f << ','; // Output the uncertainties after the values in the same row
+	delete m; 
 	outputFile << endl;
 }
 
-/// Main method. Runs tests with inputted parameters.
+/// Main method. Runs tests for given TSV input files from Zemax.
 int main() {
 	
 	time_t startTime = time(nullptr);
 	cout << '\a' << endl << "Start time: " << asctime(localtime(&startTime)) << endl;
-	cout << "NOTE: If out-of-bounds errors come up, make sure that the the input file is Unix format. " << endl << endl;
+	cout << "NOTE: If out-of-bounds errors come up, make sure that the the input file has Unix format line endings. " << endl << endl;
 	
 	ofstream outFile;
 	outFile.open("results.csv");

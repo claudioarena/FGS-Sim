@@ -4,19 +4,23 @@
  * @file Test.hpp
  * @brief Header file for Test class
  * @author Feiyu Fang
- * @version 2.1.3 24-08-2017
+ * @version 3.1.0 2017-12-13
  */
 
 #include "Brownian.hpp"
 #include "PSF.hpp"
 
 /**
+ * Header file for Test class. Takes a photon matrix, bins it into pixels and calculates its centroid. Currently 
+ * set up to handle PSFs; comment PSF lines and uncomment Gaussian lines as marked here to use simulated 
+ * Gaussian matrices instead of PSFs. 
+ *
  * @brief Class to bin an inputted Gaussian 2d array and find its centroid
  */
 class Test {
 	public:
-		//Test(int nPhotons, float xIn, float yIn, float sdX, float sdY, int hPixels, int vPixels, int xPoints, int yPoints, bool zodiac);
-		Test(int nPhotons, int inX, int inY, int hPixels, int vPixels, bool zodiac, std::string name);
+//		Test(int nPhotons, float xIn, float yIn, float sdX, float sdY, int hPixels, int vPixels, int xPoints, int yPoints, bool zodiac); // Constructor for Gaussian
+		Test(int nPhotons, int inX, int inY, int hPixels, int vPixels, bool zodiac, std::string name); // Constructor for PSF
 		~Test();
 
 		float xCentre;
@@ -31,8 +35,10 @@ class Test {
 
 	private:
 		std::vector<std::vector<int>> noiseAfterBin; 
-		int xIn, yIn; //, sigmaX, sigmaY;
-		int N, horizPixels, vertPixels; //, pointsX, pointsY;
+		int xIn, yIn; // PSF version
+		int N, horizPixels, vertPixels; // PSF version
+//		int xIn, yIn, sigmaX, sigmaY; // Gaussian version
+//		int N, horizPixels, vertPixels, pointsX, pointsY; // Gaussian version
 		bool zodiacal;
 		std::string filename;
 		Brownian* motion;

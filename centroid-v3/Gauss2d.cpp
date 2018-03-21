@@ -1,11 +1,11 @@
 /**
  * Twinkle FGS-Sim: Centroid recovery simulation
- * Purpose: Class to generate a 2d vector Gaussian. 
+ * Purpose: Class to generate a 2d vector Gaussian. Currently deprecated in favour of taking simel matrices from PSFs.
  *
  * @file Gauss2d.cpp
  * @brief Generate a 2d Gaussian.
  * @author Feiyu Fang 
- * @version 2.1 28-07-2017
+ * @version 3.0.0 2017-11-02
  */
 
 #include <cmath>

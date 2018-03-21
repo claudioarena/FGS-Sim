@@ -4,12 +4,13 @@
  * @file Gauss2d.hpp
  * @brief Header for Gauss2d class
  * @author Feiyu Fang
- * @version 2.1 28-07-2017
+ * @version 3.2.1 2018-03-21
  */
 #include <iostream>
 #include <vector>
 
 /**
+ * Class to generate a 2d Gaussian matrix from a given mean and standard deviation in each dimension
  * @brief Generate a 2d Gaussian. 
  */
 class Gauss2d {
