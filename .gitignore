@@ -1,0 +1,4 @@
+*.exe
+/Zemax
+.vscode
+helloWorld.cpp

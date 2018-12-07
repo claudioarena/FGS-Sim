@@ -12,6 +12,7 @@
 #include <cmath>
 #include <iostream>
 #include <vector>
+#include <numeric>
 
 #include "MonteCarlo.hpp"
 
@@ -37,7 +38,8 @@ using namespace std;
  * @param darkCurrent Dark current for the sensor. Ideal 0. 
  * @param zodiac Whether to include zodiacal light as a background
  */
-MonteCarlo::MonteCarlo(string inFileName, float inX, float inY, int horizPixels, int vertPixels, float t, float diameter, float qEff, float temp, float e, int readNoise, float analogueDigitalUnits, float darkCurrent, bool zodiac) {
+MonteCarlo::MonteCarlo(string inFileName, float inX, float inY, int horizPixels, int vertPixels, float t, float diameter, float qEff, float temp, float e, int readNoise, float analogueDigitalUnits, float darkCurrent, bool zodiac)
+{
 	xIn = inX;
 	yIn = inY;
 	xPixels = horizPixels;
@@ -52,8 +54,8 @@ MonteCarlo::MonteCarlo(string inFileName, float inX, float inY, int horizPixels,
 	darkSignal = darkCurrent;
 	zodiacal = zodiac;
 	inputFile = inFileName;
-	
-/*	// Open file and output parameters
+
+	/*	// Open file and output parameters
 	outFile.open(outFileName);
 	outFile << "Test:, Input centre: (" << xIn << ';' << yIn << "), Pixels in each dimension: ("
 			<< xPixels << ';' << yPixels << "), Exposure time: " << time << " s" << endl;
@@ -65,11 +67,12 @@ MonteCarlo::MonteCarlo(string inFileName, float inX, float inY, int horizPixels,
 */
 }
 
-
 /**
  * @brief Destructor for MonteCarlo object closes the current file if uncommented
  */
-MonteCarlo::~MonteCarlo() {/*outFile.close();*/}
+MonteCarlo::~MonteCarlo()
+{ /*outFile.close();*/
+}
 
 /**
  * Private static function to return the total number of photons in a pixel grid, either of pixels or simels.
@@ -77,10 +80,15 @@ MonteCarlo::~MonteCarlo() {/*outFile.close();*/}
  * @param matrix The pixel grid in a 2d int vector
  * @return Total number of photons in the inputted matrix
  */
-int MonteCarlo::sumPhotons(vector<vector<int>> matrix) {
-	
+int MonteCarlo::sumPhotons(vector<vector<int>> matrix)
+{
+
 	int sum = 0;
-	for (vector<int> v: matrix) {for (int i: v) sum += i;} // Could use std::accumulate or std::for_each instead
+	for (vector<int> v : matrix)
+	{
+		for (int i : v)
+			sum += i;
+	} // Could use std::accumulate or std::for_each instead
 	return sum;
 }
 
@@ -90,7 +98,8 @@ int MonteCarlo::sumPhotons(vector<vector<int>> matrix) {
  * @param in A vector<float> containing the integers whose average is to be found
  * @return Average number
  */
-float MonteCarlo::average(vector<float> in) {
+float MonteCarlo::average(vector<float> in)
+{
 
 	float sum = accumulate(in.begin(), in.end(), 0.);
 	return (sum / in.size());
@@ -102,13 +111,14 @@ float MonteCarlo::average(vector<float> in) {
  * @param in A vector<float> containing the numbers whose SD is to be found
  * @return Standard deviation
  */
-float MonteCarlo::stdDev(vector<float> in) {
-	
+float MonteCarlo::stdDev(vector<float> in)
+{
+
 	float mean = average(in);
 	float accum = 0.0;
-	for_each (begin(in), end(in), [&](const float d) {accum += (d - mean) * (d - mean);});
+	for_each(begin(in), end(in), [&](const float d) { accum += (d - mean) * (d - mean); });
 
-	return sqrt(accum / (in.size()-1));
+	return sqrt(accum / (in.size() - 1));
 }
 
 /**
@@ -123,9 +133,10 @@ float MonteCarlo::stdDev(vector<float> in) {
  * @param huygens Type of Zemax PSF: True for Huygens, false for FFT. 
  * @return averageError Mean of the overall centroid recovery errors over all the iterations tested
  */
-float MonteCarlo::run(float magB, float magV, float magR, int iterations, int brownianRuns, bool huygens) {
+float MonteCarlo::run(float magB, float magV, float magR, int iterations, int brownianRuns, bool huygens)
+{
 
-//	outFile << endl << "B-magnitude: " << magB << "; V-magnitude: " << magV << "; R-magnitude: " << magR << endl;
+	//	outFile << endl << "B-magnitude: " << magB << "; V-magnitude: " << magV << "; R-magnitude: " << magR << endl;
 	cout << "Calculating for B, V, R magnitudes = " << magB << ", " << magV << ", " << magR << " ..." << endl;
 	float xInOriginal = xIn;
 	float yInOriginal = yIn;
@@ -137,27 +148,30 @@ float MonteCarlo::run(float magB, float magV, float magR, int iterations, int br
 	int photonsV = Test::photonsInBand(magV, 'V');
 	int photonsR = Test::photonsInBand(magR, 'R');
 	int N = photonsB + photonsV + photonsR; // Total photons in all bands
-	
-	Brownian* motion = new Brownian(0.1, 45, 0.1, huygens);
-	for (int j = 0; j < iterations; j++) { /// Iterate x times at random star positions and find average
-		Test* t = new Test(N, xIn, yIn, xPixels, yPixels, zodiacal, inputFile);
-		
+
+	Brownian *motion = new Brownian(0.1, 45, 0.1, huygens);
+	for (int j = 0; j < iterations; j++)
+	{ /// Iterate x times at random star positions and find average
+		Test *t = new Test(N, xIn, yIn, xPixels, yPixels, zodiacal, inputFile);
+
 		// Run with noise for input time and area
 		t->run(true, huygens, time, area, QE, temperature, emissivity, readout, ADU, darkSignal, motion, brownianRuns);
 		xIn += motion->brownianDx;
 		yIn += motion->brownianDy;
 		float xCentre, yCentre;
-		
+
 		// Scale centre coordinates with the pixel grid dimensions
 		int dimension = -1;
-		if (huygens == true) dimension = 512;
-		else dimension = 1024;
+		if (huygens == true)
+			dimension = 512;
+		else
+			dimension = 1024;
 		xCentre = xIn * (xPixels / (float)dimension);
 		yCentre = yIn * (yPixels / (float)dimension);
 
 		float x = t->xCentre * xPixels; // Prepare values for output
 		float y = t->yCentre * yPixels;
-		error = (sqrt((x - xCentre)*(x - xCentre) + (y - yCentre)*(y - yCentre)));
+		error = (sqrt((x - xCentre) * (x - xCentre) + (y - yCentre) * (y - yCentre)));
 		vectorOfErrors.push_back(error);
 		//photonsIn = (sumPhotons(t->simelsIn)); // This figure is different from nPhotons in Test.cpp as this is after normalisation errors
 		//photonsOut = (sumPhotons(t->pixelData));
@@ -167,7 +181,7 @@ float MonteCarlo::run(float magB, float magV, float magR, int iterations, int br
 	delete motion;
 	xIn = xInOriginal;
 	yIn = yInOriginal;
-	
+
 	this->uncertainty = stdDev(vectorOfErrors);
 	return average(vectorOfErrors);
 }

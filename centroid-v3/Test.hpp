@@ -17,35 +17,36 @@
  *
  * @brief Class to bin an inputted Gaussian 2d array and find its centroid
  */
-class Test {
-	public:
-//		Test(int nPhotons, float xIn, float yIn, float sdX, float sdY, int hPixels, int vPixels, int xPoints, int yPoints, bool zodiac); // Constructor for Gaussian
-		Test(int nPhotons, int inX, int inY, int hPixels, int vPixels, bool zodiac, std::string name); // Constructor for PSF
-		~Test();
+class Test
+{
+  public:
+	//Test(int nPhotons, float xIn, float yIn, float sdX, float sdY, int hPixels, int vPixels, int xPoints, int yPoints, bool zodiac); // Constructor for Gaussian
+	Test(int nPhotons, float inX, float inY, int hPixels, int vPixels, bool zodiac, std::string name); // Constructor for PSF
+	~Test();
 
-		float xCentre;
-		float yCentre;
-		std::vector<std::vector<int>> pixelData;
-		std::vector<std::vector<int>> simelsIn; 
-		
-		void run(bool noise, bool huygens, float time, float area, float QE, float temperature, float emissivity, int readout, float ADU, float darkSignal, Brownian* motion, int brownianRuns);
-		static void print2dVector(std::vector<std::vector<int>> data); 
-		static int photonsInBand(float mag, char band);
-		static std::vector<std::vector<int>> addMatrices(std::vector<std::vector<int>> a, std::vector<std::vector<int>> b);
+	float xCentre;
+	float yCentre;
+	std::vector<std::vector<int>> pixelData;
+	std::vector<std::vector<int>> simelsIn;
 
-	private:
-		std::vector<std::vector<int>> noiseAfterBin; 
-		int xIn, yIn; // PSF version
-		int N, horizPixels, vertPixels; // PSF version
-//		int xIn, yIn, sigmaX, sigmaY; // Gaussian version
-//		int N, horizPixels, vertPixels, pointsX, pointsY; // Gaussian version
-		bool zodiacal;
-		std::string filename;
-		Brownian* motion;
+	void run(bool noise, bool huygens, float time, float area, float QE, float temperature, float emissivity, int readout, float ADU, float darkSignal, Brownian *motion, int brownianRuns);
+	static void print2dVector(std::vector<std::vector<int>> data);
+	static int photonsInBand(float mag, char band);
+	static std::vector<std::vector<int>> addMatrices(std::vector<std::vector<int>> a, std::vector<std::vector<int>> b);
 
-		static std::vector<int> sumVert(std::vector<std::vector<int>> in, int i, int end);
-		static int mirrorThermalNoise(float area, float temperature);
-		std::vector<std::vector<int>> addNoise(float time, float area, float QE, float temperature, float emissivity, int readout, float ADU, float darkSignal);
-		void binData(std::vector<std::vector<int>> dataIn, int h, int v);
-		void findCentroid();
+  private:
+	std::vector<std::vector<int>> noiseAfterBin;
+	float xIn, yIn;					// PSF version
+	int N, horizPixels, vertPixels; // PSF version
+	//int xIn, yIn, sigmaX, sigmaY;					  // Gaussian version
+	//int N, horizPixels, vertPixels, pointsX, pointsY; // Gaussian version
+	bool zodiacal;
+	std::string filename;
+	Brownian *motion;
+
+	static std::vector<int> sumVert(std::vector<std::vector<int>> in, int i, int end);
+	static int mirrorThermalNoise(float area, float temperature);
+	std::vector<std::vector<int>> addNoise(float time, float area, float QE, float temperature, float emissivity, int readout, float ADU, float darkSignal);
+	void binData(std::vector<std::vector<int>> dataIn, int h, int v);
+	void findCentroid();
 };
