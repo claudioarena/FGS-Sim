@@ -26,11 +26,14 @@ using namespace std;
  * @param N Number of photons to be distributed
  * @param h Type of PSF. True for Huygens, false for FFT. 
  */
-PSF::PSF(string name, int N, bool h) {
+PSF::PSF(string name, int N, bool h)
+{
 	filename = name;
 	nPhotons = N;
-	if (h == true) headerLines = 21;
-	else headerLines = 18;
+	if (h == true)
+		headerLines = 21;
+	else
+		headerLines = 18;
 	import();
 	normalise();
 }
@@ -40,20 +43,24 @@ PSF::~PSF() {}
  * Private function to import the Zemax .txt file into this object's matrixIn member variable. 
  * @brief Imports the Zemax data
  */
-void PSF::import() {
+void PSF::import()
+{
 
 	ifstream file(filename);
 	string line;
 
-	for (int i = 0; i < headerLines; i++) getline(file, line); // Ignore lines in header. 21 for Huygens, 18 for FFT. 
+	for (int i = 0; i < headerLines; i++)
+		getline(file, line);   // Ignore lines in header. 21 for Huygens, 18 for FFT.
 	vector<vector<float>> out; // Output matrix for export
-	
-	while (getline(file, line)) { // Read each line into a stream
+
+	while (getline(file, line))
+	{ // Read each line into a stream
 		stringstream linestream(line);
 		float buffer;
 
 		vector<float> numbersList; // Initialise row to be put into the output matrix
-		while (linestream >> buffer) numbersList.push_back(buffer); // Read each token into the row vector<float>
+		while (linestream >> buffer)
+			numbersList.push_back(buffer); // Read each token into the row vector<float>
 		out.push_back(numbersList);
 	}
 	matrixIn = out;
@@ -66,14 +73,20 @@ void PSF::import() {
  * @brief Sums all the points of the matrix in this object
  * @return Total sum
  */
-float PSF::sum(vector<vector<float>> in) {
+float PSF::sum(vector<vector<float>> in)
+{
 	float out = 0;
-	for (vector<float> v: in) for (float f: v) out += f;
+	for (vector<float> v : in)
+		for (float f : v)
+			out += f;
 	return out;
 }
-int PSF::sum(vector<vector<int>> in) {
+int PSF::sum(vector<vector<int>> in)
+{
 	int out = 0;
-	for (vector<int> v: in) for (int f: v) out += f;
+	for (vector<int> v : in)
+		for (int f : v)
+			out += f;
 	return out;
 }
 
@@ -82,12 +95,15 @@ int PSF::sum(vector<vector<int>> in) {
  * 
  * @brief Normalise the matrix for output
  */
-void PSF::normalise() {
-	float factor = nPhotons / sum(matrixIn); // Normalising factor: Divide by unnormalised sum, multiply by number of photons. 
+void PSF::normalise()
+{
+	float factor = nPhotons / sum(matrixIn); // Normalising factor: Divide by unnormalised sum, multiply by number of photons.
 
-	for (vector<float> v: matrixIn) {
+	for (vector<float> v : matrixIn)
+	{
 		vector<int> row;
-		for (float f: v) row.push_back(f * factor);
+		for (float f : v)
+			row.push_back(f * factor);
 		matrixNormalised.push_back(row);
 	}
 }
@@ -102,18 +118,25 @@ void PSF::normalise() {
  * @param row Vector to be shifted
  * @return Shifted 1d vector
  */
-vector<int> PSF::shiftRow(int shift, vector<int> row) {
+vector<int> PSF::shiftRow(int shift, vector<int> row)
+{
 	vector<int> out;
 
-	if (shift < 0) { // Shift to the left if negative shift
-		for (unsigned i = 0; i < (row.size() + shift); i++) out.push_back(row.at(i - shift));
-		while (out.size() != row.size()) out.push_back(0);
+	if (shift < 0)
+	{ // Shift to the left if negative shift
+		for (unsigned i = 0; i < (row.size() + shift); i++)
+			out.push_back(row.at(i - shift));
+		while (out.size() != row.size())
+			out.push_back(0);
 	}
-	else { // Shift to the right if positive shift
-		while (out.size() != (unsigned)shift) out.push_back(0);
-		for (unsigned i = shift; i < row.size(); i++) out.push_back(row.at(i - shift));
+	else
+	{ // Shift to the right if positive shift
+		while (out.size() != (unsigned)shift)
+			out.push_back(0);
+		for (unsigned i = shift; i < row.size(); i++)
+			out.push_back(row.at(i - shift));
 	}
-	
+
 	return out;
 }
 
@@ -127,7 +150,8 @@ vector<int> PSF::shiftRow(int shift, vector<int> row) {
  * @param yCentre Simel y-coordinate of PSF centre
  * @return Matrix of photons with the PSF centred at the given coordinates. 
  */
-vector<vector<int>> PSF::samplePhotons(int xCentre, int yCentre) {
+vector<vector<int>> PSF::samplePhotons(int xCentre, int yCentre)
+{
 
 	unsigned width = matrixNormalised.at(0).size(); // Height and width of the simel matrix
 	unsigned height = matrixNormalised.size();
@@ -135,16 +159,23 @@ vector<vector<int>> PSF::samplePhotons(int xCentre, int yCentre) {
 	int shiftX = xCentre - (width / 2); // Number of simels to move the data horizontally and vertically across
 	int shiftY = yCentre - (height / 2);
 	vector<int> zeroRow; // Row of zeros to replace rows that have been moved but not replaced
-	while (zeroRow.size() != width) zeroRow.push_back(0);
+	while (zeroRow.size() != width)
+		zeroRow.push_back(0);
 
 	vector<vector<int>> out;
-	if (shiftY < 0) { // Shift matrix upwards for negative shift
-		for (unsigned i = (-1 * shiftY); i < height; i++) out.push_back(shiftRow(shiftX, matrixNormalised.at(i)));
-		while (out.size() != height) out.push_back(zeroRow);
+	if (shiftY < 0)
+	{ // Shift matrix upwards for negative shift
+		for (unsigned i = (-1 * shiftY); i < height; i++)
+			out.push_back(shiftRow(shiftX, matrixNormalised.at(i)));
+		while (out.size() != height)
+			out.push_back(zeroRow);
 	}
-	else { // Shift matrix downwards for positive shift
-		while (out.size() != (unsigned)shiftY) out.push_back(zeroRow);
-		for (unsigned i = shiftY; i < height; i++) out.push_back(shiftRow(shiftX, matrixNormalised.at(i - shiftY)));
+	else
+	{ // Shift matrix downwards for positive shift
+		while (out.size() != (unsigned)shiftY)
+			out.push_back(zeroRow);
+		for (unsigned i = shiftY; i < height; i++)
+			out.push_back(shiftRow(shiftX, matrixNormalised.at(i - shiftY)));
 	}
 	return out;
 }

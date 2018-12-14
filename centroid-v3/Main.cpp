@@ -15,8 +15,11 @@
 #include <fstream>
 #include <iostream>
 #include <vector>
-
+//#include <json.hpp>
 #include "MonteCarlo.hpp"
+
+// for convenience
+//using json = nlohmann::json;
 
 using namespace std;
 
@@ -54,7 +57,7 @@ void runFromTSV(ofstream &outputFile, std::string inFileName)
 }
 
 /// Main method. Runs tests for given TSV input files from Zemax.
-int main()
+int oldmain()
 {
 
 	time_t startTime = time(nullptr);
@@ -75,6 +78,64 @@ int main()
 	cout << "End time: " << asctime(localtime(&endTime)) << endl;
 	cout << "Duration: " << (endTime - startTime) << " s. " << endl
 		 << '\a';
+
+	return 0;
+}
+
+int main()
+{
+	struct Telescope
+	{
+		float diameter;
+		float totalEfficiency;
+	};
+
+	struct FGSCamera
+	{
+		float DarkCurrent;
+		float gain;
+	};
+
+	struct Telescope Twinkle;
+	Twinkle.diameter = 0.45;
+	Twinkle.totalEfficiency = 1;
+
+	// create an empty structure (null)
+	/*
+	json j;
+
+	// add a number that is stored as double (note the implicit conversion of j to an object)
+	j["pi"] = 3.141;
+
+	// add a Boolean that is stored as bool
+	j["happy"] = true;
+
+	// add a string that is stored as std::string
+	j["name"] = "Niels";
+
+	// add another null object by passing nullptr
+	j["nothing"] = nullptr;
+
+	// add an object inside the object
+	j["answer"]["everything"] = 42;
+
+	// add an array that is stored as std::vector (using an initializer list)
+	j["list"] = {1, 0, 2};
+
+	// add another object (using an initializer list of pairs)
+	j["object"] = {{"currency", "USD"}, {"value", 42.99}};
+
+	// instead, you could also write (which looks very similar to the JSON above)
+	json j2 = {
+		{"pi", 3.141},
+		{"happy", true},
+		{"name", "Niels"},
+		{"nothing", nullptr},
+		{"answer", {{"everything", 42}}},
+		{"list", {1, 0, 2}},
+		{"object", {{"currency", "USD"}, {"value", 42.99}}}};
+*/
+	cout << "Diameter: " << Twinkle.diameter << endl;
 
 	return 0;
 }
