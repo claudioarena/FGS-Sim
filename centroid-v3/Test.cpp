@@ -97,26 +97,33 @@ vector<int> Test::sumVert(vector<vector<int>> in, int i, int end)
  * @param band Spectral band: B, V, R. 
  * @return Number of photons from a star in the given band per second
  */
-int Test::photonsInBand(float mag, char band)
-{
 
-	double out = pow(2.512, -1 * mag); // Photons per second = pow(2.512, -1 * mag) * 3.36E10, etc.
-	switch (band)
+double Test::photonsInAllBands(std::vector<float> mags, std::vector<filter> fltrs)
+{
+	if (sizeof(mags) != sizeof(fltrs))
 	{
-	case 'B':
-		out *= 1.415E10;
-		break;
-	case 'V':
-		out *= 8.79E9;
-		break;
-	case 'R':
-		out *= 1.07E10;
-		break;
-	default:
-		out *= 3.36E10;
-		break;
+		throw("error. Number of specified magnitudes and filters must match");
 	}
-	return out;
+	if (sizeof(mags) < 1)
+	{
+		throw("error. At least one magnitude must be specified");
+	}
+
+	double photons = 0;
+	for (int i = 0; i < sizeof(mags); i++)
+	{
+		photons += Test::photonsInBand(mags[i], fltrs[i]);
+	}
+
+	return photons;
+}
+
+double Test::photonsInBand(float mag, struct filter flt)
+{
+	double m0_photons = (1.51 * (10 ^ 7)) * (flt.zero_point_Jy * (flt.bandWidth / flt.centerBand));
+
+	double photons = pow(2.512, -1 * mag) * m0_photons; // Photons per second, per m-2
+	return photons;
 }
 
 /**
@@ -129,14 +136,8 @@ int Test::photonsInBand(float mag, char band)
  */
 int Test::mirrorThermalNoise(float area, float temperature)
 {
-	const float SB = 5.67E-8;	  // Stefan-Boltzmann constant
-	const float WIEN = 2.9E-3;	 // Wien's displacement constant
-	const float PLANCK = 6.63E-34; // Planck's constant
-	float emiss = 0.02;			   // Mirror emissivity
-
-	float power = area * emiss * SB * pow(temperature, 4);
+	float power = area * emiss * SB_CONST * pow(temperature, 4);
 	float wavelength = WIEN / temperature;
-
 	return power / (PLANCK * 3E8 / wavelength);
 }
 
@@ -164,7 +165,7 @@ vector<vector<int>> Test::addNoise(float time, float area, float QE, float tempe
 
 	int zodiacalPhotons = 0;
 	if (zodiacal == true)
-		zodiacalPhotons += (180. / this->horizPixels) * (180. / this->vertPixels) * (photonsInBand(22.37, 'B') + photonsInBand(21.89, 'V')); // Background photons from zodiacal light. See line 84 of ../README.md.
+		zodiacalPhotons += (180. / this->horizPixels) * (180. / this->vertPixels) * (photonsInBand(22.37, B_filter) + photonsInBand(21.89, V_filter)); // Background photons from zodiacal light. See line 84 of ../README.md.
 	//float dark = darkSignal * exp(5E-7 * 6.63E-34 * ((1./248)-(1./temperature)) / 1.38E-23); // Dark current variance for 500nm from Meyer-Neidel
 	float dark = darkSignal * 122 * pow(temperature, 3) * exp(-6400. / temperature); // Dark current variation with temperature from E2V CCD230-42 datasheet
 	poisson_distribution<int> darkCurrentDist(dark);								 // Noise from dark current

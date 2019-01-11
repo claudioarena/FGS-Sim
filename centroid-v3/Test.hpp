@@ -9,6 +9,7 @@
 
 #include "Brownian.hpp"
 #include "PSF.hpp"
+#include "Config/parameters.h"
 
 /**
  * Header file for Test class. Takes a photon matrix, bins it into pixels and calculates its centroid. Currently 
@@ -31,7 +32,8 @@ class Test
 
 	void run(bool noise, bool huygens, float time, float area, float QE, float temperature, float emissivity, int readout, float ADU, float darkSignal, Brownian *motion, int brownianRuns);
 	static void print2dVector(std::vector<std::vector<int>> data);
-	static int photonsInBand(float mag, char band);
+	static double photonsInAllBands(std::vector<float> mags, std::vector<filter> fltrs);
+	static double photonsInBand(float mag, struct filter flt);
 	static std::vector<std::vector<int>> addMatrices(std::vector<std::vector<int>> a, std::vector<std::vector<int>> b);
 
   private:

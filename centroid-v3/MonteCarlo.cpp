@@ -135,7 +135,6 @@ float MonteCarlo::stdDev(vector<float> in)
  */
 float MonteCarlo::run(float magB, float magV, float magR, int iterations, int brownianRuns, bool huygens)
 {
-
 	//	outFile << endl << "B-magnitude: " << magB << "; V-magnitude: " << magV << "; R-magnitude: " << magR << endl;
 	cout << "Calculating for B, V, R magnitudes = " << magB << ", " << magV << ", " << magR << " ..." << endl;
 	float xInOriginal = xIn;
@@ -144,9 +143,9 @@ float MonteCarlo::run(float magB, float magV, float magR, int iterations, int br
 	vector<float> vectorOfErrors;
 	//int photonsIn, photonsOut;
 
-	int photonsB = Test::photonsInBand(magB, 'B'); // Convert magnitude in each band to photons s^-1 m^-2.
-	int photonsV = Test::photonsInBand(magV, 'V');
-	int photonsR = Test::photonsInBand(magR, 'R');
+	int photonsB = Test::photonsInBand(magB, B_filter); // Convert magnitude in each band to photons s^-1 m^-2.
+	int photonsV = Test::photonsInBand(magV, V_filter);
+	int photonsR = Test::photonsInBand(magR, R_filter);
 	int N = photonsB + photonsV + photonsR; // Total photons in all bands
 
 	Brownian *motion = new Brownian(0.1, 45, 0.1, huygens);

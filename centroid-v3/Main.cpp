@@ -10,16 +10,18 @@
  * @author Feiyu Fang
  * @version 3.2.1 2018-03-21
  */
+#include "Config\parameters.h"
 
 #include <chrono>
 #include <fstream>
 #include <iostream>
 #include <vector>
-//#include <json.hpp>
+#include <nlohmann/json.hpp>
 #include "MonteCarlo.hpp"
+#include <iomanip>
 
 // for convenience
-//using json = nlohmann::json;
+using json = nlohmann::json;
 
 using namespace std;
 
@@ -31,7 +33,7 @@ void runFromTSV(ofstream &outputFile, std::string inFileName)
 	float yIn = 64;
 	int xPixels = 128;
 	int yPixels = 128;
-	float exposureTime = 0.1; // Time /s
+	float exposureTime = 1.0; // Time /s
 	float diameter = 0.45;	// Entrance pupil diameter /m. 450mm from Twinkle whitebook.
 	float QE = 0.8;
 	float temperature = 72;
@@ -45,7 +47,7 @@ void runFromTSV(ofstream &outputFile, std::string inFileName)
 	// TODO: Remove hard-coded 512 in line below. The 512 factors are to scale by the 512x512 pixel sampling from Zemax.
 	MonteCarlo *m = new MonteCarlo(inFileName, xIn * 512.0 / xPixels, yIn * 512.0 / yPixels, xPixels, yPixels, exposureTime, diameter, QE, temperature, emissivity, readout, ADU, darkSignal, zodiacal);
 	vector<float> uncertainty;
-	for (int mag = 7; mag <= 13; mag += 3)
+	for (int mag = 7; mag <= 16; mag += 1)
 	{
 		outputFile << m->run(mag, mag, mag, 10, 1, true) << ','; // Output values for each magnitude
 		uncertainty.push_back(m->uncertainty);
@@ -57,7 +59,7 @@ void runFromTSV(ofstream &outputFile, std::string inFileName)
 }
 
 /// Main method. Runs tests for given TSV input files from Zemax.
-int oldmain()
+int main()
 {
 
 	time_t startTime = time(nullptr);
@@ -66,8 +68,12 @@ int oldmain()
 	cout << "NOTE: If out-of-bounds errors come up, make sure that the the input file has Unix format line endings. " << endl
 		 << endl;
 
+	cout << "Configuration used: " << CONFIG << endl;
+	cout << "diameter: " << TEL_DIAM << " mm" << endl;
+	cout << endl;
+
 	ofstream outFile;
-	outFile.open("results.csv");
+	outFile.open("results2.csv");
 	outFile << "Field number,Magnitude 7,Magnitude 10,Magnitude 13,SD 7,SD 10,SD 13" << endl;
 
 	//runFromTSV(outFile, "Zemax/PSF-FFT-1024.tsv");
@@ -82,7 +88,7 @@ int oldmain()
 	return 0;
 }
 
-int main()
+int newmain()
 {
 	struct Telescope
 	{
@@ -101,40 +107,11 @@ int main()
 	Twinkle.totalEfficiency = 1;
 
 	// create an empty structure (null)
-	/*
+	std::ifstream i("centroid-v3//test.json");
 	json j;
-
-	// add a number that is stored as double (note the implicit conversion of j to an object)
-	j["pi"] = 3.141;
-
-	// add a Boolean that is stored as bool
-	j["happy"] = true;
-
-	// add a string that is stored as std::string
-	j["name"] = "Niels";
-
-	// add another null object by passing nullptr
-	j["nothing"] = nullptr;
-
-	// add an object inside the object
-	j["answer"]["everything"] = 42;
-
-	// add an array that is stored as std::vector (using an initializer list)
-	j["list"] = {1, 0, 2};
-
-	// add another object (using an initializer list of pairs)
-	j["object"] = {{"currency", "USD"}, {"value", 42.99}};
-
-	// instead, you could also write (which looks very similar to the JSON above)
-	json j2 = {
-		{"pi", 3.141},
-		{"happy", true},
-		{"name", "Niels"},
-		{"nothing", nullptr},
-		{"answer", {{"everything", 42}}},
-		{"list", {1, 0, 2}},
-		{"object", {{"currency", "USD"}, {"value", 42.99}}}};
-*/
+	i >> j;
+	int v = j["version"].get<int>();
+	cout << v;
 	cout << "Diameter: " << Twinkle.diameter << endl;
 
 	return 0;
