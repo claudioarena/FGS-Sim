@@ -15,6 +15,6 @@ struct filter
 const struct filter B_filter = {440, 96.8, 4260};
 const struct filter V_filter = {550, 88, 3640};
 const struct filter R_filter = {640, 147.2, 3080};
-const struct filter IntegratedVisual_filter = {500, 30};
+const struct filter IntegratedVisual_filter = {550, 350, 3640};
 
 #endif

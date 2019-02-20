@@ -19,6 +19,7 @@
 #include <nlohmann/json.hpp>
 #include "MonteCarlo.hpp"
 #include <iomanip>
+#include "unitTest.cpp"
 
 // for convenience
 using json = nlohmann::json;
@@ -59,7 +60,7 @@ void runFromTSV(ofstream &outputFile, std::string inFileName)
 }
 
 /// Main method. Runs tests for given TSV input files from Zemax.
-int main()
+/* int main()
 {
 
 	time_t startTime = time(nullptr);
@@ -86,33 +87,8 @@ int main()
 		 << '\a';
 
 	return 0;
-}
+} */
 
-int newmain()
+int main()
 {
-	struct Telescope
-	{
-		float diameter;
-		float totalEfficiency;
-	};
-
-	struct FGSCamera
-	{
-		float DarkCurrent;
-		float gain;
-	};
-
-	struct Telescope Twinkle;
-	Twinkle.diameter = 0.45;
-	Twinkle.totalEfficiency = 1;
-
-	// create an empty structure (null)
-	std::ifstream i("centroid-v3//test.json");
-	json j;
-	i >> j;
-	int v = j["version"].get<int>();
-	cout << v;
-	cout << "Diameter: " << Twinkle.diameter << endl;
-
-	return 0;
 }

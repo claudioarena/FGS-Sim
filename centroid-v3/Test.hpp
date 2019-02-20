@@ -32,9 +32,13 @@ class Test
 
 	void run(bool noise, bool huygens, float time, float area, float QE, float temperature, float emissivity, int readout, float ADU, float darkSignal, Brownian *motion, int brownianRuns);
 	static void print2dVector(std::vector<std::vector<int>> data);
-	static double photonsInAllBands(std::vector<float> mags, std::vector<filter> fltrs);
+	static double photonsInAllBands(std::vector<double> mags, std::vector<filter> fltrs);
 	static double photonsInBand(float mag, struct filter flt);
 	static std::vector<std::vector<int>> addMatrices(std::vector<std::vector<int>> a, std::vector<std::vector<int>> b);
+
+	static float airmass(float alt);
+	static float extinctionInMags(float alt);
+	static float extinctionInPercentage(float alt);
 
   private:
 	std::vector<std::vector<int>> noiseAfterBin;

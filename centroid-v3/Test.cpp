@@ -89,28 +89,66 @@ vector<int> Test::sumVert(vector<vector<int>> in, int i, int end)
 }
 
 /**
- * Public static function to find the number of photons per second for a given band-magnitude. Defaults to 
- * combination of B, V and R bands. 
- *
- * @brief Finds the number of photons per second for a given band and magnitude. 
- * @param mag Band-magnitude of the star
- * @param band Spectral band: B, V, R. 
- * @return Number of photons from a star in the given band per second
+ * Public static function to find the airmass at a given altitude, in degrees.
+ * @brief Find the airmass at a given altitude, in degrees
+ * @param alt Altitude in degrees above the horizon
+ * @return Airmass
  */
-
-double Test::photonsInAllBands(std::vector<float> mags, std::vector<filter> fltrs)
+float Test::airmass(float alt)
 {
-	if (sizeof(mags) != sizeof(fltrs))
+	float a = 47 * pow(alt, 1.1);
+	float b = alt + (244 / (165 + a));
+	float z = 1 / sin(b * (M_PI / 180));
+	return z;
+}
+
+/**
+ * Public static function to find exction amount in magnitudes, at a given altitude.
+ * @brief Finds the amount of extinction, in mags, at a given altitude
+ * @param alt Altitude, in degrees, above the horizon
+ * @return Extinction amount in magnitudes.
+ */
+float Test::extinctionInMags(float alt)
+{
+	float z = Test::airmass(alt);
+	return EXTICTION_COEFFICIENT * z;
+}
+
+/**
+ * Public static function to find exction amount in percentage of left flux, at a given altitude. Return value of 1 is no extinction, 0.5 is half of the flux is removed.
+ * @brief Finds the amount of extinction, in percentage of left flux, at a given altitude
+ * @param alt Altitude, in degrees, above the horizon
+ * @return Extinction amount in percentage reduction.
+ */
+float Test::extinctionInPercentage(float alt)
+{
+	float inMags = Test::extinctionInMags(alt);
+	return pow(10, -0.4 * inMags);
+}
+
+/**
+ * Public static function to find the number of photons per second in the sum of multiple bands.
+ * @brief Finds the number of photons per second for a given band combination and magnitude. 
+ * @param mag Band-magnitudes vector of the star
+ * @param band Spectral bands vectors. Elements are filter structs.
+ * @return Number of photons from a star in the given bands per second
+ */
+double Test::photonsInAllBands(std::vector<double> mags, std::vector<filter> fltrs)
+{
+	unsigned int nFilters = fltrs.size();
+	unsigned int nMags = mags.size();
+
+	if (nMags != nFilters)
 	{
 		throw("error. Number of specified magnitudes and filters must match");
 	}
-	if (sizeof(mags) < 1)
+	if (nFilters < 1)
 	{
 		throw("error. At least one magnitude must be specified");
 	}
 
 	double photons = 0;
-	for (int i = 0; i < sizeof(mags); i++)
+	for (int i = 0; i < nFilters; i++)
 	{
 		photons += Test::photonsInBand(mags[i], fltrs[i]);
 	}
@@ -118,11 +156,21 @@ double Test::photonsInAllBands(std::vector<float> mags, std::vector<filter> fltr
 	return photons;
 }
 
+/**
+ * Public static function to find the number of photons per second for a given band-magnitude.
+ *
+ * @brief Finds the number of photons per second for a given band and magnitude. 
+ * @param mag Band-magnitude of the star
+ * @param flt Filter struct: B, V, R. 
+ * @return Number of photons from a star in the given band per second per m2
+ */
 double Test::photonsInBand(float mag, struct filter flt)
 {
-	double m0_photons = (1.51 * (10 ^ 7)) * (flt.zero_point_Jy * (flt.bandWidth / flt.centerBand));
+	double pwr = pow(2, 2);
+	double m0_photons = (1.51 * (pow(10, 7))) * (flt.zero_point_Jy * (flt.bandWidth / flt.centerBand));
 
-	double photons = pow(2.512, -1 * mag) * m0_photons; // Photons per second, per m-2
+	double power = pow(2.512, -1 * mag);
+	double photons = power * m0_photons; // Photons per second, per m-2
 	return photons;
 }
 
