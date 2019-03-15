@@ -13,8 +13,8 @@
 #define CCD_EFFICIENCY 0.65       //Average in bandpass
 #define GAIN 1.0                  //e- / ADU
 
-#define FRAME_W 1920
-#define FRAME_H 1080
+#define FRAME_W 1024
+#define FRAME_H 1024
 #define SOURCE_TYPE GAUSSIAN
 //#define SOURCE_TYPE PSF
 #define FRAME_CX (FRAME_W / 2.0) + 0.5
@@ -23,6 +23,8 @@
 #define FGS_BITS 16
 #define FGS_MAX_ADU pow(2, FGS_BITS) - 1
 
+//simulation elements per pixel, per side. So, value of 10 means 10x10 simels per pixels.
+#define SIMELS 1
 static const float emiss = 0.02; // Mirror emissivity
 static const struct filter FGS_filter = B_filter;
 

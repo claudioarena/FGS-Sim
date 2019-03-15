@@ -83,13 +83,21 @@ int main()
     //unitTests::TestAirmass();
     //unitTests::TestTwinkleMags();
 
-    Frame *f = new Frame(60, FRAME_W, FRAME_H);
-    f->addSource(FRAME_CX, FRAME_CY, 30.0, 30.0, 10.0);
-    //f->Print();
+    double expTime = 5.0; //sec
+    double star_fwhm = 4.0;
+    double star_mag = 10.0;
+
+    Frame *f = new Frame(expTime, FRAME_W, FRAME_H);
+    f->addSource(FRAME_CX, FRAME_CY, star_fwhm, star_fwhm, star_mag);
+    //f->addSource(20, 40, star_fwhm, star_fwhm, star_mag + 2);
+    //f->addSource(850.5, 600, star_fwhm, star_fwhm, star_mag - 2);
+
     //f->saveToBitmap("frame.bmp");
     //f->saveToFile("centroid-v3/frame.csv");
 
     f->generateFrame();
+    //f->PrintSimelArray();
+    //f->Print();
 
     f->saveToFile("centroid-v3/frame.csv");
 

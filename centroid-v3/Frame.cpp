@@ -6,7 +6,6 @@
  * @author Claudio Arena, Feiyu Fang
  * @version 1.0.0 2019-01-20
  */
-
 #include <iostream>
 #include <fstream>
 
@@ -17,6 +16,9 @@
 #include <chrono>
 
 #define DEBUG
+//#define PRINT_PROB_ARRAY
+//#define PRINT_SOURCE_DATA
+#define TIMING
 
 /**
  * Constructs a Frame object to generate image data arrays. 
@@ -33,20 +35,23 @@ Frame::Frame(double expTime, unsigned int width, unsigned int height)
     t = expTime;
     h = height;
     w = width;
+    hsim = height * SIMELS;
+    wsim = width * SIMELS;
 
-    //fr.reserve(width, height);
     fr.resize(w, h);
+    simfr.resize(wsim, hsim);
+    sources.reserve(10);
 }
 
 Frame::~Frame()
 {
 }
 
-unsigned int &Frame::operator()(unsigned int x, unsigned int y)
+uint32_t &Frame::operator()(unsigned int x, unsigned int y)
 {
     return fr(x, y);
 }
-const unsigned int &Frame::operator()(unsigned int x, unsigned int y) const
+const uint32_t &Frame::operator()(unsigned int x, unsigned int y) const
 {
     return fr(x, y);
 }
@@ -59,111 +64,75 @@ const unsigned int &Frame::operator()(unsigned int x, unsigned int y) const
  * @param wx source size in x direction. For gaussina source, this is the standard deviation of the Gaussian in the x direction.
  * @param wx source size in y direction. For gaussina source, this is the standard deviation of the Gaussian in the y direction.
  */
-void Frame::addSource(double cx, double cy, double wx, double wy, double magB, double magV, double magR)
+void Frame::addSource(double cx, double cy, double fwhm_x, double fwhm_y, double magB, double magV, double magR)
 {
+    //add a source to the list of sources. Make a temporary prob matrix.
+    sources.emplace_back();
+    source *src = &sources[nsources() - 1];
+    Grid<double> tempProbMatrix(wsim, hsim);
+    Grid<double> *probMatrix = &tempProbMatrix;
+
+#ifdef PRINT_SOURCE_DATA
+    printf("size of source array: %u \n", nsources());
+#endif
+
     std::vector<double> mags{magB, magV, magR};
     std::vector<struct filter> fltrs{B_filter, V_filter, R_filter};
     double telescopeArea = M_PI * pow((TEL_DIAM / 1000.0) / 2.0, 2);
 
-    expected_photons = Test::photonsInAllBands(mags, fltrs) * telescopeArea * (1 - obstruction_area) * mirrorEfficiency * CCD_EFFICIENCY * t;
-    float detectedADU = expected_photons / GAIN;
+    src->expected_photons = Test::photonsInAllBands(mags, fltrs) * telescopeArea * (1 - obstruction_area) * mirrorEfficiency * CCD_EFFICIENCY * t;
+    float detectedADU = src->expected_photons / GAIN;
 
-#ifdef DEBUG
-    std::cout << "Average n. of photons detected: " << expected_photons << std::endl;
+#ifdef PRINT_SOURCE_DATA
+    printf("Average n. of photons for source %d: %3.4f\n", nsources() - 1, src->expected_photons);
 #endif
-
-    //Assign pointer to the poisson distribution (for total photon counts) and seed it
-    unsigned seed = std::chrono::system_clock::now().time_since_epoch().count();
-    src->photon_n_generator.seed(seed);
-    src->photons = std::poisson_distribution<ulong_t>(expected_photons);
 
     //assign source distribution array
-    src->source_prob_matrix.resize(w, h);
-
 #if SOURCE_TYPE == GAUSSIAN
     //Normalize prob to 100
-    const double A = 100 / (2 * M_PI * wx * wy);
-    for (unsigned int y = 0; y < h; y++)
-    {
-        for (unsigned int x = 0; x < w; x++)
-        {
-            double xTerm = pow((x - cx), 2) / (2 * pow(wx, 2));
-            double yTerm = pow((y - cy), 2) / (2 * pow(wy, 2));
-            double sample_prob = (A * exp(-(xTerm + yTerm)));
-            src->source_prob_matrix(x, y) = sample_prob;
-        }
-    }
-
+    double sigmax = (fwhm_x / 2.3585) * SIMELS;
+    double sigmay = (fwhm_y / 2.3585) * SIMELS;
+    //x.0 is center of pixel. x.5 is edge
+    double simcx = cx * SIMELS + (SIMELS / 2.0) - 0.5;
+    double simcy = cy * SIMELS + (SIMELS / 2.0) - 0.5;
+    calculateGaussian(simcx, simcy, sigmax, sigmay, probMatrix);
 #endif
+
+#ifdef PRINT_PROB_ARRAY
+    PrintProbArray(probMatrix, "source");
+#endif
+
     //add a value outside the array to the distribution func. This takes cares of photons falling outside the array.
-    double prob_photon_outside_frame = 100 - src->source_prob_matrix.total();
-    src->source_prob_matrix[src->source_prob_matrix.extraPixPosition()] = prob_photon_outside_frame;
+    double prob_photon_outside_frame = 100 - probMatrix->total();
+    probMatrix->operator[](probMatrix->extraPixPos()) += prob_photon_outside_frame;
 
     //Now assign it the vector to a distribution, and inizialize the distribution
-    std::discrete_distribution<uint32_t> distribution(src->source_prob_matrix.begin(), src->source_prob_matrix.end());
+    std::discrete_distribution<uint32_t> distribution(probMatrix->begin(), probMatrix->end());
     src->source_distribution = distribution;
+
+    //Seec and initialise the distributions. One for total number of photons in frame, one for distribution of photons on frame.
+    src->photon_n_generator.seed(std::chrono::system_clock::now().time_since_epoch().count());
+    src->photons = std::poisson_distribution<ulong_t>(src->expected_photons);
+    src->distribution_generator.seed(std::chrono::system_clock::now().time_since_epoch().count());
 }
 
 void Frame::generateFrame()
 {
-    //Calculate tot photons received from source in this frame
-    ulong_t number = src->frame_photons();
-#ifdef DEBUG
-    std::cout << "N. Photons in this frame: " << number << std::endl;
-#endif
-
-    //Assign pointer to the poisson distribution (for source distribution) and seed it
-    unsigned seed = std::chrono::system_clock::now().time_since_epoch().count();
-    src->distribution_generator.seed(seed);
-
-    //Distribute photons
-    //TODO: Speed this up; limit based on saturation; saturation flag; if many photons, consider distribution more than one at a time.
-    auto t1 = std::chrono::high_resolution_clock::now();
-    for (int i = 0; i < 100000; i++)
+    for (uint16_t isrc = 0; isrc < nsources(); isrc++)
     {
-        src->photon_position();
-    }
-    auto t2 = std::chrono::high_resolution_clock::now();
-    std::cout << "photo1 took "
-              << std::chrono::duration_cast<std::chrono::milliseconds>(t2 - t1).count()
-              << " milliseconds\n";
-
-    auto t5 = std::chrono::high_resolution_clock::now();
-    for (int i = 0; i < 100000; i++)
-    {
-        fr[1205] = 5;
-    }
-    auto t6 = std::chrono::high_resolution_clock::now();
-    std::cout << "assign took "
-              << std::chrono::duration_cast<std::chrono::milliseconds>(t6 - t5).count()
-              << " milliseconds\n";
-
-    auto t7 = std::chrono::high_resolution_clock::now();
-
-    while (number > 0)
-    {
-        fr[src->photon_position()]++;
-        number--;
+        addSourcePhotons(sources[isrc], isrc);
     }
 
-    auto t8 = std::chrono::high_resolution_clock::now();
-    std::cout << "photons took "
-              << std::chrono::duration_cast<std::chrono::milliseconds>(t8 - t7).count()
-              << " milliseconds\n";
+    //Transform the simel to the actual frame
+    simelsToFrame();
 
 #ifdef DEBUG
-    std::cout << "Total photons in frame array: " << std::accumulate(fr.begin(), fr.end(), 0.0) << std::endl;
-    std::cout << "Total photons outside frame: " << fr[fr.extraPixPosition()] << std::endl;
+    uint64_t tot_photons = std::accumulate(fr.begin(), fr.end(), 0.0);
+    uint64_t outside_photons = fr[fr.extraPixPos()];
+    printf("Total photons in frame array: %d \n", tot_photons - outside_photons);
+    printf("Total photons outside frame: %d\n", outside_photons);
+    printf("Saturated: %s\n", (isSaturated() ? "Yes" : "No"));
 #endif
-
-    // if (pixelVal < FGS_MAX_ADU)
-    // {
-    //     src->source_distribution(x, y) = pixelVal;
-    // }
-    // else
-    // {
-    //     src->source_distribution(x, y) = FGS_MAX_ADU;
-    // }
 }
 
 void Frame::saveToFile(std::string filename)
@@ -283,6 +252,7 @@ void Frame::Print()
 {
     unsigned int w = fr.width();
     unsigned int h = fr.height();
+    std::cout << "Printing frame values" << std::endl;
     std::cout << "Array Width: " << w << std::endl;
     std::cout << "Array Heigth : " << h << std::endl;
 
@@ -290,8 +260,126 @@ void Frame::Print()
     {
         for (int x = 0; x < w; x++)
         {
-            std::cout << fr(x, y) << "\t";
+            printf("%d \t", fr(x, y));
         }
         std::cout << std::endl;
     }
+    std::cout << std::endl;
+}
+
+void Frame::PrintProbArray(Grid<double> *probMatrixptr, const char *message)
+{
+    unsigned int w = probMatrixptr->width();
+    unsigned int h = probMatrixptr->height();
+    printf("Printing %s probability array values\n", message);
+    std::cout << "Array Width: " << w << std::endl;
+    std::cout << "Array Heigth : " << h << std::endl;
+
+    for (int y = h - 1; y >= 0; y--)
+    {
+        for (int x = 0; x < w; x++)
+        {
+            printf("%4.3f \t", probMatrixptr->operator()(x, y));
+        }
+        std::cout << std::endl;
+    }
+    std::cout << std::endl;
+}
+
+void Frame::PrintSimelArray()
+{
+    unsigned int w = simfr.width();
+    unsigned int h = simfr.height();
+    std::cout << "Printing simels values" << std::endl;
+    std::cout << "Array Width: " << w << std::endl;
+    std::cout << "Array Heigth : " << h << std::endl;
+
+    for (int y = h - 1; y >= 0; y--)
+    {
+        for (int x = 0; x < w; x++)
+        {
+            printf("%d \t", simfr(x, y));
+        }
+        std::cout << std::endl;
+    }
+    std::cout << std::endl;
+}
+
+void Frame::calculateGaussian(double cx, double cy, double sigmax, double sigmay, Grid<double> *probMatrix)
+{
+    uint16_t xlim = probMatrix->width();
+    uint16_t ylim = probMatrix->height();
+    const double A = 100 / (2 * M_PI * sigmax * sigmay);
+
+    for (unsigned int y = 0; y < ylim; y++)
+    {
+        for (unsigned int x = 0; x < xlim; x++)
+        {
+            double xTerm = pow((x - cx), 2) / (2 * pow(sigmax, 2));
+            double yTerm = pow((y - cy), 2) / (2 * pow(sigmay, 2));
+            double sample_prob = (A * exp(-(xTerm + yTerm)));
+            probMatrix->operator()(x, y) = sample_prob;
+        }
+    }
+}
+
+void Frame::addSourcePhotons(source &src, uint16_t isrc)
+{
+    //Calculate tot photons received from source in this frame
+    ulong_t number = src.frame_photons();
+#ifdef DEBUG
+    printf("N. photos for source n. %d in this frame: %d \n", isrc, number);
+#endif
+
+//Distribute photons
+//TODO: Speed this up; limit based on saturation; saturation flag; if many photons, consider distribution more than one at a time.
+#ifdef TIMING
+    auto t1 = std::chrono::high_resolution_clock::now();
+#endif
+
+    while (number > 0)
+    {
+        simfr[src.photon_position()]++;
+        number--;
+    }
+
+#ifdef TIMING
+    auto t2 = std::chrono::high_resolution_clock::now();
+    printf("Assign of source %f took: %f milliseconds \n", isrc, (double)std::chrono::duration_cast<std::chrono::milliseconds>(t2 - t1).count());
+#endif
+
+#ifdef DEBUG
+    printf("Total photons in simel array: %f \n", std::accumulate(simfr.begin(), simfr.end(), 0.0));
+    printf("Total photons outside simel array: %f \n\n", simfr[simfr.extraPixPos()]);
+#endif
+}
+
+void Frame::simelsToFrame()
+{
+    for (unsigned int y = 0; y < h; y++)
+    {
+        for (unsigned int x = 0; x < w; x++)
+        { //Loop through image
+            uint64_t pixVal = 0;
+            for (unsigned int simy = y * SIMELS; simy < y * SIMELS + SIMELS; simy++)
+            {
+                for (int simx = x * SIMELS; simx < x * SIMELS + SIMELS; simx++)
+                { //Loop through simels for selected pixel
+                    if ((pixVal + simfr(simx, simy)) <= FGS_MAX_ADU)
+                    {
+                        pixVal += simfr(simx, simy);
+                    }
+                    else
+                    {
+                        pixVal = FGS_MAX_ADU;
+                        saturated = true;
+                    }
+                }
+            }
+
+            fr(x, y) = pixVal;
+        }
+    }
+
+    fr[fr.extraPixPos()] = simfr[simfr.extraPixPos()];
 }

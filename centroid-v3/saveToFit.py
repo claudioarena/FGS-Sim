@@ -19,7 +19,7 @@ def main():
         hdu = fits.PrimaryHDU(image)
         # hdu = fits.HDUList()
         # hdu.append(fits.PrimaryHDU(image))
-        hdu.writeto("2.fit", overwrite="true")
+        hdu.writeto("frame.fit", overwrite="true")
 
 
 if __name__ == "__main__":

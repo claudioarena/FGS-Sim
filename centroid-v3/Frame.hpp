@@ -6,11 +6,10 @@
  * @author Claudio Arena, Feiyu Fang
  * @version 1.0.0 2019-01-20
  */
-
-#include <vector>
+#pragma once
 #include <random>
 #include <chrono>
-#include <algorithm>
+#include "Grid.hpp"
 
 const int BMP_MAGIC_ID = 2;
 typedef unsigned char uchar_t;
@@ -50,54 +49,6 @@ struct bmpfile_dib_info
   uint32_t num_important_colors;
 };
 
-//Template used to make 2D array using 1D vector.
-//This contains an extra pixel at the end, used to store any extra information needed (depending on implementation).
-///We use it to store pixels falling outside the image.
-template <class T>
-class Grid
-{
-public:
-  Grid(unsigned int w = 0, unsigned int h = 0) : w(w), h(h), v(w * h + 1) {}
-
-  T &operator()(unsigned int x, unsigned int y) { return v.at((y * w) + x); }
-  const T &operator()(unsigned int x, unsigned int y) const { return v.at((y * w) + x); }
-
-  T &operator[](unsigned int pos) { return v.at(pos); }
-  const T &operator[](unsigned int pos) const { return v.at(pos); }
-
-  void reserve(unsigned int w_, unsigned int h_) { v.reserve(w_ * h_ + 1); }
-  void resize(unsigned int w_, unsigned int h_)
-  {
-    v.resize(w_ * h_ + 1);
-    w = w_;
-    h = h_;
-  }
-
-  auto begin() { return v.begin(); }
-  auto end() { return v.end(); }
-  auto size() { return v.size(); }
-  T max() { return *std::max_element(begin(), end()); }
-  T min() { return *std::min_element(begin(), end()); }
-  T total()
-  {
-    return std::accumulate(v.begin(), v.end(), 0.0);
-  }
-
-  //might need to delete following line.
-  std::vector<T> &vector()
-  {
-    return v;
-  }
-
-  unsigned int width() const { return w; }
-  unsigned int height() const { return h; }
-  unsigned int extraPixPosition() const { return w * h; }
-
-private:
-  unsigned int w, h;
-  std::vector<T> v;
-};
-
 struct source
 {
   std::default_random_engine photon_n_generator;
@@ -106,7 +57,7 @@ struct source
 
   std::poisson_distribution<ulong_t> photons;
   std::discrete_distribution<uint32_t> source_distribution;
-  Grid<double> source_prob_matrix;
+  double expected_photons;
 
   ulong_t frame_photons()
   {
@@ -135,15 +86,15 @@ public:
   Frame(double expTime = 1.0, unsigned int width = 1024, unsigned int height = 1024);
   ~Frame();
 
-  unsigned int &operator()(unsigned int x, unsigned int y);
-  const unsigned int &operator()(unsigned int x, unsigned int y) const;
+  uint32_t &operator()(unsigned int x, unsigned int y);
+  const uint32_t &operator()(unsigned int x, unsigned int y) const;
 
   //Redirect first method to second, generic one
-  void addSource(double cx, double cy, double wx, double wy, double magnitude)
+  void addSource(double cx, double cy, double fwhm_x, double fwhm_y, double magnitude)
   {
-    addSource(cx, cy, wx, wy, magnitude, magnitude, magnitude);
+    addSource(cx, cy, fwhm_x, fwhm_y, magnitude, magnitude, magnitude);
   }
-  void addSource(double cx, double cy, double wx, double wy, double magB, double magV, double magR);
+  void addSource(double cx, double cy, double fwhm_x, double fwhm_y, double magB, double magV, double magR);
 
   void generateFrame();
 
@@ -151,11 +102,20 @@ public:
   void saveToFile(std::string filename);
   void setAll(unsigned int value);
   void Print();
+  void PrintSimelArray();
+  bool isSaturated() { return saturated; };
 
 private:
   double mag, t;
-  source *src = new source;
-  double expected_photons;
-  int h, w;
-  Grid<uint32_t> fr;
+  bool saturated = false;
+
+  std::vector<source> sources;
+  int h, w, hsim, wsim;
+  Grid<uint32_t> simfr, fr;
+
+  uint16_t nsources() { return sources.size(); }
+  void calculateGaussian(double cx, double cy, double sigmax, double sigmay, Grid<double> *probMatrix);
+  void PrintProbArray(Grid<double> *probMatrixptr, const char *message);
+  void simelsToFrame();
+  void addSourcePhotons(source &src, uint16_t isrc);
 };
