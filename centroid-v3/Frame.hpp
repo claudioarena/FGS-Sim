@@ -7,17 +7,17 @@
  * @version 1.0.0 2019-01-20
  */
 #pragma once
+
 #include <random>
 #include <chrono>
+#include <memory>
+#include "typedefs.h"
 #include "Grid.hpp"
+#include "Config\telescopes.hpp"
+
+//#include <boost/shared_ptr.hpp>
 
 const int BMP_MAGIC_ID = 2;
-typedef unsigned char uchar_t;
-typedef unsigned int uint32_t;
-typedef unsigned short int uint16_t;
-typedef signed int int32_t;
-typedef signed short int int16_t;
-typedef unsigned long ulong_t;
 
 // --------------------------------------------------------------
 // Windows BMP-specific format data
@@ -58,6 +58,7 @@ struct source
   std::poisson_distribution<ulong_t> photons;
   std::discrete_distribution<uint32_t> source_distribution;
   double expected_photons;
+  double cx, cy, fwhm_x, fwhm_y;
 
   ulong_t frame_photons()
   {
@@ -79,11 +80,9 @@ struct source
 class Frame
 {
 public:
-  //Redirect to main Constructor
-  Frame(double expTime, int width, int height) : Frame(expTime, (unsigned int)width, (unsigned int)height){};
-
   //Main Constructor
-  Frame(double expTime = 1.0, unsigned int width = 1024, unsigned int height = 1024);
+  Frame(Telescope _tel, double _expTime = 1.0);
+
   ~Frame();
 
   uint32_t &operator()(unsigned int x, unsigned int y);
@@ -96,18 +95,30 @@ public:
   }
   void addSource(double cx, double cy, double fwhm_x, double fwhm_y, double magB, double magV, double magR);
 
-  void generateFrame();
+  void generateFrame(bool statistical = true);
 
   void saveToBitmap(std::string filename);
   void saveToFile(std::string filename);
   void setAll(unsigned int value);
   void Print();
   void PrintSimelArray();
+  void makeUniformFrame(uint16_t val);
+
   bool isSaturated() { return saturated; };
+  //std::shared_ptr<int> const get() const { return std::shared_ptr<}
+  Grid<uint32_t> const *get() const { return &fr; }
+  //const Grid<uint32_t> getGrid() { return fr; }
+
+  inline std::shared_ptr<Grid<uint32_t>> get_smartPtr()
+  {
+    std::shared_ptr<Grid<uint32_t>> m_fr = std::make_shared<Grid<uint32_t>>(fr);
+    return m_fr;
+  }
 
 private:
   double mag, t;
   bool saturated = false;
+  Telescope tel;
 
   std::vector<source> sources;
   int h, w, hsim, wsim;
@@ -116,6 +127,6 @@ private:
   uint16_t nsources() { return sources.size(); }
   void calculateGaussian(double cx, double cy, double sigmax, double sigmay, Grid<double> *probMatrix);
   void PrintProbArray(Grid<double> *probMatrixptr, const char *message);
-  void simelsToFrame();
+  void simelsToFrame(bool statistical = true);
   void addSourcePhotons(source &src, uint16_t isrc);
 };

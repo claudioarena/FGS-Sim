@@ -5,20 +5,24 @@
  * @brief Header file for Frame class
  * @author Claudio Arena, Feiyu Fang
  * @version 1.0.0 2019-01-20
+ * @description Creates a simulated frame. Coordinate system used: Center of frame is x.0, y.0. Edge of frame is x.5,y.5. x.999 is very close to x+1.0.
+ * Trying to follow convention that top left pixel is 0,0. If reading frame on MaximDL, coordinate readout should match.
+ * Note that AstroImageJ has a 1 pixel offset, and a different reference system in some modes.
+ * MaximDL readout for FWHM is not accurate. ImageJ is.
  */
+
 #include <iostream>
 #include <fstream>
 
 #include "Frame.hpp"
-#include "Config/parameters.h"
 #include "Test.hpp"
 #include <random>
 #include <chrono>
 
-#define DEBUG
+//#define DEBUG
 //#define PRINT_PROB_ARRAY
 //#define PRINT_SOURCE_DATA
-#define TIMING
+//#define TIMING
 
 /**
  * Constructs a Frame object to generate image data arrays. 
@@ -30,21 +34,22 @@
  */
 
 //PSF Constructor
-Frame::Frame(double expTime, unsigned int width, unsigned int height)
+Frame::Frame(Telescope _tel, double _expTime)
+    : tel(_tel), t(_expTime), h(_tel.FRAME_H), w(_tel.FRAME_W), hsim(h * _tel.SIMELS), wsim(w * _tel.SIMELS)
 {
-    t = expTime;
-    h = height;
-    w = width;
-    hsim = height * SIMELS;
-    wsim = width * SIMELS;
-
     fr.resize(w, h);
     simfr.resize(wsim, hsim);
     sources.reserve(10);
+#ifdef DEBUG_MEMORY
+    std::cout << "Created Frame " << std::endl;
+#endif
 }
 
 Frame::~Frame()
 {
+#ifdef DEBUG_MEMORY
+    std::cout << "Destroyed Frame " << std::endl;
+#endif
 }
 
 uint32_t &Frame::operator()(unsigned int x, unsigned int y)
@@ -78,10 +83,14 @@ void Frame::addSource(double cx, double cy, double fwhm_x, double fwhm_y, double
 
     std::vector<double> mags{magB, magV, magR};
     std::vector<struct filter> fltrs{B_filter, V_filter, R_filter};
-    double telescopeArea = M_PI * pow((TEL_DIAM / 1000.0) / 2.0, 2);
+    double telescopeArea = M_PI * pow((tel.DIAMETER / 1000.0) / 2.0, 2);
 
-    src->expected_photons = Test::photonsInAllBands(mags, fltrs) * telescopeArea * (1 - obstruction_area) * mirrorEfficiency * CCD_EFFICIENCY * t;
-    float detectedADU = src->expected_photons / GAIN;
+    src->expected_photons = Test::photonsInAllBands(mags, fltrs) * telescopeArea * (1 - tel.obstruction_area) * tel.mirrorEfficiency * tel.CCD_EFFICIENCY * t;
+    float detectedADU = src->expected_photons / tel.GAIN;
+    src->cx = cx;
+    src->cy = cy;
+    src->fwhm_x = fwhm_x;
+    src->fwhm_y = fwhm_y;
 
 #ifdef PRINT_SOURCE_DATA
     printf("Average n. of photons for source %d: %3.4f\n", nsources() - 1, src->expected_photons);
@@ -90,11 +99,12 @@ void Frame::addSource(double cx, double cy, double fwhm_x, double fwhm_y, double
     //assign source distribution array
 #if SOURCE_TYPE == GAUSSIAN
     //Normalize prob to 100
-    double sigmax = (fwhm_x / 2.3585) * SIMELS;
-    double sigmay = (fwhm_y / 2.3585) * SIMELS;
+    double sigmax = (fwhm_x / 2.3585) * tel.SIMELS;
+    double sigmay = (fwhm_y / 2.3585) * tel.SIMELS;
+
     //x.0 is center of pixel. x.5 is edge
-    double simcx = cx * SIMELS + (SIMELS / 2.0) - 0.5;
-    double simcy = cy * SIMELS + (SIMELS / 2.0) - 0.5;
+    double simcx = cx * tel.SIMELS + (tel.SIMELS / 2.0) - 0.5;
+    double simcy = cy * tel.SIMELS + (tel.SIMELS / 2.0) - 0.5;
     calculateGaussian(simcx, simcy, sigmax, sigmay, probMatrix);
 #endif
 
@@ -116,7 +126,7 @@ void Frame::addSource(double cx, double cy, double fwhm_x, double fwhm_y, double
     src->distribution_generator.seed(std::chrono::system_clock::now().time_since_epoch().count());
 }
 
-void Frame::generateFrame()
+void Frame::generateFrame(bool statistical)
 {
     for (uint16_t isrc = 0; isrc < nsources(); isrc++)
     {
@@ -124,7 +134,7 @@ void Frame::generateFrame()
     }
 
     //Transform the simel to the actual frame
-    simelsToFrame();
+    simelsToFrame(statistical);
 
 #ifdef DEBUG
     uint64_t tot_photons = std::accumulate(fr.begin(), fr.end(), 0.0);
@@ -354,32 +364,61 @@ void Frame::addSourcePhotons(source &src, uint16_t isrc)
 #endif
 }
 
-void Frame::simelsToFrame()
+void Frame::makeUniformFrame(uint16_t val)
 {
-    for (unsigned int y = 0; y < h; y++)
+    for (uint16_t x = 0; x < w; x++)
     {
-        for (unsigned int x = 0; x < w; x++)
-        { //Loop through image
-            uint64_t pixVal = 0;
-            for (unsigned int simy = y * SIMELS; simy < y * SIMELS + SIMELS; simy++)
-            {
-                for (int simx = x * SIMELS; simx < x * SIMELS + SIMELS; simx++)
-                { //Loop through simels for selected pixel
-                    if ((pixVal + simfr(simx, simy)) <= FGS_MAX_ADU)
-                    {
-                        pixVal += simfr(simx, simy);
-                    }
-                    else
-                    {
-                        pixVal = FGS_MAX_ADU;
-                        saturated = true;
-                    }
-                }
-            }
-
-            fr(x, y) = pixVal;
+        for (uint16_t y = 0; y < h; y++)
+        {
+            fr(x, y) = val;
         }
     }
+}
 
-    fr[fr.extraPixPos()] = simfr[simfr.extraPixPos()];
+void Frame::simelsToFrame(bool statistical)
+{
+    if (statistical == false) //just to debug, make smooth gaussian
+    {
+        Grid<double> tempMatrix(w, h);
+        source src = sources[0];
+        Grid<double> *tempMatrixPtr = &tempMatrix;
+        calculateGaussian(src.cx, src.cy, src.fwhm_x / 2.3585, src.fwhm_y / 2.3585, tempMatrixPtr);
+        const double A = 100 / (2 * M_PI * src.fwhm_x * src.fwhm_y);
+
+        for (unsigned int y = 0; y < h; y++)
+        {
+            for (unsigned int x = 0; x < w; x++)
+            {
+                fr(x, y) = (uint32_t)(tempMatrix(x, y) * (50000.0 / A));
+            }
+        }
+    }
+    else
+    {
+        for (unsigned int y = 0; y < h; y++)
+        {
+            for (unsigned int x = 0; x < w; x++)
+            { //Loop through image
+                uint64_t pixVal = 0;
+                for (unsigned int simy = y * tel.SIMELS; simy < y * tel.SIMELS + tel.SIMELS; simy++)
+                {
+                    for (int simx = x * tel.SIMELS; simx < x * tel.SIMELS + tel.SIMELS; simx++)
+                    { //Loop through simels for selected pixel
+                        if ((pixVal + simfr(simx, simy)) <= tel.FGS_MAX_ADU)
+                        {
+                            pixVal += simfr(simx, simy);
+                        }
+                        else
+                        {
+                            pixVal = tel.FGS_MAX_ADU;
+                            saturated = true;
+                        }
+                    }
+                }
+                fr(x, y) = pixVal;
+            }
+        }
+
+        fr[fr.extraPixPos()] = simfr[simfr.extraPixPos()];
+    }
 }

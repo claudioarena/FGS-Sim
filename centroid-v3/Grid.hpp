@@ -6,12 +6,25 @@
 #include <vector>
 #include <algorithm>
 #include <numeric>
+//#include "Config/parameters.h"
 
 template <class T>
 class Grid
 {
 public:
-  Grid(unsigned int w = 0, unsigned int h = 0) : w(w), h(h), v(w * h + 1), extraPixPosition(w * h) {}
+  Grid(unsigned int w = 0, unsigned int h = 0) : w(w), h(h), v(w * h + 1), extraPixPosition(w * h)
+  {
+#ifdef DEBUG_MEMORY
+    std::cout << "Created Grid " << std::endl;
+#endif
+  }
+
+  ~Grid()
+  {
+#ifdef DEBUG_MEMORY
+    std::cout << "Destroyed Grid" << std::endl;
+#endif
+  }
 
   T &operator()(unsigned int x, unsigned int y) { return v.at((y * w) + x); }
   const T &operator()(unsigned int x, unsigned int y) const { return v.at((y * w) + x); }
@@ -28,8 +41,8 @@ public:
     extraPixPosition = w * h;
   }
 
-  auto begin() { return v.begin(); }
-  auto end() { return v.end(); }
+  auto begin() const { return v.begin(); }
+  auto end() const { return v.end(); }
   auto size() { return v.size(); }
   T max() { return *std::max_element(begin(), end()); }
   T min() { return *std::min_element(begin(), end()); }

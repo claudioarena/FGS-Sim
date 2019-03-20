@@ -1,25 +1,30 @@
 #include "Config\parameters.h"
+#include "Config\telescopes.hpp"
 
 #include <chrono>
 #include <fstream>
 #include <iostream>
 #include <vector>
-#include "MonteCarlo.hpp"
 #include <iomanip>
+
+//#include "MonteCarlo.hpp"
 #include "Frame.hpp"
+#include "FrameProcessor.hpp"
+
 #include <random>
+#include <memory>
 
 using namespace std;
 
 class unitTests
 {
   public:
-    static int TestNumberPhotons()
+    /*static int TestNumberPhotons()
     {
-        if (CONFIG != "20 cm Newtonian")
-        {
-            throw "This test should run on 20cm config file!";
-        }
+        //if (CONFIG != "20 cm Newtonian")
+        //{
+        //    throw "This test should run on 20cm config file!";
+        //}
 
         const float altitude = 38.0;
         const float expectedADU = 167274;
@@ -74,7 +79,7 @@ class unitTests
         cout << "Detected photons: " << detectedPhotons << "photons" << endl;
         cout << "Uncertainty in ADU: " << sqrt(detectedPhotons) / GAIN << endl;
         cout << "Expected ADU: " << expectedADU << endl;
-    }
+    }*/
 };
 
 int main()
@@ -83,23 +88,41 @@ int main()
     //unitTests::TestAirmass();
     //unitTests::TestTwinkleMags();
 
-    double expTime = 5.0; //sec
-    double star_fwhm = 4.0;
-    double star_mag = 10.0;
+    double expTime = 1.0; //sec
+    double star_fwhm = 6.0;
+    double star_mag = 11.0;
 
-    Frame *f = new Frame(expTime, FRAME_W, FRAME_H);
-    f->addSource(FRAME_CX, FRAME_CY, star_fwhm, star_fwhm, star_mag);
-    //f->addSource(20, 40, star_fwhm, star_fwhm, star_mag + 2);
-    //f->addSource(850.5, 600, star_fwhm, star_fwhm, star_mag - 2);
+    double totalError = 0;
+    int nruns = 100;
 
-    //f->saveToBitmap("frame.bmp");
-    //f->saveToFile("centroid-v3/frame.csv");
+    Telescope telescope = Twinkle;
 
-    f->generateFrame();
-    //f->PrintSimelArray();
-    //f->Print();
+    for (int i = 0; i < nruns; i++)
+    {
+        std::unique_ptr<Frame> frame = std::make_unique<Frame>(telescope, expTime);
+        //frame->addSource(FRAME_CX, FRAME_CY, star_fwhm, star_fwhm, star_mag);
+        //frame->addSource(20, 40, star_fwhm, star_fwhm, star_mag + 2);
+        frame->addSource(100.3, 100.2, star_fwhm, star_fwhm, star_mag - 2);
 
-    f->saveToFile("centroid-v3/frame.csv");
+        frame->generateFrame();
+        //f->PrintSimelArray();
+        //f->Print();
+        //f->saveToBitmap("frame.bmp");
+        frame->saveToFile("centroid-v3/frame.csv");
+
+        std::unique_ptr<FrameProcessor> fprocessor = std::make_unique<FrameProcessor>(frame->get());
+
+        centroid centroid = fprocessor->momentum();
+        printf("source x: %6.12f; source y: %6.12f\n", telescope.FRAME_CX, telescope.FRAME_CY);
+        printf("cent x: %6.12f; centroid y: %6.12f\n", centroid.x, centroid.y);
+
+        double errorX = (double)telescope.FRAME_CX - centroid.x;
+        double errorY = (double)telescope.FRAME_CY - centroid.y;
+        double totError = std::sqrt(std::pow(errorX, 2) + std::pow(errorY, 2));
+        printf("run n: %d error x: %+2.4f; error y: %+2.4f, tot error: %+2.4f\n", i, errorX, errorY, totError);
+        totalError += errorX;
+    }
+    printf("Total error on average: %f\n", totalError / nruns);
 
     return 0;
 }

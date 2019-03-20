@@ -111,7 +111,7 @@ float Test::airmass(float alt)
 float Test::extinctionInMags(float alt)
 {
 	float z = Test::airmass(alt);
-	return EXTICTION_COEFFICIENT * z;
+	return Twinkle.EXTINCTION_COEFFICIENT * z;
 }
 
 /**
@@ -184,7 +184,7 @@ double Test::photonsInBand(float mag, struct filter flt)
  */
 int Test::mirrorThermalNoise(float area, float temperature)
 {
-	float power = area * emiss * SB_CONST * pow(temperature, 4);
+	float power = area * Twinkle.emiss * SB_CONST * pow(temperature, 4);
 	float wavelength = WIEN / temperature;
 	return power / (PLANCK * 3E8 / wavelength);
 }

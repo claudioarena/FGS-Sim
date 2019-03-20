@@ -9,7 +9,9 @@
 
 #include "Brownian.hpp"
 #include "PSF.hpp"
-#include "Config/parameters.h"
+#include "typedefs.h"
+#include "Config\telescopes.hpp"
+#include "Config\parameters.h"
 
 /**
  * Header file for Test class. Takes a photon matrix, bins it into pixels and calculates its centroid. Currently 
