@@ -102,7 +102,7 @@ int main()
         std::unique_ptr<Frame> frame = std::make_unique<Frame>(telescope, expTime);
         //frame->addSource(FRAME_CX, FRAME_CY, star_fwhm, star_fwhm, star_mag);
         //frame->addSource(20, 40, star_fwhm, star_fwhm, star_mag + 2);
-        frame->addSource(100.3, 100.2, star_fwhm, star_fwhm, star_mag - 2);
+        frame->addSource(500.2, 600.3, star_fwhm, star_fwhm, star_mag - 2);
 
         frame->generateFrame();
         //f->PrintSimelArray();
@@ -113,11 +113,11 @@ int main()
         std::unique_ptr<FrameProcessor> fprocessor = std::make_unique<FrameProcessor>(frame->get());
 
         centroid centroid = fprocessor->momentum();
-        printf("source x: %6.12f; source y: %6.12f\n", telescope.FRAME_CX, telescope.FRAME_CY);
-        printf("cent x: %6.12f; centroid y: %6.12f\n", centroid.x, centroid.y);
+        //printf("source x: %6.12f; source y: %6.12f\n", telescope.FRAME_CX, telescope.FRAME_CY);
+        //printf("cent x: %6.12f; centroid y: %6.12f\n", centroid.x, centroid.y);
 
-        double errorX = (double)telescope.FRAME_CX - centroid.x;
-        double errorY = (double)telescope.FRAME_CY - centroid.y;
+        double errorX = (double)500.2 - centroid.x;
+        double errorY = (double)600.3 - centroid.y;
         double totError = std::sqrt(std::pow(errorX, 2) + std::pow(errorY, 2));
         printf("run n: %d error x: %+2.4f; error y: %+2.4f, tot error: %+2.4f\n", i, errorX, errorY, totError);
         totalError += errorX;
