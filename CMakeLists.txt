@@ -1,0 +1,16 @@
+cmake_minimum_required(VERSION 3.0.0)
+set (CMAKE_CXX_STANDARD 11)
+
+project (TwinkleSIM)
+#enable_testing()
+set (SOURCE src/main.cpp)
+set(EXECUTABLE_OUTPUT_PATH ./bin/${CMAKE_BUILD_TYPE})
+#add_executable (${PROJECT_NAME} ${SOURCE})
+include_directories(${MY_SOURCE_DIR}/src)
+include_directories(${MY_SOURCE_DIR}/include())
+#file(GLOB SOURCES "src/*.cpp")
+add_executable(${PROJECT_NAME} ${SOURCE})
+
+#set(CPACK_PROJECT_NAME ${PROJECT_NAME})
+#set(CPACK_PROJECT_VERSION ${PROJECT_VERSION})
+#include(CPack)

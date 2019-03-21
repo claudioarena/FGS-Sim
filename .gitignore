@@ -1,4 +1,6 @@
-*.exe
-/Zemax
-.vscode
-helloWorld.cpp
+.vscode/
+bin/
+build/
+
+*.fit
+*.fits
