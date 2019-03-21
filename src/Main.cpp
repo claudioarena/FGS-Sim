@@ -10,15 +10,21 @@
  * @author Feiyu Fang
  * @version 3.2.1 2018-03-21
  */
-
-//#include "Config\parameters.h"
+#include "parameters.h"
+#include "telescopes.hpp"
 
 #include <chrono>
 #include <fstream>
 #include <iostream>
 #include <vector>
+#include <iomanip>
+
 //#include "MonteCarlo.hpp"
-//#include <iomanip>
+#include "Frame.hpp"
+#include "FrameProcessor.hpp"
+
+#include <random>
+#include <memory>
 //#include "unitTest.cpp"
 
 /*
@@ -87,7 +93,45 @@ void runFromTSV(ofstream &outputFile, std::string inFileName)
 
 int main()
 {
-	printf("HEllo world");
+	//unitTests::TestNumberPhotons();
+	//unitTests::TestAirmass();
+	//unitTests::TestTwinkleMags();
+
+	double expTime = 1.0; //sec
+	double star_fwhm = 5.0;
+	double star_mag = 13.0;
+
+	double totalError = 0;
+	int nruns = 1;
+
+	Telescope telescope = Twinkle;
+
+	for (int i = 0; i < nruns; i++)
+	{
+		std::unique_ptr<Frame> frame = std::make_unique<Frame>(telescope, expTime);
+		//frame->addSource(FRAME_CX, FRAME_CY, star_fwhm, star_fwhm, star_mag);
+		//frame->addSource(20, 40, star_fwhm, star_fwhm, star_mag + 2);
+		frame->addSource(500.2, 600.3, star_fwhm, star_fwhm, star_mag - 2);
+
+		frame->generateFrame();
+		//f->PrintSimelArray();
+		//f->Print();
+		//f->saveToBitmap("data.bmp");
+		frame->saveToFile("data/frame.csv");
+
+		std::unique_ptr<FrameProcessor> fprocessor = std::make_unique<FrameProcessor>(frame->get());
+
+		centroid centroid = fprocessor->momentum();
+		//printf("source x: %6.12f; source y: %6.12f\n", telescope.FRAME_CX, telescope.FRAME_CY);
+		//printf("cent x: %6.12f; centroid y: %6.12f\n", centroid.x, centroid.y);
+
+		double errorX = (double)500.2 - centroid.x;
+		double errorY = (double)600.3 - centroid.y;
+		double totError = std::sqrt(std::pow(errorX, 2) + std::pow(errorY, 2));
+		printf("run n: %d error x: %+2.4f; error y: %+2.4f, tot error: %+2.4f\n", i, errorX, errorY, totError);
+		totalError += errorX;
+	}
+	printf("Total error on average: %f\n", totalError / nruns);
 
 	return 0;
 }

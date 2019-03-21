@@ -13,7 +13,7 @@
 #include <memory>
 #include "typedefs.h"
 #include "Grid.hpp"
-#include "Config\telescopes.hpp"
+#include "telescopes.hpp"
 
 //#include <boost/shared_ptr.hpp>
 
