@@ -15,15 +15,37 @@ add_executable(${PROJECT_NAME} ${SOURCE})
 #set(CPACK_PROJECT_VERSION ${PROJECT_VERSION})
 #include(CPack)
 
-project (unitTest)
-add_library(Catch INTERFACE)
-target_include_directories(Catch INTERFACE include/catch)
+enable_testing()
+project(basic_test)
 
-set (SOURCE test/catch_test_2.cpp test/catch_test.cpp)
-add_executable(${PROJECT_NAME} ${SOURCE})
-target_link_libraries(${PROJECT_NAME} Catch)
+set(googleTest_Dir ${CMAKE_CURRENT_SOURCE_DIR}/include/googletest)
+if (EXISTS ${googleTest_Dir})
+    SET(GTestSrc ${googleTest_Dir}/googletest)
+    SET(GMockSrc ${googleTest_Dir}/googlemock)
+else ()
+    message(FATAL_ERROR "No googletest src dir found!")
+endif ()
 
-include_directories(test)
-include_directories(include)
-#file(GLOB SOURCES "src/*.cpp")
-#add_executable(${PROJECT_NAME} ${SOURCE})
+include_directories(${GTestSrc} ${GTestSrc}/include ${GMockSrc} ${GMockSrc}/include)
+include_directories(${CMAKE_HOME_DIRECTORY} ${CMAKE_HOME_DIRECTORY}/test)
+
+set(test_HEADERS
+    src/typedefs.h
+)
+set(test_SOURCES
+    test/tests.cpp
+    test/Frame_tester.cpp
+    test/FrameProcessor_tester.cpp
+    src/Frame.cpp
+    src/Test.cpp
+    src/PSF.cpp
+    src/Brownian.cpp
+    src/FrameProcessor.cpp
+)
+
+add_executable(unitTest ${test_SOURCES} ${test_HEADERS} ${GTestSrc}/src/gtest-all.cc ${GMockSrc}/src/gmock-all.cc)
+
+#target_link_libraries(TwinkleFGS_test TwinkleFGS_test)
+
+include_directories(${gtest_SOURCE_DIR}/include ${gtest_SOURCE_DIR})
+add_test( runUnitTests runUnitTests )

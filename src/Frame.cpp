@@ -10,7 +10,7 @@
  * Note that AstroImageJ has a 1 pixel offset, and a different reference system in some modes.
  * MaximDL readout for FWHM is not accurate. ImageJ is.
  */
-
+//TODO: reset frame so we can generate again.
 #include <iostream>
 #include <fstream>
 
