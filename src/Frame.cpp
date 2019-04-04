@@ -19,6 +19,10 @@
 #include <random>
 #include <chrono>
 
+#ifndef M_PI
+#define M_PI 3.14159265358979323846
+#endif
+
 //#define DEBUG
 //#define PRINT_PROB_ARRAY
 //#define PRINT_SOURCE_DATA
@@ -320,7 +324,6 @@ void Frame::calculateGaussian(double cx, double cy, double sigmax, double sigmay
     uint16_t xlim = probMatrix->width();
     uint16_t ylim = probMatrix->height();
     const double A = 100 / (2 * M_PI * sigmax * sigmay);
-
     for (unsigned int y = 0; y < ylim; y++)
     {
         for (unsigned int x = 0; x < xlim; x++)

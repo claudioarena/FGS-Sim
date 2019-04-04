@@ -1,6 +1,13 @@
 .vscode/
 bin/
 build/
+CMakeFiles/
+.exe/
+data/
+spike/
+
+CMakeCache.txt
+workspace.code-workspace
 
 *.fit
 *.fits
