@@ -11,7 +11,7 @@
  * @version 3.2.1 2018-03-21
  */
 #include "parameters.h"
-#include "telescopes.hpp"
+#include "telescopes.h"
 
 #include <chrono>
 #include <fstream>
@@ -59,8 +59,9 @@ void runFromTSV(ofstream &outputFile, std::string inFileName)
 	delete m;
 	outputFile << endl;
 }
+*/
 
-/// Main method. Runs tests for given TSV input files from Zemax.
+// Main method. Runs tests for given TSV input files from Zemax.
 /* int main()
 {
 

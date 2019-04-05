@@ -11,7 +11,7 @@
 #include <vector>
 
 #include "astroUtilities.hpp"
-#include "telescopes.hpp"
+#include "telescopes.h"
 #include "typedefs.h" //used for definition of PI
 
 namespace astroUtilities
@@ -71,6 +71,7 @@ double meanReceivedPhotons(std::vector<double> mags, std::vector<filter> fltrs, 
 
     double expected_photons = photonFlux * telescopeArea * (1 - tel.obstruction_area) * efficieny * expT;
 
+    return expected_photons;
     //TODO: gain and efficiency should be considered as probabilities/distributions!
     //TODO: what about GAIN / ADU?
     ///float detectedADU = expected_photons / tel.GAIN;
@@ -116,7 +117,6 @@ double photonsInBand(std::vector<double> mags, std::vector<filter> fltrs)
  */
 double photonsInBand(double mag, struct filter flt)
 {
-    double pwr = pow(2, 2);
     double m0_photons = (1.51 * (pow(10, 7))) * (flt.zero_point_Jy * (flt.bandWidth / flt.centerBand));
 
     double power = pow(2.512, -1 * mag);

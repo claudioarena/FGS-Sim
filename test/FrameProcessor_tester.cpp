@@ -1,5 +1,5 @@
 #include "parameters.h"
-#include "telescopes.hpp"
+#include "telescopes.h"
 #include "Frame.hpp"
 #include "FrameProcessor.hpp"
 #include "Frame.hpp"

@@ -9,7 +9,7 @@
  */
 
 #pragma once
-#include "telescopes.hpp"
+#include "telescopes.h"
 
 namespace astroUtilities
 {

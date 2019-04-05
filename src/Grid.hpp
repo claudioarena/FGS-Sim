@@ -12,7 +12,7 @@ template <class T>
 class Grid
 {
 public:
-  Grid(unsigned int w = 0, unsigned int h = 0) : w(w), h(h), v(w * h + 1), extraPixPosition(w * h)
+  Grid(unsigned int w = 0, unsigned int h = 0) : w(w), h(h), extraPixPosition(w * h), v(w * h + 1)
   {
 #ifdef DEBUG_MEMORY
     std::cout << "Created Grid " << std::endl;
@@ -51,7 +51,7 @@ public:
     return std::accumulate(v.begin(), v.end(), 0.0);
   }
   void reset() { std::fill(v.begin(), v.end(), 0); }
-  const void clear() const { v.clear(); }
+  void clear() { v.clear(); }
 
   //might need to delete following line.
   std::vector<T> &vector()

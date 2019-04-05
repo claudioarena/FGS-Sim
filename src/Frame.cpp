@@ -158,7 +158,7 @@ void Frame::generateFrame(bool statistical)
 {
     for (uint16_t isrc = 0; isrc < nsources(); isrc++)
     {
-        addSourcePhotons(sources[isrc], isrc);
+        addSourcePhotons(sources[isrc]);
     }
 
     //Transform the simel to the actual frame
@@ -229,14 +229,14 @@ void Frame::saveToBitmap(std::string filename)
         int bits_per_pixels = 24;
         int bytes_per_pixels = 3;
         file.write((char *)(&magic), sizeof(magic));
-        bmpfile_header header = {0};
+        bmpfile_header header;
         header.bmp_offset = sizeof(bmpfile_magic) + sizeof(bmpfile_header) + sizeof(bmpfile_dib_info);
         //3 bytes per pixels, plus bytes needed for packing.
         uint32_t packingSize = ((w * bytes_per_pixels) % 4) * h;
         uint32_t dataSize = w * h * bytes_per_pixels;
         header.file_size = header.bmp_offset + dataSize + packingSize;
         file.write((char *)(&header), sizeof(header));
-        bmpfile_dib_info dib_info = {0};
+        bmpfile_dib_info dib_info;
         dib_info.header_size = sizeof(bmpfile_dib_info);
         dib_info.width = w;
         dib_info.height = h;
@@ -259,10 +259,14 @@ void Frame::saveToBitmap(std::string filename)
 #if FGS_BITS == 8
                 uchar_t pixVal = (uchar_t)fr(x, y);
 #else
-                uchar_t pixVal = (uchar_t)fr(x, y);
-                if (pixVal > 255)
+                uchar_t pixVal;
+                if (fr(x, y) >= 255)
                 {
                     pixVal = 255;
+                }
+                else
+                {
+                    pixVal = (uchar_t)fr(x, y);
                 }
 #endif
                 file.put(pixVal);
@@ -318,15 +322,15 @@ void Frame::setAll(uint16_t value)
 
 void Frame::Print()
 {
-    unsigned int w = fr.width();
-    unsigned int h = fr.height();
+    uint16_t w = fr.width();
+    uint16_t h = fr.height();
     std::cout << "Printing frame values" << std::endl;
     std::cout << "Array Width: " << w << std::endl;
     std::cout << "Array Heigth : " << h << std::endl;
 
-    for (int y = h - 1; y >= 0; y--)
+    for (uint16_t y = h - 1; y == 0; y--)
     {
-        for (int x = 0; x < w; x++)
+        for (uint16_t x = 0; x < w; x++)
         {
             printf("%d \t", fr(x, y));
         }
@@ -337,15 +341,15 @@ void Frame::Print()
 
 void Frame::PrintProbArray(Grid<double> *probMatrixptr, const char *message)
 {
-    unsigned int w = probMatrixptr->width();
-    unsigned int h = probMatrixptr->height();
+    uint16_t w = probMatrixptr->width();
+    uint16_t h = probMatrixptr->height();
     printf("Printing %s probability array values\n", message);
     std::cout << "Array Width: " << w << std::endl;
     std::cout << "Array Heigth : " << h << std::endl;
 
-    for (int y = h - 1; y >= 0; y--)
+    for (uint16_t y = h - 1; y == 0; y--)
     {
-        for (int x = 0; x < w; x++)
+        for (uint16_t x = 0; x < w; x++)
         {
             printf("%4.3f \t", probMatrixptr->operator()(x, y));
         }
@@ -356,15 +360,15 @@ void Frame::PrintProbArray(Grid<double> *probMatrixptr, const char *message)
 
 void Frame::PrintSimelArray()
 {
-    unsigned int w = simfr.width();
-    unsigned int h = simfr.height();
+    uint16_t w = simfr.width();
+    uint16_t h = simfr.height();
     std::cout << "Printing simels values" << std::endl;
     std::cout << "Array Width: " << w << std::endl;
     std::cout << "Array Heigth : " << h << std::endl;
 
-    for (int y = h - 1; y >= 0; y--)
+    for (uint16_t y = h - 1; y == 0; y--)
     {
-        for (int x = 0; x < w; x++)
+        for (uint16_t x = 0; x < w; x++)
         {
             printf("%d \t", simfr(x, y));
         }
@@ -390,12 +394,12 @@ void Frame::calculateGaussian(double cx, double cy, double sigmax, double sigmay
     }
 }
 
-void Frame::addSourcePhotons(source &src, uint16_t isrc)
+void Frame::addSourcePhotons(source &src)
 {
     //Calculate tot photons received from source in this frame
     ulong_t number = src.frame_photons();
 #ifdef DEBUG
-    printf("N. photos for source n. %d in this frame: %d \n", isrc, number);
+    printf("N. photos for source in this frame: %d \n", isrc, number);
 #endif
 
 //Distribute photons
@@ -431,9 +435,9 @@ void Frame::simelsToFrame(bool statistical)
         calculateGaussian(src.cx, src.cy, src.fwhm_x / 2.3585, src.fwhm_y / 2.3585, tempMatrixPtr);
         const double A = 100 / (2 * M_PI * src.fwhm_x * src.fwhm_y);
 
-        for (unsigned int y = 0; y < h; y++)
+        for (uint16_t y = 0; y < h; y++)
         {
-            for (unsigned int x = 0; x < w; x++)
+            for (uint16_t x = 0; x < w; x++)
             {
                 fr(x, y) = (uint32_t)(tempMatrix(x, y) * (50000.0 / A));
             }
@@ -441,12 +445,12 @@ void Frame::simelsToFrame(bool statistical)
     }
     else
     {
-        for (unsigned int y = 0; y < h; y++)
+        for (uint16_t y = 0; y < h; y++)
         {
-            for (unsigned int x = 0; x < w; x++)
+            for (uint16_t x = 0; x < w; x++)
             { //Loop through image
                 uint64_t pixVal = 0;
-                for (unsigned int simy = y * tel.SIMELS; simy < y * tel.SIMELS + tel.SIMELS; simy++)
+                for (uint16_t simy = y * tel.SIMELS; simy < y * tel.SIMELS + tel.SIMELS; simy++)
                 {
                     for (int simx = x * tel.SIMELS; simx < x * tel.SIMELS + tel.SIMELS; simx++)
                     { //Loop through simels for selected pixel

@@ -29,7 +29,7 @@ const uint32_t &FrameProcessor::operator()(unsigned int x, unsigned int y) const
     return frame->operator()(x, y);
 }
 
-const uint64_t FrameProcessor::total() const
+uint64_t FrameProcessor::total() const
 {
     return std::accumulate(frame->begin(), frame->end(), 0);
 }

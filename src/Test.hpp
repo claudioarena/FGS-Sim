@@ -10,7 +10,7 @@
 #include "Brownian.hpp"
 #include "PSF.hpp"
 #include "typedefs.h"
-#include "telescopes.hpp"
+#include "telescopes.h"
 #include "parameters.h"
 
 /**

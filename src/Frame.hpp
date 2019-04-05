@@ -14,7 +14,7 @@
 
 #include "typedefs.h"
 #include "Grid.hpp"
-#include "telescopes.hpp"
+#include "telescopes.h"
 
 //#include <boost/shared_ptr.hpp>
 
@@ -116,17 +116,17 @@ public:
   }
 
 private:
+  Telescope tel;
   double mag, t;
   bool saturated = false;
-  Telescope tel;
 
   std::vector<source> sources;
-  int h, w, hsim, wsim;
+  uint16_t h, w, hsim, wsim;
   Grid<uint32_t> simfr, fr;
 
   uint16_t nsources() { return sources.size(); }
   void calculateGaussian(double cx, double cy, double sigmax, double sigmay, Grid<double> *probMatrix);
   void PrintProbArray(Grid<double> *probMatrixptr, const char *message);
   void simelsToFrame(bool statistical = true);
-  void addSourcePhotons(source &src, uint16_t isrc);
+  void addSourcePhotons(source &src);
 };

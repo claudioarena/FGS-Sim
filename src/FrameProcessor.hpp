@@ -25,7 +25,7 @@ public:
   ~FrameProcessor();
   const centroid momentum() const;
 
-  const uint64_t total() const;
+  uint64_t total() const;
   const std::vector<uint64_t> sumVertical() const;
   const std::vector<uint64_t> sumVertical(uint16_t initialPos, uint16_t finalPos) const;
   const std::vector<uint64_t> sumHorizontal() const;
