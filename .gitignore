@@ -16,3 +16,4 @@ CMakeCache.txt
 src/tempCodeRunnerFile.cpp
 data/frame.csv
 workspace.code-workspace
+**/tempCodeRunnerFile.*
