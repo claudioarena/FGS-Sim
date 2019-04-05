@@ -50,6 +50,8 @@ public:
   {
     return std::accumulate(v.begin(), v.end(), 0.0);
   }
+  void reset() { std::fill(v.begin(), v.end(), 0); }
+  const void clear() const { v.clear(); }
 
   //might need to delete following line.
   std::vector<T> &vector()

@@ -2,6 +2,7 @@
 #include <cmath>
 #include "typedefs.h"
 #include <string>
+#include <vector>
 
 //define filter properties
 struct filter
@@ -13,7 +14,7 @@ struct filter
 const struct filter B_filter = {440, 96.8, 4260};
 const struct filter V_filter = {550, 88, 3640};
 const struct filter R_filter = {640, 147.2, 3080};
-const struct filter IntegratedVisual_filter = {550, 350, 3640};
+//const struct filter IntegratedVisual_filter = {550, 350, 3640};
 
 struct Telescope
 {
@@ -41,8 +42,7 @@ struct Telescope
     const uint32_t FGS_MAX_ADU;
 
     const double emiss; // Mirror emissivity
-    const struct filter FGS_filter;
-
+    const std::vector<filter> FGS_filter;
     const double obstruction_area; // 0-100 % -> 0-1. In percentage area of primary mirror
     const double mirrorEfficiency; // 0-1 coating reflecting efficiency, averaged over wavelength range
 };
@@ -67,7 +67,7 @@ const Telescope Twinkle = {
     //.FGS_BITS = 8,
     .FGS_MAX_ADU = (uint32_t)pow(2, Twinkle.FGS_BITS) - 1,
     .emiss = 0.02, // Mirror emissivity
-    .FGS_filter = B_filter,
+    .FGS_filter = {B_filter, V_filter, R_filter},
     .obstruction_area = pow(Twinkle.SECONDARY_DIAMETER, 2) / pow(Twinkle.DIAMETER, 2), // 0-100 % -> 0-1. In percentage area of primary mirror
     .mirrorEfficiency = pow(Twinkle.COATING_REFLECTIVITY, Twinkle.N_MIRRORS_TO_CAMERA)
 
@@ -92,7 +92,7 @@ const Telescope TwentyCm = {
     //.FGS_BITS = 8,
     .FGS_MAX_ADU = (uint32_t)pow(2, Twinkle.FGS_BITS) - 1,
     .emiss = 0.02, // Mirror emissivity
-    .FGS_filter = IntegratedVisual_filter,
+    .FGS_filter = {B_filter, V_filter, R_filter},
     .obstruction_area = pow(Twinkle.SECONDARY_DIAMETER, 2) / pow(Twinkle.DIAMETER, 2), // 0-100 % -> 0-1. In percentage area of primary mirror
     .mirrorEfficiency = pow(Twinkle.COATING_REFLECTIVITY, Twinkle.N_MIRRORS_TO_CAMERA)
 

@@ -23,7 +23,6 @@
 #include "Frame.hpp"
 #include "FrameProcessor.hpp"
 
-#include <random>
 #include <memory>
 //#include "unitTest.cpp"
 
@@ -93,10 +92,7 @@ void runFromTSV(ofstream &outputFile, std::string inFileName)
 
 int main()
 {
-	//unitTests::TestNumberPhotons();
-	//unitTests::TestAirmass();
-	//unitTests::TestTwinkleMags();
-
+	/*
 	double expTime = 1.0; //sec
 	double star_fwhm = 5.0;
 	double star_mag = 13.0;
@@ -132,6 +128,8 @@ int main()
 		totalError += errorX;
 	}
 	printf("Total error on average: %f\n", totalError / nruns);
+
+*/
 
 	return 0;
 }

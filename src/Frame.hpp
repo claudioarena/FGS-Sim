@@ -11,6 +11,7 @@
 #include <random>
 #include <chrono>
 #include <memory>
+
 #include "typedefs.h"
 #include "Grid.hpp"
 #include "telescopes.hpp"
@@ -85,24 +86,23 @@ public:
 
   ~Frame();
 
-  uint32_t &operator()(unsigned int x, unsigned int y);
-  const uint32_t &operator()(unsigned int x, unsigned int y) const;
+  uint32_t &operator()(uint16_t x, uint16_t y);
+  const uint32_t &operator()(uint16_t x, uint16_t y) const;
 
   //Redirect first method to second, generic one
-  void addSource(double cx, double cy, double fwhm_x, double fwhm_y, double magnitude)
-  {
-    addSource(cx, cy, fwhm_x, fwhm_y, magnitude, magnitude, magnitude);
-  }
-  void addSource(double cx, double cy, double fwhm_x, double fwhm_y, double magB, double magV, double magR);
+  void addSource(double cx, double cy, double fwhm_x, double fwhm_y, double magnitude);
+  void addSource(double cx, double cy, double fwhm_x, double fwhm_y, std::vector<double> mags);
 
   void generateFrame(bool statistical = true);
+  void reset();
 
   void saveToBitmap(std::string filename);
   void saveToFile(std::string filename);
-  void setAll(unsigned int value);
   void Print();
   void PrintSimelArray();
-  void makeUniformFrame(uint16_t val);
+
+  void set(uint16_t initialX, uint16_t finalX, uint16_t initialY, uint16_t finalY, uint16_t value);
+  void setAll(uint16_t value);
 
   bool isSaturated() { return saturated; };
   //std::shared_ptr<int> const get() const { return std::shared_ptr<}

@@ -3,7 +3,14 @@ set (CMAKE_CXX_STANDARD 20)
 
 project (TwinkleSIM)
 #enable_testing()
-set (SOURCE src/main.cpp src/Frame.cpp src/FrameProcessor.cpp src/Test.cpp src/PSF.cpp src/Brownian.cpp)
+set (SOURCE 
+src/main.cpp 
+src/Frame.cpp 
+src/FrameProcessor.cpp 
+src/Test.cpp 
+src/astroUtilities.cpp
+src/PSF.cpp 
+src/Brownian.cpp)
 set(EXECUTABLE_OUTPUT_PATH ../bin/${CMAKE_BUILD_TYPE})
 #add_executable (${PROJECT_NAME} ${SOURCE})
 include_directories(src)
@@ -38,6 +45,7 @@ set(test_SOURCES
     test/FrameProcessor_tester.cpp
     src/Frame.cpp
     src/Test.cpp
+    src/astroUtilities.cpp
     src/PSF.cpp
     src/Brownian.cpp
     src/FrameProcessor.cpp

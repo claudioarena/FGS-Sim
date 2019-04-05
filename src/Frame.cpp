@@ -13,15 +13,13 @@
 //TODO: reset frame so we can generate again.
 #include <iostream>
 #include <fstream>
+#include <random>
+#include <chrono>
+#include <vector>
 
 #include "Frame.hpp"
 #include "Test.hpp"
-#include <random>
-#include <chrono>
-
-#ifndef M_PI
-#define M_PI 3.14159265358979323846
-#endif
+#include "astroUtilities.hpp"
 
 //#define DEBUG
 //#define PRINT_PROB_ARRAY
@@ -44,8 +42,10 @@ Frame::Frame(Telescope _tel, double _expTime)
     fr.resize(w, h);
     simfr.resize(wsim, hsim);
     sources.reserve(10);
+
 #ifdef DEBUG_MEMORY
-    std::cout << "Created Frame " << std::endl;
+    std::cout
+        << "Created Frame " << std::endl;
 #endif
 }
 
@@ -56,11 +56,11 @@ Frame::~Frame()
 #endif
 }
 
-uint32_t &Frame::operator()(unsigned int x, unsigned int y)
+uint32_t &Frame::operator()(uint16_t x, uint16_t y)
 {
     return fr(x, y);
 }
-const uint32_t &Frame::operator()(unsigned int x, unsigned int y) const
+const uint32_t &Frame::operator()(uint16_t x, uint16_t y) const
 {
     return fr(x, y);
 }
@@ -70,13 +70,33 @@ const uint32_t &Frame::operator()(unsigned int x, unsigned int y) const
  *
  * @param cx X-coordinate for source centre
  * @param cy Y-coordinate for source centre
- * @param wx source size in x direction. For gaussina source, this is the standard deviation of the Gaussian in the x direction.
- * @param wx source size in y direction. For gaussina source, this is the standard deviation of the Gaussian in the y direction.
+ * @param fwhm_x source size in x direction.
+ * @param fwhm_x source size in y direction.
+ * @param mags value of mag for target. This will be used for each filter in your telescope set.
  */
-void Frame::addSource(double cx, double cy, double fwhm_x, double fwhm_y, double magB, double magV, double magR)
+void Frame::addSource(double cx, double cy, double fwhm_x, double fwhm_y, double magnitude)
+{
+    uint16_t nfilters = tel.FGS_filter.size();
+    std::vector<double> mags;
+    mags.resize(nfilters);
+    std::fill(mags.begin(), mags.end(), magnitude);
+    addSource(cx, cy, fwhm_x, fwhm_y, mags);
+}
+
+/**
+ * Add source to a Frame object to generate image data arrays. Source can be either a Guassian or a PSF, depending on what is defined in the parameters file.
+ *
+ * @param cx X-coordinate for source centre
+ * @param cy Y-coordinate for source centre
+ * @param fwhm_x source size in x direction.
+ * @param fwhm_x source size in y direction.
+ * @param mags array with target magnitudes. Make sure to have matching magnitudes with your telescope filter set.
+ */
+void Frame::addSource(double cx, double cy, double fwhm_x, double fwhm_y, std::vector<double> mags)
 {
     //add a source to the list of sources. Make a temporary prob matrix.
     sources.emplace_back();
+
     source *src = &sources[nsources() - 1];
     Grid<double> tempProbMatrix(wsim, hsim);
     Grid<double> *probMatrix = &tempProbMatrix;
@@ -85,12 +105,16 @@ void Frame::addSource(double cx, double cy, double fwhm_x, double fwhm_y, double
     printf("size of source array: %u \n", nsources());
 #endif
 
-    std::vector<double> mags{magB, magV, magR};
-    std::vector<struct filter> fltrs{B_filter, V_filter, R_filter};
-    double telescopeArea = M_PI * pow((tel.DIAMETER / 1000.0) / 2.0, 2);
+    if (tel.FGS_filter.size() != mags.size())
+    {
+        printf("Numbers of supplied mags doesn't match number of telescope filters!!");
+        double refMag = mags.at(0);
+        mags.resize(tel.FGS_filter.size());
+        std::fill(mags.begin(), mags.end(), refMag);
+    }
 
-    src->expected_photons = Test::photonsInAllBands(mags, fltrs) * telescopeArea * (1 - tel.obstruction_area) * tel.mirrorEfficiency * tel.CCD_EFFICIENCY * t;
-    float detectedADU = src->expected_photons / tel.GAIN;
+    src->expected_photons = astroUtilities::meanReceivedPhotons(mags, (tel.FGS_filter), t, tel);
+
     src->cx = cx;
     src->cy = cy;
     src->fwhm_x = fwhm_x;
@@ -147,6 +171,13 @@ void Frame::generateFrame(bool statistical)
     printf("Total photons outside frame: %d\n", outside_photons);
     printf("Saturated: %s\n", (isSaturated() ? "Yes" : "No"));
 #endif
+}
+
+void Frame::reset()
+{
+    sources.clear();
+    fr.reset();
+    simfr.reset();
 }
 
 void Frame::saveToFile(std::string filename)
@@ -251,8 +282,31 @@ void Frame::saveToBitmap(std::string filename)
     }
 }
 
-void Frame::setAll(unsigned int value)
+void Frame::set(uint16_t initialX, uint16_t finalX, uint16_t initialY, uint16_t finalY, uint16_t value)
 {
+    if (finalX >= w)
+    {
+        finalX = w - 1;
+    }
+
+    if (finalY >= h)
+    {
+        finalY = h - 1;
+    }
+
+    for (int i = initialY; i <= finalY; i++)
+    {
+        for (int j = initialX; j <= finalX; j++)
+        {
+            (*this)(j, i) = value;
+        }
+    }
+}
+
+void Frame::setAll(uint16_t value)
+{
+    set(0, w - 1, 0, h - 1, value);
+
     for (int i = 0; i < h; i++)
     {
         for (int j = 0; j < w; j++)
@@ -365,17 +419,6 @@ void Frame::addSourcePhotons(source &src, uint16_t isrc)
     printf("Total photons in simel array: %f \n", std::accumulate(simfr.begin(), simfr.end(), 0.0));
     printf("Total photons outside simel array: %f \n\n", simfr[simfr.extraPixPos()]);
 #endif
-}
-
-void Frame::makeUniformFrame(uint16_t val)
-{
-    for (uint16_t x = 0; x < w; x++)
-    {
-        for (uint16_t y = 0; y < h; y++)
-        {
-            fr(x, y) = val;
-        }
-    }
 }
 
 void Frame::simelsToFrame(bool statistical)
