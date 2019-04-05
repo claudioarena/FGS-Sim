@@ -9,12 +9,10 @@ data/
 spike/
 test/Testing/
 
-CMakeCache.txt
-workspace.code-workspace
-
 *.fit
 *.fits
 
+CMakeCache.txt
 src/tempCodeRunnerFile.cpp
 data/frame.csv
 workspace.code-workspace
