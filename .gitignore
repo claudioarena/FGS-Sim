@@ -1,13 +1,20 @@
 .vscode/
+.pytest_cache/
+
 bin/
 build/
 CMakeFiles/
 .exe/
 data/
 spike/
+test/Testing/
 
 CMakeCache.txt
 workspace.code-workspace
 
 *.fit
 *.fits
+
+src/tempCodeRunnerFile.cpp
+data/frame.csv
+workspace.code-workspace

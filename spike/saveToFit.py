@@ -21,6 +21,5 @@ def main():
         # hdu.append(fits.PrimaryHDU(image))
         hdu.writeto("data/frame.fit", overwrite="true")
 
-
 if __name__ == "__main__":
     main()

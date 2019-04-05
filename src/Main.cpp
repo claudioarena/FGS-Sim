@@ -93,13 +93,12 @@ void runFromTSV(ofstream &outputFile, std::string inFileName)
 
 int main()
 {
-	/*
 	double expTime = 1.0; //sec
 	double star_fwhm = 5.0;
 	double star_mag = 13.0;
 
 	double totalError = 0;
-	int nruns = 1;
+	int nruns = 10;
 
 	Telescope telescope = Twinkle;
 
@@ -129,8 +128,6 @@ int main()
 		totalError += errorX;
 	}
 	printf("Total error on average: %f\n", totalError / nruns);
-
-*/
 
 	return 0;
 }

@@ -61,8 +61,8 @@ TEST(FrameProcessor, centroid_statistical)
 {
     star_mag = 10.0;
     checkCentroid(Twinkle.FRAME_CX, Twinkle.FRAME_CY, 0.01, true);
-    checkCentroid(100.3, 300.8, 0.01, true);
-    checkCentroid(800.0, 600.0, 0.01, true);
+    checkCentroid(100.3, 300.8, 0.02, true);
+    checkCentroid(800.0, 600.0, 0.02, true);
 }
 
 TEST(astroUtilities, airMass)
