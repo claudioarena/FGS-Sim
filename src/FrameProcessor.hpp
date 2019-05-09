@@ -14,6 +14,12 @@
 class FrameProcessor
 {
 public:
+  enum backgroundMethod : uint8_t
+  {
+    Random_Global,
+    Border
+  };
+
   //Main constructor
   FrameProcessor(const Grid<uint32_t> *const _frame) : frame(_frame)
   {
@@ -23,15 +29,31 @@ public:
   };
 
   ~FrameProcessor();
-  const centroid momentum() const;
+  const static pixel_coordinates momentum(const Grid<uint32_t> *fr, uint16_t threshold = 0);
+  const pixel_coordinates momentum(uint16_t threshold = 0) const;
 
-  uint64_t total() const;
-  const std::vector<uint64_t> sumVertical() const;
-  const std::vector<uint64_t> sumVertical(uint16_t initialPos, uint16_t finalPos) const;
-  const std::vector<uint64_t> sumHorizontal() const;
-  const std::vector<uint64_t> sumHorizontal(uint16_t initialPos, uint16_t finalPos) const;
+  const static pixel_coordinates initial_guess_momentum(const Grid<uint32_t> *fr, uint16_t sigma_threshold = 4);
+  const pixel_coordinates initial_guess_momentum(uint16_t sigma_threshold = 4) const;
+
+  const pixel_coordinates multiple_guess_momentum(uint16_t minWindowsSize, uint16_t sigma_threshold) const;
+  const static pixel_coordinates multiple_guess_momentum(const Grid<uint32_t> *fr, uint16_t minWindowsSize, uint16_t sigma_threshold);
+
+  uint64_t static total(const Grid<uint32_t> *fr, uint16_t threshold = 0);
+  uint64_t total(uint16_t threshold = 0) const;
+
+  const std::vector<uint64_t> sumVertical(uint16_t threshold = 0) const;
+  const std::vector<uint64_t> sumVertical(uint16_t initialPos, uint16_t finalPos, uint16_t threshold = 0) const;
+  const static std::vector<uint64_t> sumVertical(const Grid<uint32_t> *fr, uint16_t threshold = 0);
+  const static std::vector<uint64_t> sumVertical(const Grid<uint32_t> *fr, uint16_t initialPos, uint16_t finalPos, uint16_t threshold = 0);
+
+  const std::vector<uint64_t> sumHorizontal(uint16_t threshold = 0) const;
+  const std::vector<uint64_t> sumHorizontal(uint16_t initialPos, uint16_t finalPos, uint16_t threshold = 0) const;
+  const static std::vector<uint64_t> sumHorizontal(const Grid<uint32_t> *fr, uint16_t threshold = 0);
+  const static std::vector<uint64_t> sumHorizontal(const Grid<uint32_t> *fr, uint16_t initialPos, uint16_t finalPos, uint16_t threshold = 0);
 
   const uint32_t &operator()(unsigned int x, unsigned int y) const;
+  const double backgroundLevel(uint8_t method = Random_Global) const;
+  const static double backgroundLevel(const Grid<uint32_t> *fr, uint8_t method = Random_Global);
 
 private:
   const Grid<uint32_t> *frame;

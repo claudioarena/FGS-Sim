@@ -15,8 +15,8 @@ set(EXECUTABLE_OUTPUT_PATH ../bin/${CMAKE_BUILD_TYPE})
 #add_executable (${PROJECT_NAME} ${SOURCE})
 include_directories(src)
 include_directories(include)
-
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -O2 -g -ggdb -Wall -Wextra")
+#TODO: RE-ENABLE optimization
+#set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -O2 -g -ggdb -Wall -Wextra")
 #set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -O2 -g -ggdb -Wall -pedantic -Wextra")
 
 #file(GLOB SOURCES "src/*.cpp")
@@ -28,7 +28,8 @@ add_executable(${PROJECT_NAME} ${SOURCE})
 
 enable_testing()
 project(basic_test)
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -O2 -g -ggdb -Wall")
+#TODO: RE-ENABLE optimization
+#set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -O2 -g -ggdb -Wall")
 
 set(googleTest_Dir ${CMAKE_CURRENT_SOURCE_DIR}/include/googletest)
 if (EXISTS ${googleTest_Dir})

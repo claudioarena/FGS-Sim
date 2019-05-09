@@ -33,18 +33,16 @@ struct Telescope
 
     const uint16_t FRAME_W;
     const uint16_t FRAME_H;
-    const double FRAME_CX;
-    const double FRAME_CY;
     //#define SOURCE_TYPE GAUSSIAN
     //#define SOURCE_TYPE PSF
     //#define FGS_BITS 8
     const uint16_t FGS_BITS;
     const uint32_t FGS_MAX_ADU;
-
-    const double emiss; // Mirror emissivity
+    const double DARK_NOISE;    // e/s/pix at 0C
+    const double READOUT_NOISE; // e/pix
+    const double CCD_TEMP;      // in K
+    const double emiss;         // Mirror emissivity
     const std::vector<filter> FGS_filter;
-    const double obstruction_area; // 0-100 % -> 0-1. In percentage area of primary mirror
-    const double mirrorEfficiency; // 0-1 coating reflecting efficiency, averaged over wavelength range
 };
 
 const Telescope Twinkle = {
@@ -55,22 +53,19 @@ const Telescope Twinkle = {
     .EXTINCTION_COEFFICIENT = 0.0, //in space
     .N_MIRRORS_TO_CAMERA = 5.0,    //M1, M2, fold, M3, FGS_M
     .COATING_REFLECTIVITY = 0.94,  //Al
-
-    .SECONDARY_DIAMETER = 85.0, //mm
-    .CCD_EFFICIENCY = 0.65,     //Average in bandpass
-    .GAIN = 1.0,                //e- / ADU
-    .FRAME_W = 1280,
-    .FRAME_H = 1024,
-    .FRAME_CX = (Twinkle.FRAME_W / 2.0) + 0.5,
-    .FRAME_CY = (Twinkle.FRAME_H / 2.0) + 0.5,
+    .SECONDARY_DIAMETER = 85.0,    //mm
+    .CCD_EFFICIENCY = 0.65,        //Average in bandpass
+    .GAIN = 1.0,                   //e- / ADU
+    .FRAME_W = 1391,
+    .FRAME_H = 1039,
     .FGS_BITS = 16,
-    //.FGS_BITS = 8,
     .FGS_MAX_ADU = (uint32_t)pow(2, Twinkle.FGS_BITS) - 1,
+    .DARK_NOISE = 0.1,
+    .READOUT_NOISE = 4.029,
+    .CCD_TEMP = 70,
+    //.FGS_BITS = 8,
     .emiss = 0.02, // Mirror emissivity
     .FGS_filter = {B_filter, V_filter, R_filter},
-    .obstruction_area = pow(Twinkle.SECONDARY_DIAMETER, 2) / pow(Twinkle.DIAMETER, 2), // 0-100 % -> 0-1. In percentage area of primary mirror
-    .mirrorEfficiency = pow(Twinkle.COATING_REFLECTIVITY, Twinkle.N_MIRRORS_TO_CAMERA)
-
 };
 
 const Telescope TwentyCm = {
@@ -86,15 +81,14 @@ const Telescope TwentyCm = {
     .GAIN = 0.267,                  //e- / ADU
     .FRAME_W = 1280,
     .FRAME_H = 1024,
-    .FRAME_CX = (TwentyCm.FRAME_W / 2.0) + 0.5,
-    .FRAME_CY = (TwentyCm.FRAME_H / 2.0) + 0.5,
     .FGS_BITS = 16,
+    .FGS_MAX_ADU = (uint32_t)pow(2, TwentyCm.FGS_BITS) - 1,
+    .DARK_NOISE = 0.1,
+    .READOUT_NOISE = 4,
+    .CCD_TEMP = 273,
     //.FGS_BITS = 8,
-    .FGS_MAX_ADU = (uint32_t)pow(2, Twinkle.FGS_BITS) - 1,
     .emiss = 0.02, // Mirror emissivity
     .FGS_filter = {B_filter, V_filter, R_filter},
-    .obstruction_area = pow(Twinkle.SECONDARY_DIAMETER, 2) / pow(Twinkle.DIAMETER, 2), // 0-100 % -> 0-1. In percentage area of primary mirror
-    .mirrorEfficiency = pow(Twinkle.COATING_REFLECTIVITY, Twinkle.N_MIRRORS_TO_CAMERA)
 
 };
 /*

@@ -75,53 +75,6 @@ MonteCarlo::~MonteCarlo()
 }
 
 /**
- * Private static function to return the total number of photons in a pixel grid, either of pixels or simels.
- *
- * @param matrix The pixel grid in a 2d int vector
- * @return Total number of photons in the inputted matrix
- */
-int MonteCarlo::sumPhotons(vector<vector<int>> matrix)
-{
-
-	int sum = 0;
-	for (vector<int> v : matrix)
-	{
-		for (int i : v)
-			sum += i;
-	} // Could use std::accumulate or std::for_each instead
-	return sum;
-}
-
-/**
- * Private static function to calculate average of the elements in a vector<float>
- * @brief Calculates the average of numbers held in a vector
- * @param in A vector<float> containing the integers whose average is to be found
- * @return Average number
- */
-float MonteCarlo::average(vector<float> in)
-{
-
-	float sum = accumulate(in.begin(), in.end(), 0.);
-	return (sum / in.size());
-}
-
-/**
- * Private static function to calculate the standard deviation of a vector of floats
- * @brief Calculates the standard deviation of numbers held in a vector
- * @param in A vector<float> containing the numbers whose SD is to be found
- * @return Standard deviation
- */
-float MonteCarlo::stdDev(vector<float> in)
-{
-
-	float mean = average(in);
-	float accum = 0.0;
-	for_each(begin(in), end(in), [&](const float d) { accum += (d - mean) * (d - mean); });
-
-	return sqrt(accum / (in.size() - 1));
-}
-
-/**
  * Run Monte Carlo simulation for star at a given position within a pixel with a given magnitude, running for n times
  * 
  * @brief Run Monte Carlo simulation

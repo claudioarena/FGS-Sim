@@ -66,15 +66,30 @@ double extinctionInPercentage(double alt, double extinction_coefficient)
 double meanReceivedPhotons(std::vector<double> mags, std::vector<filter> fltrs, double expT, Telescope tel)
 {
     double telescopeArea = M_PI * pow((tel.DIAMETER / 1000.0) / 2.0, 2);
-    double efficieny = tel.mirrorEfficiency * tel.CCD_EFFICIENCY;
+    double totReflectivity = astroUtilities::reflectionEfficiency(tel.COATING_REFLECTIVITY, tel.N_MIRRORS_TO_CAMERA);
+    double efficieny = totReflectivity * tel.CCD_EFFICIENCY;
     double photonFlux = astroUtilities::photonsInBand(mags, fltrs);
 
-    double expected_photons = photonFlux * telescopeArea * (1 - tel.obstruction_area) * efficieny * expT;
+    double obstructionPercentage = astroUtilities::obstructionPercentage(tel.DIAMETER, tel.SECONDARY_DIAMETER);
+    double expected_photons = photonFlux * telescopeArea * (1 - obstructionPercentage) * efficieny * expT;
 
     return expected_photons;
     //TODO: gain and efficiency should be considered as probabilities/distributions!
     //TODO: what about GAIN / ADU?
     ///float detectedADU = expected_photons / tel.GAIN;
+}
+
+/**
+ * function to find the number of ADUs per second, received on a telescope sensor
+ * @brief Finds the number of photons per second for a given band combination and magnitude. 
+ * @param mag Band-magnitudes vector of the star
+ * @param band Spectral bands vectors. Elements are filter structs.
+ * @return Number of photons from a star in the given bands per second
+ */
+
+double meanReceivedADUs(std::vector<double> mags, std::vector<filter> fltrs, double expT, Telescope tel)
+{
+    return meanReceivedPhotons(mags, fltrs, expT, tel) * tel.GAIN;
 }
 
 /**
@@ -122,6 +137,48 @@ double photonsInBand(double mag, struct filter flt)
     double power = pow(2.512, -1 * mag);
     double photons = power * m0_photons; // Photons per second, per m-2
     return photons;
+}
+
+/**
+ * function returning the coordinates of the center of the frame.
+ *
+ * @brief Finds the coordinates of the center of the frame
+ * @param heigth The Heigth of the frame
+ * @param width The Width of the frame
+ * @return Coordinates of the center of the frame, returned as a pixel_coordinates struct
+ */
+pixel_coordinates frameCenter(uint16_t width, uint16_t heigth)
+{
+    pixel_coordinates center = {(width / 2.0) - 0.5, (heigth / 2.0) - 0.5};
+    return center;
+};
+
+/**
+ * function returning the obstruction, as a percentage of telescope opening area
+ *
+ * @brief Finds the obsctruction of the telescope
+ * @param telescopeDiameter Diameter of the telescope, in mm
+ * @param secondaryDiameter Diameter of the secondary mirror, in mm. Assumes projection of secondary on the aperture is circular
+ * @return Obstruction area, in percentage from 0 to 1 (1: completely obstructed)
+ */
+double obstructionPercentage(double telescopeDiameter, double secondaryDiameter)
+{
+    double obs_area = pow(secondaryDiameter, 2) / pow(telescopeDiameter, 2);
+    return obs_area;
+}
+
+/**
+ * function returning the total reflection efficiency of the telescope.
+ *
+ * @brief Finds the efficiency of all combined reflections in the telescope
+ * @param coatingReflectivity Coating efficiency from 0 to 1. 1 is a perfect mirror.
+ * @param NMirrors Number of mirrors the beam reflects on before reaching the camera
+ * @return Reflective efficiency, in percentage from 0 to 1. 1: all light reflected
+ */
+double reflectionEfficiency(double coatingReflectivity, uint8_t NMirrors)
+{
+    double totReflectivity = pow(coatingReflectivity, NMirrors);
+    return totReflectivity;
 }
 
 } // namespace astroUtilities

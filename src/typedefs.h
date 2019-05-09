@@ -11,7 +11,7 @@ typedef signed int int32_t;
 typedef signed short int int16_t;
 typedef unsigned long ulong_t;
 
-struct centroid
+struct pixel_coordinates
 {
     double x, y;
 };
