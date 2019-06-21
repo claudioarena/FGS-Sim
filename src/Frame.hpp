@@ -138,7 +138,7 @@ private:
   ulong_t pixel_biasCounts() { return biasCounts(bias_generator); }
 
   std::vector<source> sources;
-  uint16_t h, w, hsim, wsim;
+  uint32_t h, w, hsim, wsim;
   Grid<uint32_t> simfr, fr;
 
   uint16_t nsources() { return sources.size(); }

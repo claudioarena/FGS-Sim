@@ -11,7 +11,7 @@
 #include <iostream>
 #include <random>
 #include <chrono>
-
+#include "astroUtilities.hpp"
 #include "FrameProcessor.hpp"
 #define DEBUG
 
@@ -167,48 +167,90 @@ const std::vector<uint64_t> FrameProcessor::FrameProcessor::sumHorizontal(const 
     return horizontalVect;
 }
 
-const pixel_coordinates FrameProcessor::initial_guess_momentum(const Grid<uint32_t> *fr, uint16_t sigma_threshold)
+const pixel_coordinates FrameProcessor::initial_guess_momentum(const Grid<uint32_t> *fr, uint16_t sigma_threshold, uint8_t background_method)
 {
-    uint16_t background = backgroundLevel(fr, FrameProcessor::Random_Global);
+    double background = backgroundLevel(fr, background_method);
     //TODO: change with proper stDev
-    uint16_t stDev = sqrt(background);
-    pixel_coordinates guess = momentum(fr, sigma_threshold * stDev);
+    double stDev = sqrt(background);
+    uint16_t threshold = round(background + (sigma_threshold * stDev));
+    pixel_coordinates guess = momentum(fr, threshold);
     return guess;
 }
 
-const pixel_coordinates FrameProcessor::initial_guess_momentum(uint16_t sigma_threshold) const
+const pixel_coordinates FrameProcessor::initial_guess_momentum(uint16_t sigma_threshold, uint8_t background_method) const
 {
-    return initial_guess_momentum(frame, sigma_threshold);
+    return initial_guess_momentum(frame, sigma_threshold, background_method);
 }
 
-const pixel_coordinates FrameProcessor::multiple_guess_momentum(const Grid<uint32_t> *fr, uint16_t minWindowsSize, uint16_t sigma_threshold)
+//Main method to find centroid, from whole frame to accurate guess
+const pixel_coordinates FrameProcessor::multiple_guess_momentum(const Grid<uint32_t> *fr, uint16_t minWindowSize, uint16_t sigma_threshold, uint16_t sigma_threshold_final)
 {
     Grid<uint32_t> subframe = (*fr);
 
     uint16_t newWidth = subframe.width();
     uint16_t newHeight = subframe.height();
     uint16_t offsetX = 0, offsetY = 0;
+    pixel_coordinates guess;
 
     //find center and keep halving the size
-    while (newWidth >= (minWindowsSize * 2) && newHeight >= (minWindowsSize * 2))
+    while (newWidth >= (minWindowSize * 2) && newHeight >= (minWindowSize * 2))
     {
-        pixel_coordinates guess = initial_guess_momentum(&subframe, sigma_threshold);
+        uint8_t method = Random_Global;
+        if ((newWidth <= minWindowSize * 6) || (newHeight <= minWindowSize * 6))
+        {
+            method = Border;
+        }
+
+        guess = initial_guess_momentum(&subframe, sigma_threshold, method);
         newWidth = subframe.width() / 2.0;
         newHeight = subframe.height() / 2.0;
 
         subframe = subframe.subGrid(guess.x, guess.y, newWidth, newHeight, &offsetX, &offsetY);
     }
 
-    pixel_coordinates result_centroid = initial_guess_momentum(&subframe, sigma_threshold);
+    pixel_coordinates result_centroid = initial_guess_momentum(&subframe, sigma_threshold_final, Border);
     result_centroid.x += offsetX;
     result_centroid.y += offsetY;
+
+    result_centroid = fine_momentum(fr, result_centroid.x, result_centroid.y, minWindowSize, sigma_threshold_final);
 
     return result_centroid;
 }
 
-const pixel_coordinates FrameProcessor::multiple_guess_momentum(uint16_t minWindowsSize, uint16_t sigma_threshold) const
+const pixel_coordinates FrameProcessor::multiple_guess_momentum(uint16_t minWindowSize, uint16_t sigma_threshold, uint16_t sigma_threshold_final) const
 {
-    return multiple_guess_momentum(frame, minWindowsSize, sigma_threshold);
+    return multiple_guess_momentum(frame, minWindowSize, sigma_threshold, sigma_threshold_final);
+}
+
+const pixel_coordinates FrameProcessor::fine_momentum(double guessX, double guessY, uint16_t windowSize, uint16_t sigma_threshold) const
+{
+    return fine_momentum(frame, guessX, guessY, windowSize, sigma_threshold);
+}
+
+const pixel_coordinates FrameProcessor::fine_momentum(const Grid<uint32_t> *fr, double guessX, double guessY, uint16_t windowSize, uint16_t sigma_threshold)
+{
+    Grid<uint32_t> grid = *fr;
+    double diffX = 100, diffY = 100;
+    pixel_coordinates subFrameCenter = astroUtilities::frameCenter(windowSize, windowSize);
+    uint16_t maxRepetitions = 15, nRuns = 0;
+
+    //find center and keep halving the size
+    while (((abs(diffX) >= 1) || (abs(diffY) >= 1)) && (nRuns <= maxRepetitions))
+    {
+        uint16_t offsetX = 0, offsetY = 0;
+        Grid<uint32_t> subframe = grid.subGrid(round(guessX), round(guessY), windowSize, windowSize, &offsetX, &offsetY);
+
+        pixel_coordinates guess = initial_guess_momentum(&subframe, sigma_threshold, Border);
+        diffX = subFrameCenter.x - guess.x;
+        diffY = subFrameCenter.y - guess.y;
+        guessX = guess.x + offsetX;
+        guessY = guess.y + offsetY;
+
+        nRuns++;
+    }
+
+    pixel_coordinates result = {guessX, guessY};
+    return result;
 }
 
 //TODO: tests?

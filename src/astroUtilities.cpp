@@ -181,4 +181,21 @@ double reflectionEfficiency(double coatingReflectivity, uint8_t NMirrors)
     return totReflectivity;
 }
 
+//Check if many vectors have same size
+bool vectorSizes(std::vector<std::size_t> sizes)
+{
+    uint32_t size = sizes.at(0);
+    uint32_t nVectors = sizes.size();
+
+    for (uint32_t i; i < nVectors; i++)
+    {
+        if (sizes.at(i) != size)
+        {
+            return false;
+        }
+    }
+
+    return true;
+}
+
 } // namespace astroUtilities

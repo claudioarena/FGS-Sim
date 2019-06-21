@@ -30,6 +30,9 @@ double reflectionEfficiency(double coatingReflectivity, uint8_t NMirrors);
 //TODO: non obsctructed percentage
 //TODO: testing photons in band
 
+//Check if many vectors have same size
+bool vectorSizes(std::vector<std::size_t> sizes);
+
 /**
  * Template utiliy method to calculate average of a vector
  * @brief Calculates the average of numbers held in a vector
@@ -39,7 +42,7 @@ double reflectionEfficiency(double coatingReflectivity, uint8_t NMirrors);
 template <typename T>
 inline double const Average(std::vector<T> const &vector)
 {
-    auto sum = accumulate(vector.begin(), vector.end(), (T)0);
+    double sum = accumulate(vector.begin(), vector.end(), (T)0);
     return ((double)sum / vector.size());
 }
 
@@ -54,9 +57,23 @@ inline double const StDev(std::vector<T> const &vector)
 {
     double mean = Average(vector);
     double accum = 0.0;
-    for_each(begin(vector), end(vector), [&](const float d) { accum += (d - mean) * (d - mean); });
+    for_each(begin(vector), end(vector), [&](const T d) { accum += (d - mean) * (d - mean); });
 
     return sqrt(accum / (vector.size() - 1));
+}
+
+template <typename T>
+inline std::vector<T> const makeVector(T begin, T end, T interval)
+{
+    T size = (fabs(end - begin) / interval) + 1;
+    std::vector<T> v(size, 0);
+
+    for (uint32_t i = 0; i < size; i++)
+    {
+        v[i] = (begin + i * interval);
+    }
+
+    return v;
 }
 
 } // namespace astroUtilities

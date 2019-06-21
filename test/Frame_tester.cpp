@@ -55,7 +55,7 @@ pixel_coordinates checkCentroid(double x, double y, bool statistical)
 
     uint16_t background = fprocessor->backgroundLevel(fprocessor->Random_Global);
 
-    pixel_coordinates centroid = fprocessor->multiple_guess_momentum(30, 20);
+    pixel_coordinates centroid = fprocessor->multiple_guess_momentum(30, 4, 2);
     //double centx = centroid.x;
     //double centy = centroid.y;
 
@@ -71,16 +71,15 @@ pixel_coordinates checkCentroid(pixel_coordinates coord, bool statistical)
 
 TEST(FrameProcessor, centroid)
 {
-    star_mag = 16.0;
+    star_mag = 15.0;
     pixel_coordinates center = astroUtilities::frameCenter(Twinkle.FRAME_W, Twinkle.FRAME_H);
     pixel_coordinates momentum;
-    uint16_t x, y;
+    double x, y;
     double maxErr = 0.001;
 
     x = center.x;
     y = center.y;
     momentum = checkCentroid(center, false);
-    maxErr = 0.001;
     EXPECT_NEAR(momentum.x, x, maxErr);
     EXPECT_NEAR(momentum.y, y, maxErr);
 
@@ -102,7 +101,7 @@ TEST(FrameProcessor, centroid_statistical)
     star_mag = 10.0;
     pixel_coordinates center = astroUtilities::frameCenter(Twinkle.FRAME_W, Twinkle.FRAME_H);
     pixel_coordinates momentum;
-    uint16_t x, y;
+    double x, y;
     double maxErr = 0.1;
 
     x = center.x;

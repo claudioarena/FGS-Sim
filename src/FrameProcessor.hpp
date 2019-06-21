@@ -32,11 +32,14 @@ public:
   const static pixel_coordinates momentum(const Grid<uint32_t> *fr, uint16_t threshold = 0);
   const pixel_coordinates momentum(uint16_t threshold = 0) const;
 
-  const static pixel_coordinates initial_guess_momentum(const Grid<uint32_t> *fr, uint16_t sigma_threshold = 4);
-  const pixel_coordinates initial_guess_momentum(uint16_t sigma_threshold = 4) const;
+  const static pixel_coordinates initial_guess_momentum(const Grid<uint32_t> *fr, uint16_t sigma_threshold = 4, uint8_t background_method = Random_Global);
+  const pixel_coordinates initial_guess_momentum(uint16_t sigma_threshold = 4, uint8_t background_method = Random_Global) const;
 
-  const pixel_coordinates multiple_guess_momentum(uint16_t minWindowsSize, uint16_t sigma_threshold) const;
-  const static pixel_coordinates multiple_guess_momentum(const Grid<uint32_t> *fr, uint16_t minWindowsSize, uint16_t sigma_threshold);
+  const pixel_coordinates multiple_guess_momentum(uint16_t minWindowSize, uint16_t sigma_threshold, uint16_t sigma_threshold_final) const;
+  const static pixel_coordinates multiple_guess_momentum(const Grid<uint32_t> *fr, uint16_t minWindowSize, uint16_t sigma_threshold, uint16_t sigma_threshold_final);
+
+  const pixel_coordinates fine_momentum(double guessX, double guessY, uint16_t windowSize, uint16_t sigma_threshold) const;
+  const static pixel_coordinates fine_momentum(const Grid<uint32_t> *fr, double guessX, double guessY, uint16_t windowSize, uint16_t sigma_threshold);
 
   uint64_t static total(const Grid<uint32_t> *fr, uint16_t threshold = 0);
   uint64_t total(uint16_t threshold = 0) const;

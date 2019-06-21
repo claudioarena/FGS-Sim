@@ -213,7 +213,7 @@ void Frame::generateFrame(bool statistical)
 
     if (saturated)
     {
-        printf("Warning! Some sources are saturated");
+        printf("Warning! Some sources are saturated \n");
     }
 
 #ifdef DEBUG
@@ -223,6 +223,18 @@ void Frame::generateFrame(bool statistical)
     printf("Total photons outside frame: %d\n", outside_photons);
     printf("Saturated: %s\n", (isSaturated() ? "Yes" : "No"));
 #endif
+
+    //remove Saturation above bit limit
+    for (int i = 0; i < h; i++)
+    {
+        for (int j = 0; j < w; j++)
+        {
+            if (fr(j, i) > tel.FGS_MAX_ADU)
+            {
+                fr(j, i) = tel.FGS_MAX_ADU;
+            }
+        }
+    }
 }
 
 void Frame::addDarkNoise()
@@ -263,10 +275,24 @@ void Frame::reset()
     sources.clear();
     fr.reset();
     simfr.reset();
+    saturated = false;
 }
 
 void Frame::saveToFile(std::string filename)
 {
+    uint32_t maxValue = 0;
+
+    for (int i = 0; i < h; i++)
+    {
+        for (int j = 0; j < w; j++)
+        {
+            if (fr(j, i) > maxValue)
+            {
+                maxValue = fr(j, i);
+            }
+        }
+    }
+
     std::ofstream file(filename.c_str(), std::ios::out);
 
     if (file.fail())
@@ -282,11 +308,11 @@ void Frame::saveToFile(std::string filename)
 
         for (int y = 0; y < h; y++)
         {
-            uint16_t pixVal = (uint16_t)fr(0, y);
+            uint16_t pixVal = fr(0, y);
             file << pixVal;
             for (int x = 1; x < w; x++)
             {
-                uint16_t pixVal = (uint16_t)fr(x, y);
+                uint16_t pixVal = fr(x, y);
                 file << "," << pixVal;
             }
             file << std::endl;
@@ -537,11 +563,11 @@ void Frame::simelsToFrame(bool statistical)
             for (uint16_t x = 0; x < w; x++)
             { //Loop through image
                 uint64_t pixVal = 0;
-                for (uint16_t simy = y * tel.SIMELS; simy < y * tel.SIMELS + tel.SIMELS; simy++)
+                for (uint16_t simy = y * tel.SIMELS; simy < y * tel.SIMELS + tel.SIMELS && (pixVal < tel.FGS_MAX_ADU); simy++)
                 {
-                    for (int simx = x * tel.SIMELS; simx < x * tel.SIMELS + tel.SIMELS; simx++)
+                    for (uint16_t simx = x * tel.SIMELS; simx < x * tel.SIMELS + tel.SIMELS && (pixVal < tel.FGS_MAX_ADU); simx++)
                     { //Loop through simels for selected pixel
-                        if ((pixVal + simfr(simx, simy)) <= tel.FGS_MAX_ADU)
+                        if ((pixVal + simfr(simx, simy)) < tel.FGS_MAX_ADU)
                         {
                             pixVal += simfr(simx, simy);
                         }

@@ -10,7 +10,9 @@ src/FrameProcessor.cpp
 src/Test.cpp 
 src/astroUtilities.cpp
 src/PSF.cpp 
-src/Brownian.cpp)
+src/Brownian.cpp
+src/MonteCarlo.cpp
+src/PSF.cpp)
 set(EXECUTABLE_OUTPUT_PATH ../bin/${CMAKE_BUILD_TYPE})
 #add_executable (${PROJECT_NAME} ${SOURCE})
 include_directories(src)
@@ -55,6 +57,9 @@ set(test_SOURCES
     src/PSF.cpp
     src/Brownian.cpp
     src/FrameProcessor.cpp
+    src/MonteCarlo.cpp
+    src/Brownian.cpp
+    src/PSF.cpp
 )
 
 add_executable(unitTest ${test_SOURCES} ${test_HEADERS} ${GTestSrc}/src/gtest-all.cc ${GMockSrc}/src/gmock-all.cc)
