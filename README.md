@@ -1,5 +1,12 @@
 <!--- Tip: Use python-pip/grip to preview Markdown documents in the same form as Github formats them. -->
 # FGS-Sim
+
+## Claudio Arena PhD Thesis
+
+Claudio Arena - 2020
+
+Code was adapted, modified and extended, starting from Feiyu Fang initial code.
+
 ## PHASM201 MSci Project
 
 Feiyu Fang
