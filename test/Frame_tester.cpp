@@ -147,7 +147,7 @@ TEST(astroUtilities, extinction)
 
 TEST(astroUtilities, photonNumbers)
 {
-    const double expectedADU = 6178.0 * Twinkle.GAIN;
+    const double expectedADU = 6178.0 / Twinkle.GAIN;
     std::vector<struct filter> fltrs{B_filter, V_filter, R_filter};
     std::vector<double> mags{14.0, 14.0, 14.0};
 
@@ -200,6 +200,27 @@ TEST(astroUtilities, StDev)
     std::vector<double> numbers5{-5, 10, 50.8, 35, -80};
     double stDev5 = astroUtilities::StDev(numbers5);
     EXPECT_NEAR(stDev5, 50.76247, 0.0001);
+}
+
+TEST(astroUtilities, dark)
+{
+    Telescope tel = Twinkle;
+
+    tel.FGS_CCD_TEMP = 273.15;
+    double dark = astroUtilities::darkSignal(tel);
+    EXPECT_NEAR(dark, 2.876, 0.001);
+
+    tel.FGS_CCD_TEMP = 248.0;
+    dark = astroUtilities::darkSignal(tel);
+    EXPECT_NEAR(dark, 0.200, 0.002);
+
+    tel.FGS_CCD_TEMP = 293.0;
+    dark = astroUtilities::darkSignal(tel);
+    EXPECT_NEAR(dark, 17.33, 0.04);
+
+    tel.FGS_CCD_TEMP = 300.0;
+    dark = astroUtilities::darkSignal(tel);
+    EXPECT_NEAR(dark, 31.023, 0.001);
 }
 
 /*

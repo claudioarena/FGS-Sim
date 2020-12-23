@@ -89,7 +89,7 @@ double meanReceivedPhotons(std::vector<double> mags, std::vector<filter> fltrs, 
 
 double meanReceivedADUs(std::vector<double> mags, std::vector<filter> fltrs, double expT, Telescope tel)
 {
-    return meanReceivedPhotons(mags, fltrs, expT, tel) * tel.GAIN;
+    return meanReceivedPhotons(mags, fltrs, expT, tel) / tel.GAIN;
 }
 
 /**
@@ -138,6 +138,49 @@ double photonsInBand(double mag, struct filter flt)
     double photons = power * m0_photons; // Photons per second, per m-2
     return photons;
 }
+
+/*
+double zodiacalNoise()
+{
+
+    int zodiacalPhotons = 0;
+    if (zodiacal == true)
+        zodiacalPhotons += (180. / this->horizPixels) * (180. / this->vertPixels) * (astroUtilities::photonsInBand(22.37, B_filter) + astroUtilities::photonsInBand(21.89, V_filter)); // Background photons from zodiacal light. See line 84 of ../README.md.
+                                                                                                                                                                                       //float dark = darkSignal * exp(5E-7 * 6.63E-34 * ((1./248)-(1./temperature)) / 1.38E-23); // Dark current variance for 500nm from Meyer-Neidel
+}
+*/
+
+/**
+ * Utility function to calculate the dark signal at the operating temperature given the 0 C dark noise specified by the telescope
+ *
+ * @brief Calculates dark noise at operating temperature
+ * @param tel Telescope used for calculation. Dark noise figure at 0 C and temperature will be used for calculations
+ * @return Dark noise value, given as e-/sec/pixel
+ */
+double darkSignal(Telescope tel)
+{
+    double referenceDark = tel.DARK_NOISE / 0.165917;                                    //Needed to get dark at 293K
+    double temperature = tel.FGS_CCD_TEMP;                                               //Kelvin
+    double dark = referenceDark * 122 * pow(temperature, 3) * exp(-6400. / temperature); // Dark current variation with temperature from E2V CCD230-42 datasheet.
+    return dark;
+}
+
+/**
+ * Static function to calculate the number of infrared photons emitted by the mirrors through thermal emission.
+ *
+ * @brief Calculates noise from mirror infrared emission
+ * @param tel Telescope used for calculation. Area of primary mirror and its temperature will be used
+ * @return Number of infrared photons emitted from mirror per second
+ */
+/* 
+int mirrorThermalNoise(Telescope tel)
+{
+
+    float power = area * Twinkle.emiss * SB_CONST * pow(temperature, 4);
+    float wavelength = WIEN / temperature;
+    return power / (PLANCK * 3E8 / wavelength);
+}
+*/
 
 /**
  * function returning the coordinates of the center of the frame.

@@ -43,10 +43,18 @@
  */
 
 //PSF Constructor
-Frame::Frame(Telescope _tel, double _expTime)
+Frame::Frame(Telescope _tel, double _expTime, Grid<uint32_t> _grid)
     : tel(_tel), t(_expTime), h(_tel.FRAME_H), w(_tel.FRAME_W), hsim(h * _tel.SIMELS), wsim(w * _tel.SIMELS)
 {
-    fr.resize(w, h);
+    if (_grid.size() == 0)
+    {
+        fr = _grid;
+    }
+    else
+    {
+        fr.resize(w, h);
+    }
+
     simfr.resize(wsim, hsim);
     sources.reserve(10);
 
@@ -54,29 +62,9 @@ Frame::Frame(Telescope _tel, double _expTime)
     //TODO: temp dep on dark noise
     //TODO: check model of dakrk and bias noise
     dark_generator.seed(std::chrono::system_clock::now().time_since_epoch().count());
-    darkCounts = std::poisson_distribution<ulong_t>(pow((tel.DARK_NOISE * t), 4));
+    darkCounts = std::poisson_distribution<ulong_t>(pow(((tel.DARK_NOISE / tel.GAIN) * t), 2));
     bias_generator.seed(std::chrono::system_clock::now().time_since_epoch().count());
-    biasCounts = std::poisson_distribution<ulong_t>(pow(tel.READOUT_NOISE, 4));
-
-#ifdef DEBUG_MEMORY
-    std::cout
-        << "Created Frame " << std::endl;
-#endif
-}
-
-Frame::Frame(Grid<uint32_t> _grid, Telescope _tel, double _expTime)
-    : fr(_grid), tel(_tel), t(_expTime), h(_grid.height()), w(_grid.width()), hsim(h * _tel.SIMELS), wsim(w * _tel.SIMELS)
-{
-    simfr.resize(wsim, hsim);
-    sources.reserve(10);
-
-    //Seec and initialise the distributions
-    //TODO: temp dep on dark noise
-    //TODO: check model of dakrk and bias noise
-    dark_generator.seed(std::chrono::system_clock::now().time_since_epoch().count());
-    darkCounts = std::poisson_distribution<ulong_t>(pow((tel.DARK_NOISE * t), 4));
-    bias_generator.seed(std::chrono::system_clock::now().time_since_epoch().count());
-    biasCounts = std::poisson_distribution<ulong_t>(pow(tel.READOUT_NOISE, 4));
+    biasCounts = std::poisson_distribution<ulong_t>(pow(tel.READOUT_NOISE / tel.GAIN, 2));
 
 #ifdef DEBUG_MEMORY
     std::cout
@@ -105,8 +93,8 @@ const uint32_t &Frame::operator()(uint16_t x, uint16_t y) const
  *
  * @param cx X-coordinate for source centre
  * @param cy Y-coordinate for source centre
- * @param fwhm_x source size in x direction.
- * @param fwhm_x source size in y direction.
+ * @param fwhm_x source size, in pixels, in x direction.
+ * @param fwhm_x source size, in pixels, in y direction.
  * @param mags value of mag for target. This will be used for each filter in your telescope set.
  */
 void Frame::addSource(double cx, double cy, double fwhm_x, double fwhm_y, double magnitude)
@@ -123,8 +111,8 @@ void Frame::addSource(double cx, double cy, double fwhm_x, double fwhm_y, double
  *
  * @param cx X-coordinate for source centre
  * @param cy Y-coordinate for source centre
- * @param fwhm_x source size in x direction.
- * @param fwhm_x source size in y direction.
+ * @param fwhm_x source size, in pixels, in x direction.
+ * @param fwhm_x source size, in pixels, in y direction.
  * @param mags array with target magnitudes. Make sure to have matching magnitudes with your telescope filter set.
  */
 void Frame::addSource(double cx, double cy, double fwhm_x, double fwhm_y, std::vector<double> mags)

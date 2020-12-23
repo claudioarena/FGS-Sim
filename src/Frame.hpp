@@ -16,8 +16,6 @@
 #include "Grid.hpp"
 #include "telescopes.h"
 
-//#include <boost/shared_ptr.hpp>
-
 const int BMP_MAGIC_ID = 2;
 
 // --------------------------------------------------------------
@@ -90,8 +88,8 @@ class Frame
 {
 public:
   //Main Constructor
-  Frame(Telescope _tel, double _expTime = 1.0);
-  Frame(Grid<uint32_t> _grid, Telescope _tel, double _expTime = 0.0);
+  Frame(Telescope _tel, double _expTime = 0.0, Grid<uint32_t> _grid = Grid<uint32_t>(0, 0));
+
   ~Frame();
 
   uint32_t &operator()(uint16_t x, uint16_t y);
@@ -115,9 +113,15 @@ public:
   //TODO: return smart pointer
   void subFrame(uint16_t centerX, uint16_t centerY, uint16_t width, uint16_t height);
 
-  bool isSaturated() { return saturated; };
+  bool isSaturated()
+  {
+    return saturated;
+  };
   //std::shared_ptr<int> const get() const { return std::shared_ptr<}
-  Grid<uint32_t> const *get() const { return &fr; }
+  Grid<uint32_t> const *get() const
+  {
+    return &fr;
+  }
   //const Grid<uint32_t> getGrid() { return fr; }
 
   inline std::shared_ptr<Grid<uint32_t>> get_smartPtr()
@@ -134,14 +138,23 @@ private:
   std::default_random_engine bias_generator, dark_generator;
   std::poisson_distribution<ulong_t> darkCounts, biasCounts;
 
-  ulong_t pixel_darkCounts() { return darkCounts(dark_generator); }
-  ulong_t pixel_biasCounts() { return biasCounts(bias_generator); }
+  ulong_t pixel_darkCounts()
+  {
+    return darkCounts(dark_generator);
+  }
+  ulong_t pixel_biasCounts()
+  {
+    return biasCounts(bias_generator);
+  }
 
   std::vector<source> sources;
   uint32_t h, w, hsim, wsim;
   Grid<uint32_t> simfr, fr;
 
-  uint16_t nsources() { return sources.size(); }
+  uint16_t nsources()
+  {
+    return sources.size();
+  }
   void calculateGaussian(double cx, double cy, double sigmax, double sigmay,
                          Grid<double> *probMatrix);
   void addDarkNoise();

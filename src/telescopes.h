@@ -40,12 +40,13 @@ struct Telescope
     const uint32_t FGS_MAX_ADU;
     const double DARK_NOISE;    // e/s/pix at 0C
     const double READOUT_NOISE; // e/pix
-    const double CCD_TEMP;      // in K
+    double FGS_CCD_TEMP;        // in K
+    double IR_CCD_TEMP;         // in K
     const double emiss;         // Mirror emissivity
     const std::vector<filter> FGS_filter;
 };
 
-const Telescope Twinkle = {
+static Telescope Twinkle = {
     .NAME = "Twinkle",
     .SOURCE_TYPE = "GAUSSIAN",
     .SIMELS = 1,
@@ -60,15 +61,15 @@ const Telescope Twinkle = {
     .FRAME_H = 1024,
     .FGS_BITS = 16,
     .FGS_MAX_ADU = (uint32_t)pow(2, Twinkle.FGS_BITS) - 1,
-    .DARK_NOISE = 0.2,    // e- / pixel / sec
+    .DARK_NOISE = 2.8761, // e- / pixel / sec. At 0C, derived from datasheet E2V CCD230-42. Note that this is a rough value.
     .READOUT_NOISE = 4.0, //from e2v CCD230-42 datasheet
-    .CCD_TEMP = 70,
-    //.FGS_BITS = 8,
-    .emiss = 0.02, // Mirror emissivity
+    .FGS_CCD_TEMP = 250,  //Kelvin
+    .IR_CCD_TEMP = 70,    //Kelvin
+    .emiss = 0.02,        // Mirror emissivity
     .FGS_filter = {B_filter, V_filter, R_filter},
 };
 
-const Telescope TwentyCm = {
+static Telescope TwentyCm = {
     .NAME = "Twenty Cm",
     .SOURCE_TYPE = "GAUSSIAN",
     .SIMELS = 1,
@@ -85,11 +86,11 @@ const Telescope TwentyCm = {
     .FGS_MAX_ADU = (uint32_t)pow(2, TwentyCm.FGS_BITS) - 1,
     .DARK_NOISE = 0.1,
     .READOUT_NOISE = 4,
-    .CCD_TEMP = 273,
+    .FGS_CCD_TEMP = 273,
+    .IR_CCD_TEMP = 273,
     //.FGS_BITS = 8,
     .emiss = 0.02, // Mirror emissivity
     .FGS_filter = {B_filter, V_filter, R_filter},
-
 };
 /*
     printf("%f\n", Twinkle.CCD_EFFICIENCY);

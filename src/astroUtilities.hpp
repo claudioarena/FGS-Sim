@@ -20,6 +20,8 @@ double meanReceivedADUs(std::vector<double> mags, std::vector<filter> fltrs, dou
 double photonsInBand(std::vector<double> mags, std::vector<filter> fltrs);
 double photonsInBand(double mag, struct filter flt);
 
+double darkSignal(Telescope tel);
+
 double airmass(double alt);
 double extinctionInMags(double alt, double extinction_coefficient);
 double extinctionInPercentage(double alt, double extinction_coefficient);
