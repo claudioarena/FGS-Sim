@@ -98,9 +98,10 @@ void runFromTSV(ofstream &outputFile, std::string inFileName)
 
 int main()
 {
-
-	Telescope tel = Twinkle;
-	double expTime = 1.0; //sec
+	//Telescope tel = Twinkle;
+	Telescope tel = TwentyCm;
+	double expTime = 10.0; //sec
+						   /* 
 	std::string filename = "centroids1.csv";
 
 	std::vector<double> mags = astroUtilities::makeVector(8.0, 14.0, 0.5);
@@ -109,15 +110,16 @@ int main()
 	std::vector<pixel_coordinates> coords = std::vector<pixel_coordinates>(500, coord);
 	MonteCarlo mtc(tel, expTime, filename);
 	mtc.run(mags, fwhm, coords, false);
+*/
 
 	// expTime = 1.0; //sec
-	// double star_fwhm = 6.0;
-	// double star_mag = 6.0;
+	double star_fwhm = 4.0;
+	double star_mag = 12.0;
 
-	// std::unique_ptr<Frame> frame = std::make_unique<Frame>(tel, expTime);
-	// frame->addSource(250.1457, 651.21, star_fwhm, star_fwhm, star_mag);
-	// frame->generateFrame(true);
-	// frame->saveToFile("data/frame.csv");
+	std::unique_ptr<Frame> frame = std::make_unique<Frame>(tel, expTime);
+	frame->addSource(250.1457, 651.21, star_fwhm, star_fwhm, star_mag);
+	frame->generateFrame(true);
+	frame->saveToFile("data/frame.csv");
 
 	//totalError = 0;
 	//int nruns = 1;

@@ -65,21 +65,6 @@ Test::Test(int nPhotons, float xIn, float yIn, float sdX, float sdY, int hPixels
 Test::~Test() {}
 
 /**
- * Private static function to calculate the number of infrared photons emitted by the mirrors through thermal emission. 
- *
- * @brief Calculates noise from mirror infrared emission
- * @param area Area of mirror
- * @param temperature Temperature of mirror
- * @return Number of infrared photons emitted from mirror per second
- */
-int Test::mirrorThermalNoise(float area, float temperature)
-{
-	float power = area * Twinkle.emiss * SB_CONST * pow(temperature, 4);
-	float wavelength = WIEN / temperature;
-	return power / (PLANCK * 3E8 / wavelength);
-}
-
-/**
  * Private function to take the current Test object and add Poisson noise, dark noise, readout noise, mirror 
  * thermal emission and zodiacal light to the pixelData. Currently returns a 2d vector of just the generated noise for 
  * debugging purposes, but this function can be changed to private void if necessary. 
@@ -96,41 +81,4 @@ int Test::mirrorThermalNoise(float area, float temperature)
  */
 vector<vector<int>> Test::addNoise(float time, float area, float QE, float temperature, float emissivity, int readout, float ADU, float darkSignal)
 {
-
-	// Seed the generation of Poisson-distributed random variable with the current time
-	unsigned seed = std::chrono::system_clock::now().time_since_epoch().count();
-	default_random_engine generator(seed);
-
-	int zodiacalPhotons = 0;
-	if (zodiacal == true)
-		zodiacalPhotons += (180. / this->horizPixels) * (180. / this->vertPixels) * (astroUtilities::photonsInBand(22.37, B_filter) + astroUtilities::photonsInBand(21.89, V_filter)); // Background photons from zodiacal light. See line 84 of ../README.md.
-	//float dark = darkSignal * exp(5E-7 * 6.63E-34 * ((1./248)-(1./temperature)) / 1.38E-23); // Dark current variance for 500nm from Meyer-Neidel
-	float dark = darkSignal * 122 * pow(temperature, 3) * exp(-6400. / temperature); // Dark current variation with temperature from E2V CCD230-42 datasheet
-	poisson_distribution<int> darkCurrentDist(dark);								 // Noise from dark current
-	poisson_distribution<int> readNoiseDist(readout);								 // Read noise
-	poisson_distribution<int> mirrorThermalEmission(mirrorThermalNoise(area, temperature));
-	poisson_distribution<int> zodiacalLight(zodiacalPhotons);
-	vector<vector<int>> outData;
-	vector<vector<int>> outNoise;
-
-	for (vector<int> v : this->pixelData)
-	{ // For each row of the existing pixel data
-		vector<int> rowOutData;
-		vector<int> rowOutNoise;
-
-		for (int i : v)
-		{ // For each pixel value in the row, generate its noise and add to output vector.
-			float lambda = sqrt(i);
-			poisson_distribution<int> photonNoise(lambda); // Noise ~ Po(sqrt(value))
-			int noiseAddition = (lambda - photonNoise(generator)) + zodiacalLight(generator) + readNoiseDist(generator) + ((darkCurrentDist(generator) + (mirrorThermalEmission(generator) * area)) * time);
-			rowOutNoise.push_back(noiseAddition);
-			rowOutData.push_back((noiseAddition + i) * emissivity * QE * ADU);
-		}
-
-		outData.push_back(rowOutData);
-		outNoise.push_back(rowOutNoise);
-	}
-
-	this->pixelData = outData;
-	return outNoise;
 }
