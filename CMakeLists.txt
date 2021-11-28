@@ -3,8 +3,7 @@ set (CMAKE_CXX_STANDARD 20)
 
 project (TwinkleSIM)
 #enable_testing()
-set (SOURCE 
-src/main.cpp 
+set (SOURCE
 src/Frame.cpp 
 src/FrameProcessor.cpp 
 src/Test.cpp 
@@ -14,6 +13,14 @@ src/Brownian.cpp
 src/MonteCarlo.cpp
 src/PSF.cpp)
 set(EXECUTABLE_OUTPUT_PATH ../bin/${CMAKE_BUILD_TYPE})
+
+set (SOURCE_2
+${SOURCE}
+src/test_latexExample.cpp)
+set (SOURCE_MAIN
+${SOURCE}
+src/main.cpp)
+
 #add_executable (${PROJECT_NAME} ${SOURCE})
 include_directories(src)
 include_directories(include)
@@ -22,7 +29,8 @@ include_directories(include)
 #set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -O2 -g -ggdb -Wall -pedantic -Wextra")
 
 #file(GLOB SOURCES "src/*.cpp")
-add_executable(${PROJECT_NAME} ${SOURCE})
+add_executable(${PROJECT_NAME} ${SOURCE_MAIN})
+add_executable(${PROJECT_NAME}_latexTest ${SOURCE_2})
 
 #set(CPACK_PROJECT_NAME ${PROJECT_NAME})
 #set(CPACK_PROJECT_VERSION ${PROJECT_VERSION})

@@ -1,6 +1,6 @@
 /**
  * Twinkle FGS-Sim: Centroid recovery simulation
- * 
+ *
  * @file Frame.hpp
  * @brief Header file for Frame class
  * @author Claudio Arena, Feiyu Fang
@@ -50,15 +50,15 @@ struct bmpfile_dib_info
 
 struct source
 {
-  //std::default_random_engine photon_n_generator;
+  // std::default_random_engine photon_n_generator;
   std::default_random_engine ADUs_n_generator, bias_generator;
-  //std::default_random_engine distribution_generator;
+  // std::default_random_engine distribution_generator;
   std::mt19937 distribution_generator;
 
-  //std::poisson_distribution<ulong_t> photons;
+  // std::poisson_distribution<ulong_t> photons;
   std::poisson_distribution<ulong_t> ADUs;
   std::discrete_distribution<uint32_t> source_distribution;
-  //double expected_photons;
+  // double expected_photons;
   double expected_ADUs;
   double cx, cy, fwhm_x, fwhm_y;
 
@@ -87,7 +87,7 @@ struct source
 class Frame
 {
 public:
-  //Main Constructor
+  // Main Constructor
   Frame(Telescope _tel, double _expTime = 0.0, Grid<uint32_t> _grid = Grid<uint32_t>(0, 0));
 
   ~Frame();
@@ -95,7 +95,7 @@ public:
   uint32_t &operator()(uint16_t x, uint16_t y);
   const uint32_t &operator()(uint16_t x, uint16_t y) const;
 
-  //Redirect first method to second, generic one
+  // Redirect first method to second, generic one
   void addSource(double cx, double cy, double fwhm_x, double fwhm_y, double magnitude);
   void addSource(double cx, double cy, double fwhm_x, double fwhm_y, std::vector<double> mags);
 
@@ -110,19 +110,19 @@ public:
   void set(uint16_t initialX, uint16_t finalX, uint16_t initialY, uint16_t finalY, uint16_t value);
   void setAll(uint16_t value);
 
-  //TODO: return smart pointer
+  // TODO: return smart pointer
   void subFrame(uint16_t centerX, uint16_t centerY, uint16_t width, uint16_t height);
 
   bool isSaturated()
   {
     return saturated;
   };
-  //std::shared_ptr<int> const get() const { return std::shared_ptr<}
+  // std::shared_ptr<int> const get() const { return std::shared_ptr<}
   Grid<uint32_t> const *get() const
   {
     return &fr;
   }
-  //const Grid<uint32_t> getGrid() { return fr; }
+  // const Grid<uint32_t> getGrid() { return fr; }
 
   inline std::shared_ptr<Grid<uint32_t>> get_smartPtr()
   {
@@ -135,16 +135,19 @@ private:
   double mag, t;
   bool saturated = false;
 
-  std::default_random_engine bias_generator, dark_generator;
-  std::poisson_distribution<ulong_t> darkCounts, biasCounts;
+  std::default_random_engine readnoise_generator, dark_generator;
+  std::poisson_distribution<ulong_t> darkCounts;
+  std::normal_distribution<double> readnoiseCounts;
 
   ulong_t pixel_darkCounts()
   {
     return darkCounts(dark_generator);
   }
-  ulong_t pixel_biasCounts()
+  ulong_t pixel_readnoiseCounts()
   {
-    return biasCounts(bias_generator);
+    double readnoise = readnoiseCounts(readnoise_generator);
+    if (readnoise < 0) readnoise = 0;
+    return (ulong_t)std::round(readnoise);
   }
 
   std::vector<source> sources;

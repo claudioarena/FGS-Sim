@@ -1,6 +1,6 @@
 /**
  * Twinkle FGS-Sim: Centroid recovery simulation
- * 
+ *
  * @file Frame.cpp
  * @brief Header file for Frame class
  * @author Claudio Arena, Feiyu Fang
@@ -11,13 +11,13 @@
  * MaximDL readout for FWHM is not accurate. ImageJ is.
  */
 
-//How it works: Informations about sources is kept in an array of structs.
-//Each struct has info about the source, including some random generators.
-//When the source is 'added' to the frame, we calculate the statistical poission distribution n of photons arriving from that source. We then calculate the gaussian/psf statistical distribution for the source.
-//When the frame is generated, we go through each source. For each, we already know how many photons we have. We then use the statistical distibution (PSF/gaussian) to assign to photons to the frame.
-//We do this for each source. Then we bin simels to pixels if needed. Then we add dark and bias noises, from other random distributions
+// How it works: Informations about sources is kept in an array of structs.
+// Each struct has info about the source, including some random generators.
+// When the source is 'added' to the frame, we calculate the statistical poission distribution n of photons arriving from that source. We then calculate the gaussian/psf statistical distribution for the source.
+// When the frame is generated, we go through each source. For each, we already know how many photons we have. We then use the statistical distibution (PSF/gaussian) to assign to photons to the frame.
+// We do this for each source. Then we bin simels to pixels if needed. Then we add dark and bias noises, from other random distributions
 
-//TODO: reset frame so we can generate again.
+// TODO: reset frame so we can generate again.
 #include <iostream>
 #include <fstream>
 #include <random>
@@ -34,7 +34,7 @@
 //#define TIMING
 
 /**
- * Constructs a Frame object to generate image data arrays. 
+ * Constructs a Frame object to generate image data arrays.
  *
  * @param magB Magnitude of target star, in B bandpass
  * @param magV Magnitude of target star, in V bandpass
@@ -42,7 +42,7 @@
  * @param expTime Time of single frame, in seconds
  */
 
-//PSF Constructor
+// PSF Constructor
 Frame::Frame(Telescope _tel, double _expTime, Grid<uint32_t> _grid)
     : tel(_tel), t(_expTime), h(_tel.FRAME_H), w(_tel.FRAME_W), hsim(h * _tel.SIMELS), wsim(w * _tel.SIMELS)
 {
@@ -58,13 +58,13 @@ Frame::Frame(Telescope _tel, double _expTime, Grid<uint32_t> _grid)
     simfr.resize(wsim, hsim);
     sources.reserve(10);
 
-    //Seec and initialise the distributions
-    //TODO: temp dep on dark noise
-    //TODO: check model of dakrk and bias noise
+    // Seec and initialise the distributions
+    // TODO: temp dep on dark noise
+    // TODO: check model of dakrk and bias noise
     dark_generator.seed(std::chrono::system_clock::now().time_since_epoch().count());
     darkCounts = std::poisson_distribution<ulong_t>(pow(((tel.DARK_NOISE / tel.GAIN) * t), 2));
-    bias_generator.seed(std::chrono::system_clock::now().time_since_epoch().count());
-    biasCounts = std::poisson_distribution<ulong_t>(pow(tel.READOUT_NOISE / tel.GAIN, 2));
+    readnoise_generator.seed(std::chrono::system_clock::now().time_since_epoch().count());
+    readnoiseCounts = std::normal_distribution<double>((tel.OFFSET / tel.GAIN), (tel.READOUT_NOISE / tel.GAIN));
 
 #ifdef DEBUG_MEMORY
     std::cout
@@ -117,7 +117,7 @@ void Frame::addSource(double cx, double cy, double fwhm_x, double fwhm_y, double
  */
 void Frame::addSource(double cx, double cy, double fwhm_x, double fwhm_y, std::vector<double> mags)
 {
-    //add a source to the list of sources. Make a temporary prob matrix.
+    // add a source to the list of sources. Make a temporary prob matrix.
     sources.emplace_back();
 
     source *src = &sources[nsources() - 1];
@@ -137,7 +137,7 @@ void Frame::addSource(double cx, double cy, double fwhm_x, double fwhm_y, std::v
     }
 
     src->expected_ADUs = astroUtilities::meanReceivedADUs(mags, (tel.FGS_filter), t, tel);
-    //src->expected_photons = astroUtilities::meanReceivedPhotons(mags, (tel.FGS_filter), t, tel);
+    // src->expected_photons = astroUtilities::meanReceivedPhotons(mags, (tel.FGS_filter), t, tel);
 
     src->cx = cx;
     src->cy = cy;
@@ -146,17 +146,17 @@ void Frame::addSource(double cx, double cy, double fwhm_x, double fwhm_y, std::v
 
 #ifdef PRINT_SOURCE_DATA
     printf("Average n. of detections (ADUs / Photons) for source %d: %3.4f\n", nsources() - 1, src->expected_ADUs);
-    //printf("Average n. of detections (ADUs / Photons) for source %d: %3.4f\n", nsources() - 1, src->expected_photons);
+    // printf("Average n. of detections (ADUs / Photons) for source %d: %3.4f\n", nsources() - 1, src->expected_photons);
 
 #endif
 
-    //assign source distribution array
+    // assign source distribution array
 #if SOURCE_TYPE == GAUSSIAN
-    //Normalize prob to 100
+    // Normalize prob to 100
     double sigmax = (fwhm_x / 2.3585) * tel.SIMELS;
     double sigmay = (fwhm_y / 2.3585) * tel.SIMELS;
 
-    //x.0 is center of pixel. x.5 is edge
+    // x.0 is center of pixel. x.5 is edge
     double simcx = cx * tel.SIMELS + (tel.SIMELS / 2.0) - 0.5;
     double simcy = cy * tel.SIMELS + (tel.SIMELS / 2.0) - 0.5;
     calculateGaussian(simcx, simcy, sigmax, sigmay, probMatrix);
@@ -166,17 +166,17 @@ void Frame::addSource(double cx, double cy, double fwhm_x, double fwhm_y, std::v
     PrintProbArray(probMatrix, "source");
 #endif
 
-    //add a value outside the array to the distribution func. This takes cares of photons falling outside the array.
+    // add a value outside the array to the distribution func. This takes cares of photons falling outside the array.
     double prob_ADUs_outside_frame = 100 - probMatrix->total();
     probMatrix->operator[](probMatrix->extraPixPos()) += prob_ADUs_outside_frame;
 
-    //Now assign it the vector to a distribution, and inizialize the distribution
+    // Now assign it the vector to a distribution, and inizialize the distribution
     std::discrete_distribution<uint32_t> distribution(probMatrix->begin(), probMatrix->end());
     src->source_distribution = distribution;
 
-    //Seec and initialise the distributions. One for total number of photons in frame, one for distribution of photons on frame.
-    //src->photon_n_generator.seed(std::chrono::system_clock::now().time_since_epoch().count());
-    //src->photons = std::poisson_distribution<ulong_t>(src->expected_photons);
+    // Seec and initialise the distributions. One for total number of photons in frame, one for distribution of photons on frame.
+    // src->photon_n_generator.seed(std::chrono::system_clock::now().time_since_epoch().count());
+    // src->photons = std::poisson_distribution<ulong_t>(src->expected_photons);
     src->ADUs_n_generator.seed(std::chrono::system_clock::now().time_since_epoch().count());
     src->ADUs = std::poisson_distribution<ulong_t>(src->expected_ADUs);
     src->distribution_generator.seed(std::chrono::system_clock::now().time_since_epoch().count());
@@ -190,13 +190,13 @@ void Frame::generateFrame(bool statistical)
         addSourceDetections(src, src.frame_ADUs());
     }
 
-    //Transform the simel to the actual frame
+    // Transform the simel to the actual frame
     simelsToFrame(statistical);
     if (statistical == true)
     {
         addBiasNoise();
         addDarkNoise();
-        //addPedestal(10);
+        // addPedestal(10);
     }
 
     if (saturated)
@@ -212,7 +212,7 @@ void Frame::generateFrame(bool statistical)
     printf("Saturated: %s\n", (isSaturated() ? "Yes" : "No"));
 #endif
 
-    //remove Saturation above bit limit
+    // remove Saturation above bit limit
     for (int i = 0; i < h; i++)
     {
         for (int j = 0; j < w; j++)
@@ -242,7 +242,7 @@ void Frame::addBiasNoise()
     {
         for (int j = 0; j < w; j++)
         {
-            fr(j, i) += pixel_biasCounts();
+            fr(j, i) += pixel_readnoiseCounts();
         }
     }
 }
@@ -330,7 +330,7 @@ void Frame::saveToBitmap(std::string filename)
         file.write((char *)(&magic), sizeof(magic));
         bmpfile_header header;
         header.bmp_offset = sizeof(bmpfile_magic) + sizeof(bmpfile_header) + sizeof(bmpfile_dib_info);
-        //3 bytes per pixels, plus bytes needed for packing.
+        // 3 bytes per pixels, plus bytes needed for packing.
         uint32_t packingSize = ((w * bytes_per_pixels) % 4) * h;
         uint32_t dataSize = w * h * bytes_per_pixels;
         header.file_size = header.bmp_offset + dataSize + packingSize;
@@ -502,8 +502,8 @@ void Frame::addSourceDetections(source &src, ulong_t totDetections)
     printf("N. of total detections (photons/ADUs) for source in this frame: %d \n", isrc, totDetections);
 #endif
 
-//Distribute photons
-//TODO: Speed this up; limit based on saturation; saturation flag; if many photons, consider distribution more than one at a time.
+// Distribute photons
+// TODO: Speed this up; limit based on saturation; saturation flag; if many photons, consider distribution more than one at a time.
 #ifdef TIMING
     auto t1 = std::chrono::high_resolution_clock::now();
 #endif
@@ -525,10 +525,10 @@ void Frame::addSourceDetections(source &src, ulong_t totDetections)
 #endif
 }
 
-//TODO: if statistical, we still need to worry about saturation!
+// TODO: if statistical, we still need to worry about saturation!
 void Frame::simelsToFrame(bool statistical)
 {
-    if (statistical == false) //just to debug, make smooth gaussian
+    if (statistical == false) // just to debug, make smooth gaussian
     {
         Grid<double> tempMatrix(w, h);
         source src = sources[0];
@@ -549,12 +549,12 @@ void Frame::simelsToFrame(bool statistical)
         for (uint16_t y = 0; y < h; y++)
         {
             for (uint16_t x = 0; x < w; x++)
-            { //Loop through image
+            { // Loop through image
                 uint64_t pixVal = 0;
                 for (uint16_t simy = y * tel.SIMELS; simy < y * tel.SIMELS + tel.SIMELS && (pixVal < tel.FGS_MAX_ADU); simy++)
                 {
                     for (uint16_t simx = x * tel.SIMELS; simx < x * tel.SIMELS + tel.SIMELS && (pixVal < tel.FGS_MAX_ADU); simx++)
-                    { //Loop through simels for selected pixel
+                    { // Loop through simels for selected pixel
                         if ((pixVal + simfr(simx, simy)) < tel.FGS_MAX_ADU)
                         {
                             pixVal += simfr(simx, simy);

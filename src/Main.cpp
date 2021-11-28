@@ -2,8 +2,8 @@
  * Twinkle FGS-Sim: Centroid recovery simulation
  * Purpose: Run a Monte Carlo simulation to take a 2d PSF from Zemax, add noise, bin it into "pixels" and find
  * the centroid of the binned data.
- * NOTE: A TSV saved from Zemax has MS-DOS line endings and will need to be converted to Unix format. On Unix, 
- * the dos2unix utility is confirmed as working. 
+ * NOTE: A TSV saved from Zemax has MS-DOS line endings and will need to be converted to Unix format. On Unix,
+ * the dos2unix utility is confirmed as working.
  *
  * @file Main.cpp
  * @brief Main method to run centroid recovery simulation
@@ -96,45 +96,49 @@ void runFromTSV(ofstream &outputFile, std::string inFileName)
 	return 0;
 } */
 
-int main()
+void testFrame()
 {
-	//Telescope tel = Twinkle;
-	Telescope tel = TwentyCm;
-	double expTime = 10.0; //sec
-						   /* 
-	std::string filename = "centroids1.csv";
+	Telescope tel = Twinkle;
+	// Telescope tel = TwentyCm;
+	double expTime = 1.0; // sec
+	double star_fwhm = 3.0;
+	double star_mag = 10.0;
 
-	std::vector<double> mags = astroUtilities::makeVector(8.0, 14.0, 0.5);
-	std::vector<double> fwhm = astroUtilities::makeVector(1.0, 13.0, 0.5);
-	pixel_coordinates coord = pixel_coordinates{400.254, 700.524};
-	std::vector<pixel_coordinates> coords = std::vector<pixel_coordinates>(500, coord);
-	MonteCarlo mtc(tel, expTime, filename);
-	mtc.run(mags, fwhm, coords, false);
-*/
-
-	// expTime = 1.0; //sec
-	double star_fwhm = 4.0;
-	double star_mag = 12.0;
+	double x_pos = 250.1457;
+	double y_pos = 651.21;
 
 	std::unique_ptr<Frame> frame = std::make_unique<Frame>(tel, expTime);
-	frame->addSource(250.1457, 651.21, star_fwhm, star_fwhm, star_mag);
+	frame->addSource(x_pos, y_pos, star_fwhm, star_fwhm, star_mag);
 	frame->generateFrame(true);
 	frame->saveToFile("data/frame.csv");
 
-	//totalError = 0;
-	//int nruns = 1;
+	std::unique_ptr<FrameProcessor> fprocessor = std::make_unique<FrameProcessor>(frame->get());
 
-	//Telescope telescope = Twinkle;
-	//int nruns = 10;
+	pixel_coordinates centroid = fprocessor->multiple_guess_momentum(30, 4, 2);
 
-	//for (int i = 0; i < nruns; i++)
+	double errorX = (double)x_pos - centroid.x;
+	double errorY = (double)y_pos - centroid.y;
+	double totError = std::sqrt(std::pow(errorX, 2) + std::pow(errorY, 2));
+	printf("error x: %+2.4f; error y: %+2.4f, tot error: %+2.4f\n", errorX, errorY, totError);
+
+}
+
+void testFrameMultipleSources()
+{
+	int totalError = 0;
+	double expTime = 1.0; // sec
+	double star_fwhm = 4.0;
+	double star_mag = 12.0;
+
+	Telescope telescope = Twinkle;
+
+	// for (int i = 0; i < nruns; i++)
 	//{
-	//std::unique_ptr<Frame> frame = std::make_unique<Frame>(telescope, expTime);
-	//frame->addSource(FRAME_CX, FRAME_CY, star_fwhm, star_fwhm, star_mag);
-	//frame->addSource(20, 40, star_fwhm, star_fwhm, star_mag + 2);
-	//frame->addSource(500.2, 600.3, star_fwhm, star_fwhm, star_mag);
+	std::unique_ptr<Frame> frame = std::make_unique<Frame>(telescope, expTime);
+	// frame->addSource(FRAME_CX, FRAME_CY, star_fwhm, star_fwhm, star_mag);
+	// frame->addSource(20, 40, star_fwhm, star_fwhm, star_mag + 2);
+	// frame->addSource(500.2, 600.3, star_fwhm, star_fwhm, star_mag);
 
-	/*
 	for (int i = 0; i < 40; i++)
 	{
 		double randX = static_cast<double>(rand()) / (static_cast<double>(RAND_MAX / 1024));
@@ -143,29 +147,34 @@ int main()
 
 		frame->addSource(randX, randY, star_fwhm, star_fwhm, star_mag + randMagChange);
 	}
-*/
 
-	//frame->generateFrame();
-	//f->PrintSimelArray();
-	//f->Print();
-	//f->saveToBitmap("data.bmp");
-	//frame->saveToFile("data/frame.csv");
+	frame->generateFrame();
+	// frame->PrintSimelArray();
+	// frame->Print();
+	// frame->saveToBitmap("data.bmp");
+	frame->saveToFile("data/frame.csv");
+}
 
-	/*
-		std::unique_ptr<FrameProcessor> fprocessor = std::make_unique<FrameProcessor>(frame->get());
+void testMonteCarlo()
+{
+	Telescope tel = Twinkle;
+	// Telescope tel = TwentyCm;
+	double expTime = 1.0; // sec
 
-		pixel_coordinates centroid = fprocessor->momentum();
-		//printf("source x: %6.12f; source y: %6.12f\n", telescope.FRAME_CX, telescope.FRAME_CY);
-		//printf("cent x: %6.12f; centroid y: %6.12f\n", centroid.x, centroid.y);
+	std::string filename = "centroids1.csv";
 
-		double errorX = (double)500.2 - centroid.x;
-		double errorY = (double)600.3 - centroid.y;
-		double totError = std::sqrt(std::pow(errorX, 2) + std::pow(errorY, 2));
-		printf("run n: %d error x: %+2.4f; error y: %+2.4f, tot error: %+2.4f\n", i, errorX, errorY, totError);
-		totalError += errorX;
-*/
-	//}
-	//printf("Total error on average: %f\n", totalError / nruns);
+	std::vector<double> mags = astroUtilities::makeVector(8.0, 14.0, 0.5);
+	std::vector<double> fwhm = astroUtilities::makeVector(1.0, 13.0, 0.5);
+	pixel_coordinates coord = pixel_coordinates{400.254, 700.524};
+	std::vector<pixel_coordinates> coords = std::vector<pixel_coordinates>(500, coord);
+	MonteCarlo mtc(tel, expTime, filename);
+	mtc.run(mags, fwhm, coords, false);
+}
 
+int main()
+{
+	testFrame();
+	// testMonteCarlo();
+	// testFrameMultipleSources();
 	return 0;
 }
