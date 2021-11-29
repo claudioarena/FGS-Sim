@@ -101,16 +101,16 @@ void testFrame()
 	Telescope tel = Twinkle;
 	// Telescope tel = TwentyCm;
 	double expTime = 1.0; // sec
-	double star_fwhm = 3.0;
-	double star_mag = 10.0;
+	double star_fwhm = 4.0;
+	double star_mag = 8.0;
 
-	double x_pos = 250.1457;
-	double y_pos = 651.21;
+	double x_pos = 400.254;
+	double y_pos = 700.524;
 
 	std::unique_ptr<Frame> frame = std::make_unique<Frame>(tel, expTime);
 	frame->addSource(x_pos, y_pos, star_fwhm, star_fwhm, star_mag);
 	frame->generateFrame(true);
-	frame->saveToFile("data/frame.csv");
+	frame->saveToFile("data/frame1.csv");
 
 	std::unique_ptr<FrameProcessor> fprocessor = std::make_unique<FrameProcessor>(frame->get());
 
@@ -120,26 +120,23 @@ void testFrame()
 	double errorY = (double)y_pos - centroid.y;
 	double totError = std::sqrt(std::pow(errorX, 2) + std::pow(errorY, 2));
 	printf("error x: %+2.4f; error y: %+2.4f, tot error: %+2.4f\n", errorX, errorY, totError);
-
 }
 
 void testFrameMultipleSources()
 {
+	Telescope tel = Twinkle;
+
 	int totalError = 0;
-	double expTime = 1.0; // sec
+	double expTime = 0.1; // sec
 	double star_fwhm = 4.0;
 	double star_mag = 12.0;
 
-	Telescope telescope = Twinkle;
-
-	// for (int i = 0; i < nruns; i++)
-	//{
-	std::unique_ptr<Frame> frame = std::make_unique<Frame>(telescope, expTime);
+	std::unique_ptr<Frame> frame = std::make_unique<Frame>(tel, expTime);
 	// frame->addSource(FRAME_CX, FRAME_CY, star_fwhm, star_fwhm, star_mag);
 	// frame->addSource(20, 40, star_fwhm, star_fwhm, star_mag + 2);
 	// frame->addSource(500.2, 600.3, star_fwhm, star_fwhm, star_mag);
 
-	for (int i = 0; i < 40; i++)
+	for (int i = 0; i < 50; i++)
 	{
 		double randX = static_cast<double>(rand()) / (static_cast<double>(RAND_MAX / 1024));
 		double randY = static_cast<double>(rand()) / (static_cast<double>(RAND_MAX / 1024));
@@ -152,7 +149,7 @@ void testFrameMultipleSources()
 	// frame->PrintSimelArray();
 	// frame->Print();
 	// frame->saveToBitmap("data.bmp");
-	frame->saveToFile("data/frame.csv");
+	frame->saveToFile("data/frame1.csv");
 }
 
 void testMonteCarlo()
@@ -164,17 +161,17 @@ void testMonteCarlo()
 	std::string filename = "centroids1.csv";
 
 	std::vector<double> mags = astroUtilities::makeVector(8.0, 14.0, 0.5);
-	std::vector<double> fwhm = astroUtilities::makeVector(1.0, 13.0, 0.5);
+	std::vector<double> fwhm = astroUtilities::makeVector(1.0, 11.0, 0.5);
 	pixel_coordinates coord = pixel_coordinates{400.254, 700.524};
-	std::vector<pixel_coordinates> coords = std::vector<pixel_coordinates>(500, coord);
+	std::vector<pixel_coordinates> coords = std::vector<pixel_coordinates>(120, coord);
 	MonteCarlo mtc(tel, expTime, filename);
 	mtc.run(mags, fwhm, coords, false);
 }
 
 int main()
 {
-	testFrame();
+	//testFrame();
 	// testMonteCarlo();
-	// testFrameMultipleSources();
+	testFrameMultipleSources();
 	return 0;
 }

@@ -177,8 +177,6 @@ void Frame::addSource(double cx, double cy, double fwhm_x, double fwhm_y, std::v
     // Seec and initialise the distributions. One for total number of photons in frame, one for distribution of photons on frame.
     // src->photon_n_generator.seed(std::chrono::system_clock::now().time_since_epoch().count());
     // src->photons = std::poisson_distribution<ulong_t>(src->expected_photons);
-    src->ADUs_n_generator.seed(std::chrono::system_clock::now().time_since_epoch().count());
-    src->ADUs = std::poisson_distribution<ulong_t>(src->expected_ADUs);
     src->distribution_generator.seed(std::chrono::system_clock::now().time_since_epoch().count());
 }
 
@@ -187,13 +185,14 @@ void Frame::generateFrame(bool statistical)
     for (uint16_t isrc = 0; isrc < nsources(); isrc++)
     {
         source src = sources[isrc];
-        addSourceDetections(src, src.frame_ADUs());
+        addSourceDetections(src);
     }
 
     // Transform the simel to the actual frame
     simelsToFrame(statistical);
     if (statistical == true)
     {
+        addShotNoise();
         addBiasNoise();
         addDarkNoise();
         // addPedestal(10);
@@ -225,36 +224,42 @@ void Frame::generateFrame(bool statistical)
     }
 }
 
+void Frame::addShotNoise()
+{
+    std::default_random_engine ADUs_n_generator;
+    std::poisson_distribution<uint32_t> ADUs;
+
+    uint32_t pix_val = 0;
+    
+    for (int i = 0; i < w*h; i++)
+    {
+            pix_val = fr[i];
+            ADUs = std::poisson_distribution<uint32_t>(pix_val);
+            fr[i] = ADUs(ADUs_n_generator);
+    }
+}
+
 void Frame::addDarkNoise()
 {
-    for (int i = 0; i < h; i++)
+    for (int i = 0; i < w*h; i++)
     {
-        for (int j = 0; j < w; j++)
-        {
-            fr(j, i) += pixel_darkCounts();
-        }
+            fr[i]  += pixel_darkCounts();
     }
 }
 
 void Frame::addBiasNoise()
 {
-    for (int i = 0; i < h; i++)
+    for (int i = 0; i < w*h; i++)
     {
-        for (int j = 0; j < w; j++)
-        {
-            fr(j, i) += pixel_readnoiseCounts();
-        }
+           fr[i]  += pixel_readnoiseCounts();
     }
 }
 
 void Frame::addPedestal(uint16_t value)
 {
-    for (int i = 0; i < h; i++)
+    for (int i = 0; i < w*h; i++)
     {
-        for (int j = 0; j < w; j++)
-        {
-            fr(j, i) += value;
-        }
+            fr[i] += value;
     }
 }
 
@@ -495,8 +500,9 @@ void Frame::calculateGaussian(double cx, double cy, double sigmax, double sigmay
     }
 }
 
-void Frame::addSourceDetections(source &src, ulong_t totDetections)
+void Frame::addSourceDetections(source &src)
 {
+    ulong_t totDetections = src.expected_ADUs;
 
 #ifdef DEBUG
     printf("N. of total detections (photons/ADUs) for source in this frame: %d \n", isrc, totDetections);

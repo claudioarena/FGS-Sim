@@ -51,12 +51,9 @@ struct bmpfile_dib_info
 struct source
 {
   // std::default_random_engine photon_n_generator;
-  std::default_random_engine ADUs_n_generator, bias_generator;
   // std::default_random_engine distribution_generator;
   std::mt19937 distribution_generator;
 
-  // std::poisson_distribution<ulong_t> photons;
-  std::poisson_distribution<ulong_t> ADUs;
   std::discrete_distribution<uint32_t> source_distribution;
   // double expected_photons;
   double expected_ADUs;
@@ -66,11 +63,6 @@ struct source
   {
     return photons(photon_n_generator);
   }*/
-
-  ulong_t frame_ADUs()
-  {
-    return ADUs(ADUs_n_generator);
-  }
 
   uint32_t detection_position()
   {
@@ -146,7 +138,11 @@ private:
   ulong_t pixel_readnoiseCounts()
   {
     double readnoise = readnoiseCounts(readnoise_generator);
-    if (readnoise < 0) readnoise = 0;
+    if (readnoise < 0)
+      readnoise = 0;
+    if (readnoise > std::numeric_limits<unsigned long>::max())
+      readnoise = std::numeric_limits<unsigned long>::max();
+
     return (ulong_t)std::round(readnoise);
   }
 
@@ -160,11 +156,12 @@ private:
   }
   void calculateGaussian(double cx, double cy, double sigmax, double sigmay,
                          Grid<double> *probMatrix);
+  void addShotNoise();
   void addDarkNoise();
   void addBiasNoise();
   void addPedestal(uint16_t value);
 
   void PrintProbArray(Grid<double> *probMatrixptr, const char *message);
   void simelsToFrame(bool statistical = true);
-  void addSourceDetections(source &src, ulong_t totDetections);
+  void addSourceDetections(source &src);
 };
